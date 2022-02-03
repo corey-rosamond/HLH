@@ -1,0 +1,45 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php/** * Document * * @package App\Abstracts * @version 1.2.0 */namespace App\Abstracts;/** * Document * * This is the base document base for the funnel system this * gives the basic document and buffer methods and variables */\Framework\_IncludeCorrect(APP_ROOT.&quot;Abstracts&quot;.DSEP.&quot;Navigator.php&quot;);abstract class Document extends Navigator{  /** @var array $_tokens */  protected $_tokens;  /** @var null $_buffer */  protected $_buffer = null;  /** @var integer $_chunkSize */  protected $_chunkSize = 4000;  /** @var integer $_assetPath */  protected $_assetPath;  /**   * Document Start   * @method _documentStart   * @param $title   * @return string   */  protected function _documentStart($title)  {    return $this-&gt;_docType().      &quot;&lt;html lang=\&quot;en\&quot;&gt;&lt;head&gt;&quot;.      $this-&gt;_metas().      &quot;&lt;title&gt;{$title}&lt;/title&gt;&quot;.      $this-&gt;_scripts().      $this-&gt;_styles().      &quot;&lt;/head&gt;&lt;body class=\&quot;funnel-page-type-{$this-&gt;_pageType}\&quot;&gt;&quot;;  }  /**   * Document End   * @method _documentEnd   * @return string   */  protected function _documentEnd()  { return $this-&gt;_scriptTag(&quot;Application/Funnel/Script/Funnel.js&quot;).&quot;&lt;/body&gt;&lt;/html&gt;&quot;; }  /****************************************************/  /*                  Group Entities                  */  /****************************************************/  /**   * Metas   * @method _metas   * @return string   */  private function _metas()  {    return $this-&gt;_metaName(&quot;viewport&quot;, &quot;width=device-width, initial-scale=1&quot;).      $this-&gt;_metaTag(&quot;Content-Script-Type&quot;, &quot;text/javascript&quot;).      $this-&gt;_metaTag(&quot;Content-Type&quot;, &quot;text/html; charset=UTF-8&quot;).      $this-&gt;_metaTag(&quot;X-UA-Compatible&quot;, &quot;IE=edge&quot;).      $this-&gt;_metaName(&quot;ROBOTS&quot;, &quot;NOINDEX, NOFOLLOW&quot;);  }  /**   * Scripts   * @method _scripts   * @return stringPr4StudRU4rehASTAswU8acHupePaxuxPr4StudRU4rehASTAswU8acHupePaxux   */  private function _scripts()  {    return &quot;&lt;script type=\&quot;text/javascript\&quot;&gt;window._trackJs = { token: '0faa0c6306be4fc4971e0071ae8a5ca5' };&lt;/script&gt;&quot;.      $this-&gt;_scriptTag(&quot;//d2zah9y47r7bi2.cloudfront.net/releases/current/tracker.js&quot;).      $this-&gt;_scriptTag(&quot;//hhhmedia.s3.amazonaws.com/FunnelResources/default/jQuery.js&quot;);  }  /**   * Styles   * @method _styles   * @return string   */  private function _styles()  {    return $this-&gt;_styleTag(&quot;//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css&quot;).      $this-&gt;_styleTag(&quot;{$this-&gt;_assetPath}style.css&quot;);  }  /****************************************************/  /*                  HTML Entities                   */  /****************************************************/  /**   * DocType   * @method _docType   * @return string   */  private function _docType()  { return &quot;&lt;!DOCTYPE html&gt;&quot;; }  /**   * MetaTag   * @method _metaTag   * @param $httpEquiv   * @param $content   * @return string   */  private function _metaTag($httpEquiv, $content)  { return &quot;&lt;meta http-equiv=\&quot;{$httpEquiv}\&quot; content=\&quot;{$content}\&quot; /&gt;&quot;; }  /**   * MetaName   * @method _metaName   * @param string $name   * @param string $content   * @return string   */  private function _metaName($name, $content)  { return &quot;&lt;meta name=\&quot;{$name}\&quot; content=\&quot;{$content}\&quot;&gt;\n&quot;; }  /**   * ScriptTag   * @method _scriptTag   * @param string $src   * @param string $type   * @return string   */  private function _scriptTag($src, $type=&quot;text/javascript&quot;)  { return &quot;&lt;script type=\&quot;{$type}\&quot; src=\&quot;{$src}\&quot;&gt;&lt;/script&gt;&quot;; }  /**   * StyleTag   * @method _styleTag   * @param $href   * @return string   */  private function _styleTag($href)  { return &quot;&lt;link rel=\&quot;stylesheet\&quot; href=\&quot;{$href}\&quot;&gt;&quot;; }  /****************************************************/  /*                  BUFFER METHODS                  */  /****************************************************/  /**   * Write to the buffer   * @method _write   * @param $content   */  protected function _write($content)  { $this-&gt;_buffer .= $content; }  /**   * Reset the buffer back to blank   * @method _resetBuffer   */  protected function _resetBuffer()  { $this-&gt;_buffer = null; }  /**   * Render the buffer to the page   * @method _render   * @param $buffer   * @return bool   */  protected function _render($buffer)  {    array_map (function ($token, $value) use (&amp;$buffer) {      $buffer = str_replace ($token, $value, $buffer);    }, array_keys ($this-&gt;_tokens), $this-&gt;_tokens);    $output = str_split ($buffer, $this-&gt;_chunkSize);    foreach ($output as $index =&gt; $chunk) {      echo $chunk;    }    return true;  }}</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

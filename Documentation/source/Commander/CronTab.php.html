@@ -1,0 +1,219 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+
+namespace Framework\Commander;
+
+class CronTab extends \Framework\Support\Abstracts\Singleton
+{
+
+  /** Modals */
+  private $_mCronTab;
+  private $_mCronLog;
+
+  /** Tab Datatable Variables */
+  private $_dTabPortletType  = 'box';
+  private $_dTabPortletColor = 'blue-chambray';
+  private $_dTabPortletIcon  = &quot;fa fa-hourglass&quot;;
+  private $_dTabPortletTitle = &quot;CronJobs&quot;;
+  private $_dTabDatatableID  = &quot;CronTabDatatable&quot;;
+  private $_dTabDatatableCol = [
+    [&quot;label&quot;=&gt;&quot;Job #&quot;,      &quot;style&quot;=&gt;&quot;text-align:center;&quot;,  &quot;order&quot;=&gt;true],
+    [&quot;label&quot;=&gt;&quot;Job Name&quot;,   &quot;style&quot;=&gt;&quot;&quot;,                    &quot;order&quot;=&gt;true],
+    [&quot;label&quot;=&gt;&quot;Run Every&quot;,  &quot;style&quot;=&gt;&quot;text-align:center;&quot;,  &quot;order&quot;=&gt;true],
+    [&quot;label&quot;=&gt;&quot;Status&quot;,     &quot;style&quot;=&gt;&quot;text-align:center;&quot;,  &quot;order&quot;=&gt;true],
+    [&quot;label&quot;=&gt;&quot;Description&quot;,&quot;style&quot;=&gt;&quot;&quot;,                    &quot;order&quot;=&gt;true],
+    [&quot;label&quot;=&gt;&quot;Run Order&quot;,  &quot;style&quot;=&gt;&quot;text-align:center;&quot;,  &quot;order&quot;=&gt;true],
+    [&quot;label&quot;=&gt;&quot;State&quot;,      &quot;style&quot;=&gt;&quot;text-align:center;&quot;,  &quot;order&quot;=&gt;true],
+    [&quot;label&quot;=&gt;&quot;Last Run&quot;,   &quot;style&quot;=&gt;&quot;&quot;,                    &quot;order&quot;=&gt;true]
+  ];
+
+  /** Log Datatable Variables */
+  private $_dLogPortletType  = 'box';
+  private $_dLogPortletColor = 'blue-steel';
+  private $_dLogPortletIcon  = &quot;fa fa-hourglass&quot;;
+  private $_dLogPortletTitle = &quot;CronLog&quot;;
+  private $_dLogDatatableID  = &quot;CronLogDatatable&quot;;
+  private $_dLogDatatableCol = [
+    [&quot;label&quot;=&gt;&quot;Log #&quot;,          &quot;style&quot;=&gt;&quot;text-align:center;width:10%;&quot;,&quot;order&quot;=&gt;true],
+    [&quot;label&quot;=&gt;&quot;Job Name&quot;,       &quot;style&quot;=&gt;&quot;width:15%;&quot;,                  &quot;order&quot;=&gt;true],
+    [&quot;label&quot;=&gt;&quot;Type&quot;,           &quot;style&quot;=&gt;&quot;text-align:center;width:5%;&quot;, &quot;order&quot;=&gt;true],
+    [&quot;label&quot;=&gt;&quot;Message&quot;,        &quot;style&quot;=&gt;&quot;width:45%;&quot;,                  &quot;order&quot;=&gt;true],
+    [&quot;label&quot;=&gt;&quot;Date &amp;amp; Time&quot;,&quot;style&quot;=&gt;&quot;text-align:center;width:25%;&quot;,&quot;order&quot;=&gt;true]
+  ];
+
+  /** STATUS CODES */
+  const statusDisabled    = 0;
+  const statusIdle        = 1;
+  const statusRunning     = 2;
+  const statusFailedLast  = 3;
+  const statusFailure     = 4;
+  private $_statusText    = [0=&gt;&quot;Disabled&quot;,1=&gt;&quot;Idle&quot;,2=&gt;&quot;Running&quot;,3=&gt;&quot;Failed Last!&quot;,4=&gt;&quot;Failure!&quot;];
+  private $_statusColor   = [0=&gt;&quot;danger&quot;,1=&gt;&quot;primary&quot;,2=&gt;&quot;success&quot;,3=&gt;&quot;warning&quot;,4=&gt;&quot;danger&quot;];
+
+  /** STATE CODES */
+  const stateDisabled   = 0;
+  const stateEnabled    = 1;
+  private $_stateText   = [0=&gt;&quot;Disabled&quot;,1=&gt;&quot;Enabled&quot;];
+  private $_stateColor  = [0=&gt;&quot;danger&quot;,1=&gt;&quot;success&quot;];
+
+  /** TYPE CODES */
+  const typeError       = 0;
+  const typeNotice      = 1;
+  private $_typeText    = [0=&gt;&quot;Error&quot;,1=&gt;&quot;Notice&quot;];
+  private $_typeColor   = [0=&gt;&quot;danger&quot;,1=&gt;&quot;success&quot;];
+
+  public static function construct()
+  {
+    $instance = self::getInstance();
+    $instance-&gt;_cDocument = \Framework\Core\Receptionist::controller( 'Document', true );
+    $instance-&gt;_mCronTab  = \Framework\Core\Receptionist::modal( &quot;CronTab&quot;, &quot;Holylandhealth&quot;, true );
+    $instance-&gt;_mCronLog  = \Framework\Core\Receptionist::modal( &quot;CronLog&quot;, &quot;Holylandhealth&quot;, true );
+    return $instance;
+  }
+
+  public function getActiveJobs()
+  { return $this-&gt;_mCronTab-&gt;getActiveJobs(); }
+
+  public function updateLastRun( $job )
+  { return $this-&gt;_mCronTab-&gt;updateLastRun( $job ); }
+
+  public function setStatus( $job, $status )
+  { return $this-&gt;_mCronTab-&gt;setStatus( $job, $status ); }
+
+  public function log( $key, $type, $message )
+  { return $this-&gt;_mCronLog-&gt;log($key, $type, $message); }
+
+  public function chooseFailureStatus( $job )
+  {
+    if($job['status']!==self::statusFailedLast){
+      return self::statusFailedLast;
+    }
+    self::statusFailure;
+  }
+
+  public function docketLastRun()
+  {
+    $date = date(&quot;l jS \of F Y h:i:s A&quot;,strtotime($this-&gt;_mCronTab-&gt;docketLastRun()));
+    return &quot;&lt;span class=\&quot;label label-default\&quot;&gt;Last Run: {$date}&lt;/span&gt;&quot;;
+  }
+
+  public function docketState()
+  {
+    $code = $this-&gt;_mCronTab-&gt;docketState();
+    return &quot;&lt;span class=\&quot;label label-{$this-&gt;_stateColor[$code]}\&quot;&gt;State: {$this-&gt;_stateText[$code]}&lt;/span&gt;&quot;;
+  }
+
+  public function docketStatus()
+  {
+    $code = $this-&gt;_mCronTab-&gt;docketStatus();
+    return &quot;&lt;span class=\&quot;label label-{$this-&gt;_statusColor[$code]}\&quot;&gt;Status: {$this-&gt;_statusText[$code]}&lt;/span&gt;&quot;;
+  }
+
+  public function cronTabDatatable()
+  {
+    return $this-&gt;_cDocument-&gt;portlet(
+      $this-&gt;_dTabPortletType,
+      $this-&gt;_dTabPortletColor,
+      $this-&gt;_dTabPortletIcon,
+      $this-&gt;_dTabPortletTitle,'',
+      $this-&gt;_cDocument-&gt;datatable(
+        $this-&gt;_dTabDatatableID,
+        $this-&gt;_dTabDatatableCol,
+        $this-&gt;_formatTaB( $this-&gt;_mCronTab-&gt;getCrontab())
+      ),[],[],true
+    );
+  }
+
+  public function cronLogDatatable()
+  {
+    return $this-&gt;_cDocument-&gt;portlet(
+      $this-&gt;_dLogPortletType,
+      $this-&gt;_dLogPortletColor,
+      $this-&gt;_dLogPortletIcon,
+      $this-&gt;_dLogPortletTitle,'',
+      $this-&gt;_cDocument-&gt;datatable(
+        $this-&gt;_dLogDatatableID,
+        $this-&gt;_dLogDatatableCol,
+        $this-&gt;_formatLog( $this-&gt;_mCronLog-&gt;getLog())
+      ),[],[],true
+    );
+  }
+
+
+  private function _formatTaB( $crontab )
+  {
+    foreach( $crontab as &amp;$cronjob ){
+      $cronjob['key']       = $cronjob['key'] = sprintf('#%03d', $cronjob['key']);
+      $cronjob['interval']  = &quot;{$cronjob['interval']} Minutes&quot;;
+      $cronjob['status']    = $this-&gt;_status($cronjob['status']);
+      $cronjob['active']    = $this-&gt;_state($cronjob['active']);
+      $cronjob['last-run']  = (($cronjob['last-run']==&quot;0000-00-00 00:00:00&quot;)?&quot;Never&quot;:date(&quot;l jS \of F Y h:i:s A&quot;,strtotime($cronjob['last-run'])));
+    }
+    return $crontab;
+  }
+
+  private function _formatLog( $cronlog )
+  {
+    foreach( $cronlog as &amp;$entry ){
+      $entry['key']       = $entry['key'] = sprintf('#%08d',$entry['key']);
+      $entry['message']   = (($entry['message']==&quot;&quot;)?'No Message!':$entry['message']);
+      $entry['type']      = $this-&gt;_type($entry['type']);
+      $entry['timestamp'] = (($entry['timestamp']==&quot;0000-00-00 00:00:00&quot;)?&quot;Bad Entry&quot;:date(&quot;l jS \of F Y h:i:s A&quot;,strtotime($entry['timestamp'])));
+    }
+    return $cronlog;
+  }
+
+  private function _type( $code )
+  { return &quot;&lt;span class=\&quot;label label-{$this-&gt;_typeColor[$code]}\&quot;&gt; {$this-&gt;_typeText[$code]} &lt;/span&gt;&quot;; }
+
+  private function _status( $code )
+  { return &quot;&lt;span class=\&quot;label label-{$this-&gt;_statusColor[$code]}\&quot;&gt; {$this-&gt;_statusText[$code]} &lt;/span&gt;&quot;; }
+
+  private function _state( $code )
+  { return &quot;&lt;span class=\&quot;label label-{$this-&gt;_stateColor[$code]}\&quot;&gt; {$this-&gt;_stateText[$code]} &lt;/span&gt;&quot;; }
+
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

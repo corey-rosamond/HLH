@@ -1,0 +1,99 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+
+namespace Framework\Commander;
+
+class Customer extends \Framework\Commander\Commander
+{
+
+  private $_mOrders;
+
+  private $_mCustomer;
+
+
+  public static function construct()
+  {
+    $instance = self::getInstance();
+    $instance-&gt;_mCustomer = \Framework\Core\Receptionist::modal( &quot;Customer&quot;, true );
+    $instance-&gt;_cOrders   = \Framework\Commander\Orders::getInstance();
+    return $instance;
+  }
+
+  public function get( $key )
+  { return $this-&gt;_mCustomer-&gt;get( $key ); }
+
+
+  public function emailLookup( $email )
+  { return $this-&gt;_mCustomer-&gt;emailLookup( $email ); }
+
+  public function customerOrders( $customerKey )
+  {
+    $this-&gt;_mOrders   = \Framework\Core\Receptionist::controller(&quot;Orders&quot;, true);
+    return $this-&gt;_mOrders-&gt;customerOrders( $customerKey );
+  }
+
+  public function createCustomer( $email, $funnel, $valueBefore=0, $valueAfter=0 )
+  { return $this-&gt;_mCustomer-&gt;createCustomer($email,$funnel,$valueBefore,$valueAfter); }
+
+
+  public function updateCustomerValue($key)
+  {
+    $orders = $this-&gt;_cOrders-&gt;customerOrders($key);
+    $tBefore  = 0;
+    $tAfter   = 0;
+    foreach($orders as $order){
+      if(
+        $order['status']==\Framework\Commander\Orders::completed ||
+        $order['status']==\Framework\Commander\Orders::completedWithBalance
+      ){
+        $tBefore += $order['order-total-before'];
+        $tAfter += ($order['order-total-before'] - $order['order-total-after']);
+      }
+    }
+    return $this-&gt;_mCustomer-&gt;updateCustomerValue($key, $tBefore, $tAfter);
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

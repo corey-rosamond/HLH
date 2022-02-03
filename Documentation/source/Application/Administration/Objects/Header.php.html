@@ -1,0 +1,291 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * Header
+ *
+ * @package App\Objects
+ * @version 1.2.0
+ */
+namespace App\Objects;
+
+/**
+ * Header
+ *
+ * This builds both the top and side navigation elements
+ */
+class Header
+{
+  /**
+   * Navigation Object For making the top navigation
+   * @var     Navigation    $Navigation   This is the Navigation object
+   * @access  private
+   */
+  private $Navigation;
+
+  /**
+   * This the the Collection object with all of the events Tokens
+   * @var     \Framework\Advent\MainCollection  $Tokens  Token Collection
+   * @access  private 
+   */
+  private $Tokens;
+
+  private $userMenu = [
+    [ &quot;title&quot; =&gt; &quot;My Profile&quot;,  &quot;icon&quot; =&gt; &quot;icon-user&quot;,  &quot;id&quot; =&gt; &quot;my-profile&quot;,   &quot;on-click&quot;  =&gt; &quot;&quot; ]
+    ,&quot;DIVIDER&quot;, 
+    [ &quot;title&quot; =&gt; &quot;Lock Screen&quot;, &quot;icon&quot; =&gt; &quot;icon-lock&quot;,  &quot;id&quot; =&gt; &quot;lock-screen&quot;,  &quot;on-click&quot;  =&gt; &quot;&quot; ],
+    [ &quot;title&quot; =&gt; &quot;Log Out&quot;,     &quot;icon&quot; =&gt; &quot;icon-key&quot;,   &quot;id&quot; =&gt; &quot;log-out&quot;,      &quot;on-click&quot;  =&gt; &quot;&quot; ]
+  ];
+
+  /**
+   * Construct the Heder object
+   * @method  __construct
+   * @param   Navigation    $Navigation The Navigation object
+   * @return  Header
+   * @access  public
+   */
+  public function __construct( $Navigation, $Tokens ){
+    $this-&gt;Navigation = $Navigation;
+    $this-&gt;Tokens = $Tokens;
+    return $this;
+  }
+
+  /**
+   * Build the Administration Header Html
+   * @method  build
+   * @return  string HTML for Header
+   * @access  public
+   */
+  public function Build(){
+    return $this-&gt;StartHeader() .
+      $this-&gt;ToggleBar( &quot;\\Main\\Dashboard\\Dashboard&quot;, &quot;{$this-&gt;Tokens['image-directory']}hlhlogo.png&quot;, &quot;HolylandHealth Dashboard&quot; ) .
+      $this-&gt;Navigation-&gt;TopNavigation() . 
+      $this-&gt;SearchForm( &quot;POST&quot;, &quot;Search...&quot;, &quot;search-form&quot; ) .
+      $this-&gt;StartHeaderRightMenu() . 
+      $this-&gt;BuildUserDropDown() .
+      $this-&gt;QuickBarToggle() . 
+      $this-&gt;EndHeaderRightMenu() .
+      $this-&gt;EndHeader();
+  }
+
+  /**
+   * QuickBar Toggle
+   * @method  QuickBarToggle
+   * @return  string HTML fpr the quick bar toggle
+   * @access  private
+   */
+  private function QuickBarToggle(){
+    return &quot;
+    &lt;li class=\&quot;dropdown dropdown-quick-sidebar-toggler\&quot;&gt;
+      &lt;a class=\&quot;dropdown-toggle\&quot; href=\&quot;javascript:;\&quot; id=\&quot;QuickSidebar-Toggle-Open\&quot;&gt;&lt;i class=\&quot;icon-logout\&quot;&gt;&lt;/i&gt;&lt;/a&gt;
+    &lt;/li&gt;&quot;;
+  }
+
+  /**
+   * Build the user drop down
+   * @method BuildUserDropdown
+   * @uses \Framework\Core\Patron::getInstance()
+   * @uses \Framework\Core\Patron-&gt;getLoggedInUserData()
+   *
+   * @access private
+   */
+  private function BuildUserDropDown(){
+    /** @var \Framework\Core\Patroit $Patron This is an instance of the Patron object */
+    $Patron = \Framework\Core\Patron::getInstance();
+    /** @var array $userData  Get the full user data of the user currently logged in */
+    $userData = $Patron-&gt;getLoggedInUserData();
+    /** Start adding the UserRight meuu to the HTML output */
+    $html = $this-&gt;StartRightMenuDropDown(
+      $userData['first-name'].&quot; &quot;.$userData['last-name'].&quot;s Profile Photo&quot;, 
+      $userData['photo'], 
+      &quot;dropdown dropdown-user&quot;,
+      &quot;img-circle&quot;,
+      &quot;username username-hide-on-mobile&quot;, 
+      $userData['first-name'].&quot; &quot;.$userData['last-name'] 
+    );
+    array_map(
+      function($item) use (&amp;$html){
+        if( is_array($item) ){
+          return $html .= $this-&gt;RightMenuDropItem( 
+            $item['id'], $item['icon'], $item['title'] 
+          );
+        }
+        /** If it not an array it is a seperator */
+        $html .= &quot;&lt;li class=\&quot;divider\&quot;&gt; &lt;/li&gt;&quot;;
+      }, $this-&gt;userMenu
+    );
+    $html .= $this-&gt;EndRightMenuDropDown();
+    /** Return the html for the user section of the header */
+    return $html;
+  }
+
+
+  
+  /**
+   * Start the header html
+   * @method  StartHeader
+   * @return  string HTML for StartHeader
+   * @access  private
+   */
+  private function StartHeader()
+  {
+    return &quot;
+    &lt;header class='page-header navbar navbar-fixed-top' id='logged-in'&gt;
+      &lt;div class='page-header-inner'&gt;&quot;;
+  }
+
+  /**
+   * Toggle Bar This is the bar on the left hand side of the page to minimize and maxamize the menu
+   * @method  ToggleBar
+   * @param   string    $href   OnClick Destination
+   * @param   string    $src    Image src / Location 
+   * @param   string    $alt    Alternate Image text
+   * @return  string            HTML for ToggleBar
+   * @access  private
+   */
+  private function ToggleBar( $href, $src, $alt )
+  {
+    return &quot;
+    &lt;div class='page-logo' style=''&gt;
+      &lt;a href='{$href}'&gt;&lt;img src='{$src}' alt='{$alt}' style='margin-top:0px;' class='logo-default' /&gt;&lt;/a&gt;
+      &lt;div class='menu-toggler sidebar-toggler'&gt; &lt;/div&gt;
+    &lt;/div&gt;&quot;;
+  }
+
+  /**
+   * Make the Search Form
+   * @method  SearchForm
+   * @param   string      $method       Search Form Method
+   * @param   string      $placeholder  Placeholder Text
+   * @param   string      $name         Input Name
+   * @return  string                    HTML for the search form
+   * @access  private
+   */
+  private function SearchForm( $method, $placeholder, $name )
+  {
+    return &quot;
+    &lt;form id='search-form' class='search-form' action='' method='{$method}'&gt;
+      &lt;div class='input-group'&gt;
+        &lt;input type='text' class='form-control' placeholder='{$placeholder}' name='{$name}'&gt;
+        &lt;span class='input-group-btn'&gt;&lt;a href='javascript:;' class='btn submit'&gt;&lt;i class='icon-magnifier'&gt;&lt;/i&gt;&lt;/a&gt;&lt;/span&gt;
+      &lt;/div&gt;
+    &lt;/form&gt;&quot;;
+  }
+
+  /**
+   * Start the Header Right Menu
+   * @method    StartHeaderRightMenu
+   * @return    string                HTML For Header Right Menu Start
+   * @access    private               
+   */ 
+  private function StartHeaderRightMenu()
+  {
+    return &quot;
+    &lt;a href='javascript:;' class='menu-toggler responsive-toggler' data-toggle='collapse' data-target='.navbar-collapse'&gt;&lt;/a&gt;
+    &lt;div class='top-menu'&gt;
+      &lt;ul class='nav navbar-nav pull-right'&gt;&quot;;
+  }
+
+
+  private function StartRightMenuDropDown( $alt, $src, $liClass, $imageClass, $spanClass, $title )
+  {
+    return &quot;
+    &lt;li class='{$liClass}'&gt;
+      &lt;a href='javascript:;' class='dropdown-toggle' data-toggle='dropdown' data-hover='dropdown' data-close-others='true'&gt;
+        &lt;img alt='{$alt}' class='{$imageClass}' src='{$src}' /&gt;
+        &lt;span class='{$spanClass}'&gt; {$title} &lt;/span&gt;
+        &lt;i class='fa fa-angle-down'&gt;&lt;/i&gt;
+      &lt;/a&gt;
+      &lt;ul class='dropdown-menu dropdown-menu-default'&gt;&quot;;
+  }
+
+  /**
+   * Right Menu Drop Item
+   * @method RightMenuDropItem
+   * @param     string    $id     Drop Item ID
+   * @param     string    $icon   Drop Item Icon
+   * @param     string    $title  Drop Item Title
+   * @return    string            HTML Right Menu Drop Item
+   * @access    private
+   */
+  private function RightMenuDropItem( $id, $icon, $title )
+  {
+    return &quot;&lt;li&gt;&lt;a id='{$id}'&gt;&lt;i class='{$icon}'&gt;&lt;/i&gt; {$title} &lt;/a&gt;&lt;/li&gt;&quot;;
+  }
+
+  /**
+   * End The Right Menu Drop Down
+   * @method  EndRightMenuDropDown
+   * @return  string    HTML  EndRightMenuDropDown
+   * @access  private
+   */
+  private function EndRightMenuDropDown()
+  {
+    return &quot;&lt;/ul&gt;&lt;/li&gt;&quot;;
+  }
+
+  /**
+   * End Header Right Menu
+   * @method  EndHeaderRightMenu
+   * @return  string    HTML  EndHeaderRightMenu
+   * @access  private
+   */
+  private function EndHeaderRightMenu()
+  {
+    return &quot;&lt;/ul&gt;&lt;/div&gt;&quot;;
+  }
+
+ /**
+   * End Header
+   * @method  EndHeader
+   * @return  string    HTML  EndHeader
+   * @access  private
+   */
+  private function EndHeader()
+  {
+    return &quot;&lt;/div&gt;&lt;/header&gt;&quot;;
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

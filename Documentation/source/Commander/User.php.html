@@ -1,0 +1,127 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * User
+ *
+ * @package Framework\Advent
+ * @version 1.2.0
+ */
+namespace Framework\Commander;
+
+/**
+ * User
+ *
+ * This is the main interface for User interactions
+ */
+class User extends Commander
+{
+  /****************************************************/
+  /*                   CORE OBJECTS                   */
+  /****************************************************/
+  /** @var \Framework\Core\Patron $_corePatron */
+  private $_corePatron;
+
+  /**
+   * Construct the main user controller
+   * @method construct
+   * @return \Framework\Commander\User
+   */
+  public static function construct()
+  {
+    /** @var \Framework\Commander\User $instance */
+    $instance = self::getInstance();
+    /** @var \Framework\Core\Patron _corePatron */
+    $instance-&gt;_corePatron = \Framework\Core\Patron::getInstance();
+    /** Return the instance */
+    return $instance;
+  }
+
+
+
+  /**
+   * This is the event interface for this command object
+   * This allows javascript to make calls to this object
+   * to preform pre-defined tasks
+   * @method event
+   */
+  public function event()
+  {
+    /** Configure the event */
+    $this-&gt;_eConfigure();
+    /** Find the requested task */
+    switch($this-&gt;_dEventAction){
+      /** Try and log the user in */
+      case 'login':
+        $outcome = $this-&gt;_corePatron-&gt;login($this-&gt;_dEventData['username'], $this-&gt;_dEventData['password'], $this-&gt;_dEventData['remember']);
+        $this-&gt;_eResponse($outcome['result'], $outcome['message']);
+        break;
+
+      /** Log the user out */
+      case 'logout':
+        $outcome = $this-&gt;_corePatron-&gt;logout();
+        $this-&gt;_eResponse($outcome['result'], $outcome['message']);
+        break;
+
+      /** Run the forgot user event */
+      case 'forgot':
+        $this-&gt;_eResponse(false, &quot;Not yet Implemented&quot;);
+        break;
+
+      /** Verify that the user has the permissions */
+      case 'has-permission':
+        if(!$this-&gt;_corePatron-&gt;isLoggedIn()){
+          $this-&gt;_eResponse(false, &quot;Not Logged In!&quot;);
+        }
+        if(!$this-&gt;_corePatron-&gt;hasPermission($this-&gt;_dEventData['group'], $this-&gt;_dEventData['permission'])){
+          $this-&gt;_eResponse(false, &quot;Inadequate Permissions!&quot;);
+        }
+        $this-&gt;_eResponse(true, &quot;Requirements Meet!&quot;);
+        break;
+      default: $this-&gt;_eResponse(false, 'Invalid'); break;
+    }
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

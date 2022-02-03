@@ -1,0 +1,134 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * OrderApprover
+ *
+ * @package Framework\Docket
+ * @version 1.0.0
+ */
+namespace Framework\Docket;
+
+/**
+ * OrderApprover
+ *
+ * This cronjob goes through the orders and finds the
+ * orders where the user has visited on one device at
+ * their home then went to another computer and completed
+ * the order there. The reason for it is simple we want
+ * to track their sale as part of the campaign they
+ * orignaly visited with
+ */
+class OrderApprover extends \Framework\Event\Cronjob
+{
+  private $_cOrders;
+
+
+
+  /**
+   * Run the CronJob
+   * @method  run
+   * @param   array $data [description]
+   * @return  array        The status array [ 'status' =&gt; boolean, 'messages' =&gt; array[ 'status' =&gt; boolean, 'message' =&gt; 'some text']]
+   * @access  public
+   * @static
+   */
+  public static function run( $data, $cCronTab )
+  {
+    try{
+      $instance = self::getInstance();
+      $cOrders = \Framework\Core\Receptionist::controller('Orders', true);
+      $orders = $cOrders-&gt;getOrdersWithStatusAndKey();
+      foreach($orders as $order){
+        if(!is_numeric($order['status'])) {
+          switch ($order['status']) {
+            case 'Fulfillment':
+              $oldStatus = 'Fulfillment';
+              $newStatus = \Framework\Commander\Orders::fulfillment;
+              break;
+            case 'Created':
+              $oldStatus = 'Created';
+              $newStatus = \Framework\Commander\Orders::created;
+              break;
+            case 'Auth Capture':
+              $oldStatus = 'Auth Capture';
+              $newStatus = \Framework\Commander\Orders::completed;
+              break;
+            case 'Canceled':
+              $oldStatus = 'Canceled';
+              $newStatus = \Framework\Commander\Orders::refund;
+              break;
+            case 'Authorized':
+              $oldStatus = 'Authorized';
+              $newStatus = \Framework\Commander\Orders::completed;
+              break;
+            case 'Captured':
+              $oldStatus = 'Captured';
+              $newStatus = \Framework\Commander\Orders::completed;
+              break;
+            case 'Approved':
+              $oldStatus = 'Approved';
+              $newStatus = \Framework\Commander\Orders::completed;
+              break;
+            default:
+              echo 'bad';
+              break;
+          }
+          $cOrders-&gt;_setOrderStatus($order['key'], $newStatus,
+            &quot;Converting V1 Funnel Order To V2 Previous Order status {$oldStatus} New Order status {$newStatus}&quot;);
+
+        }
+      }
+
+      return $instance-&gt;returnReport($cCronTab, $data);
+    } catch ( \Framework\Exceptional\BaseException $exception ){
+      $trace = print_r($exception-&gt;getTrace(), true);
+      $instance-&gt;addMessage($cCronTab::typeError, &quot;Fatal Error: {$exception-&gt;getMessage()} StackTrack: {$trace}&quot;);
+      $instance-&gt;status = false;
+      return $instance-&gt;returnReport($cCronTab, $data);
+    }
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

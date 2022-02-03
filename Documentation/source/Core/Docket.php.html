@@ -1,0 +1,195 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * Docket
+ *
+ * @package Framework\Core
+ * @version 1.2.0
+ */
+namespace Framework\Core;
+
+/**
+ * Docket
+ *
+ * Docket is the cronjob interface it makes cron jobs simple. You have
+ * one table of cron jobs that need to run. This goes through runs them in order
+ * and takes the appropriate action dependent on the outcome
+ * /var/www/html/framework/Modulus/Modal/Order.php
+ * php-cgi -f cron.php system=administration.ones-n-zeros.com
+ */
+class Docket extends Core
+{
+  /** @var Admit $_coreAdmit */
+  private $_coreAdmit;
+  /** @var Contour $_coreContour */
+  private $_coreContour;
+  /** @var Receptionist $_coreReceptionist */
+  private $_coreReceptionist;
+  /** @var \Framework\Commander\CronTab $_cCrontab */
+	private $_cCronTab;
+  /** @var string $_dNamespace */
+	private $_dNamespace = &quot;\\Framework\\Docket\\&quot;;
+  /** @var array $_dCronDirectory */
+  private $_dCronDirectory;
+
+  public function construct()
+  {
+    /** @var Architect $instance */
+    $instance = self::getInstance();
+    try{
+      /** @var Contour _coreContour */
+      $instance-&gt;_coreContour = Contour::getInstance();
+      /** @var Contour _coreContour */
+      $instance-&gt;_coreContour = Contour::getInstance();
+      /** @var Receptionist _coreReceptionist */
+      $instance-&gt;_coreReceptionist = Receptionist::getInstance();
+      /** @var Admit _coreAdmit */
+      $instance-&gt;_coreAdmit = Admit::getInstance();
+      /** @var \Framework\Commander\CronTab $_cCronTab */
+      $instance-&gt;_cCronTab = Receptionist::controller('CronTab', true);
+      /** Set the CRON Directory for Framework  */
+      $instance-&gt;_dCronDirectory = [
+        self::rTypeFramework =&gt; FRAMEWORK_ROOT.&quot;Docket&quot;.DSEP,
+        self::rTypeApplication =&gt; APP_CRONTAB
+      ];
+		} catch ( \Framework\Exceptional\BaseException $exception ){
+			throw new \Framework\Exceptional\DocketFault(
+				$exception-&gt;getMessage(),
+				$exception-&gt;getCode(),
+				$exception-&gt;getSeverity(),
+				$exception-&gt;getFile(),
+				$exception-&gt;getLine(),
+				$exception
+			);
+		}
+	}
+
+  public function run()
+  {
+    /** Update the docket last run time */
+    $this-&gt;_cCronTab-&gt;updateLastRun(0);
+    /** Set dockets status as running */
+    $this-&gt;_cCronTab-&gt;setStatus(0,\Framework\Commander\CronTab::statusRunning);
+    /** Get a list of active cron jobs */
+    $jobs = $this-&gt;_cCronTab-&gt;getActiveJobs();
+    /** Check if we have jobs */
+    if(!$jobs){
+      /** Log nothing to do */
+      $this-&gt;_cCronTab-&gt;log(0, \Framework\Commander\CronTab::typeNotice, &quot;No CronJobs to run Exiting!&quot;);
+      /** Set dockets status back to idle */
+      $this-&gt;_cCronTab-&gt;setStatus(0,\Framework\Commander\CronTab::statusIdle);
+      return true;
+    }
+    /** Loop through the jobs */
+    foreach($jobs as $job){
+      /** Do the job */
+      $this-&gt;doJob( $job, $this-&gt;_cCronTab );
+    }
+    $this-&gt;_cCronTab-&gt;setStatus(0,\Framework\Commander\CronTab::statusIdle);
+    exit();
+  }
+
+  /**
+   * Do a selected cron job
+   * @method   doJob
+   * @param    array   $job  The job array
+   * @return   array
+   */
+  private function doJob($job)
+  {
+    /** Check if the job is already done */
+    if($this-&gt;jobDone($job['last-run'], $job['interval'])){
+      return true;
+    }
+    try{
+      $this-&gt;includeJob($job['class-name'], $job['is-framework']);
+    } catch (\Framework\Exceptional\IncludeOnceException $exception){
+      $this-&gt;_cCronTab-&gt;setStatus($job['key'], $this-&gt;_cCronTab-&gt;chooseFailureStatus($job));
+      return $this-&gt;_cCronTab-&gt;log($job['key'], \Framework\Commander\CronTab::typeError, &quot;Unable to include cronJob!&quot;);
+    }
+    $this-&gt;_cCronTab-&gt;updateLastRun($job['key']);
+    $this-&gt;_cCronTab-&gt;setStatus($job['key'],\Framework\Commander\CronTab::statusRunning);
+    $activeJob = $this-&gt;_dNamespace . $job['class-name'];
+    $return = $activeJob::run($job, $this-&gt;_cCronTab);
+    if( count($return['messages']) &gt; 0 ){
+      foreach( $return['messages'] as $message ){
+        $this-&gt;_cCronTab-&gt;log($job['key'], $message['type'], $message['message']);
+      }
+    }
+    $this-&gt;_cCronTab-&gt;setStatus($job['key'],$return['status']);
+    return true;
+  }
+
+  /**
+   * Checks to see if cron is done.
+   * @method jobDone
+   * @param integer $last
+   * @param integer $interval
+   * @return boolean
+   */
+  private function jobDone($last, $interval)
+  {
+    if((strtotime($last)+(60*$interval))&lt;time()){
+      return false;
+    }
+    return true;
+  }
+
+  /**
+   * Gives a new cron job to run.
+   * @method   includeJob
+   * @param    string      $class
+   * @param    boolean     $isFramework
+   * @return   boolean
+   */
+  private function includeJob($class, $isFramework)
+  {
+    $system = (($isFramework==='1')?self::rTypeFramework:self::rTypeApplication);
+    \Framework\_IncludeCorrect(&quot;{$this-&gt;_dCronDirectory[$system]}{$class}.php&quot;);
+    return true;
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

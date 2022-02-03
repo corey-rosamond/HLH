@@ -1,0 +1,54 @@
+<div class="modal-header bg-grey-steel">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+    <span class="fa-stack fa-lg">
+      <i class="fa fa-square-o fa-stack-2x font-blue-ebonyclay"></i>
+      <i class="fa fa-times fa-stack-1x font-blue-ebonyclay" style="margin-top:-2px;margin-left:0px;"></i>
+    </span>
+  </button>
+  <h4 class="modal-title font-blue-ebonyclay"> <i class="fa fa-link"></i>&nbsp;&nbsp;Add Link </h4>
+</div>
+<div class="modal-body">
+  <form class="form-inline editableform" id="add-link-form">
+    <input type="hidden" id="action" value="add-link" />
+    <table class="table table-bordered table-striped">
+      <tbody>
+        <tr>
+          <td style="width:30%"> Link Name: </td>
+          <td style="width:70%"><a href="javascript:;" id="name" data-type="text" data-original-title="Link Name"></a></td>
+        </tr>
+        <tr>
+          <td style="width:30%"> Promoter: </td>
+          <td style="width:70%"><a href="javascript:;" id="promoter" data-type="select2" data-title="Select a promoter"></a></td>
+        </tr>
+        <tr>
+          <td style="width:30%"> Funnel: </td>
+          <td style="width:70%"><a href="javascript:;" id="funnel" data-type="select2" data-title="Select a funnel"></a></td>
+        </tr>
+        <tr>
+          <td style="width:30%"> Link Cost: </td>
+          <td style="width:70%"><a href="javascript:;" id="cost" data-type="text" data-original-title="Link Cost"></a></td>
+        </tr>
+        <tr>
+          <td style="width:30%"> Expected Return: </td>
+          <td style="width:70%"><a href="javascript:;" id="return" data-type="text" data-original-title="Expected Return"></a></td>
+        </tr>
+        <tr>
+          <td style="width:30%"> Start Date: </td>
+          <td style="width:70%"><a href="javascript:;" id="edit-start-date" data-type="datetime" data-original-title="Start Date"></a></td>
+        </tr>
+        <tr>
+          <td style="width:30%"> End Date: </td>
+          <td style="width:70%"><a href="javascript:;" id="edit-end-date" data-type="datetime" data-original-title="End Date"></a></td>
+        </tr>
+      </tbody>
+    </table>
+  </form>
+</div>
+<div class="modal-footer bg-grey-steel">
+  <button type="button" data-dismiss="modal" class="btn btn-default btn-outline dark border-blue-dark">
+    <i class="fa fa-times fa-lg" style="margin-top:-1px;"></i> Close
+  </button>
+  <button type="button" class="btn btn-default green bold border-blue-dark save-model">
+    <i class="fa fa-check fa-lg" style="margin-top:-1px;"></i> Save changes
+  </button>
+</div>

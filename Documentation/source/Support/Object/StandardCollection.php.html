@@ -1,0 +1,292 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * Singleton
+ *
+ * @package App\Objects
+ * @version 1.0.0
+ */
+namespace Framework\Support\Object;
+
+/**
+ * StandardCollection
+ *
+ *This is the standard collection object
+ * @todo Restricted object type
+ * @todo More efficent way to compare strings
+ * @todo More getters and setters
+ * @todo Magic methods to throw exceptions
+ */
+class StandardCollection implements \ArrayAccess
+{
+    /**
+     * Container for the collection of objects
+     * @access private
+     * @var null|array
+     */
+    private $collection;
+
+    /**
+     * Null or a pointer to the current object
+     * @access private
+     * @var null|resource
+     */
+    private $iteratorCurrent;
+
+    /**
+     * The current position  of the iterator
+     * @access private
+     * @var null|int
+     */
+    private $iteratorPosition;
+
+    /**
+     * The current count of objects in this collection
+     * @access private
+     * @var null|int
+     */
+    private $cbjectCount;
+
+    /**
+     * Add item to the standardCollection
+     * @method add
+     * @param   array|object $object this is the object we want to add to the collection
+     * @return  this;
+     * @access public
+     */
+    public function add($object)
+    {
+      foreach ($object as $key =&gt; $value) {
+        $this-&gt;collection[$key] = $value;
+        if (is_array($value)) {
+          $this-&gt;collection[$key] = (new StandardCollection())-&gt;add($value);
+        }
+        $this-&gt;incrementCount();
+      }
+      return $this;
+    }
+
+    /**
+     * Get the next item in the collection
+     * @method next
+     * @return resource $this-&gt;iteratorCurrent the current resource
+     * @access public
+     */
+    public function next()
+    {
+        $this-&gt;iteratorPosition = ((!$this-&gt;isLast()) ? $this-&gt;iteratorPosition++ : 0);
+        $this-&gt;setIteratorCurrent();
+        return $this-&gt;iteratorCurrent;
+    }
+
+    /**
+     * construct the StandardCollection
+     * @method __construct
+     * @return $this Return this for method chaining
+     * @access public
+     */
+    public function __construct()
+    {
+        $this-&gt;collection       = array();
+        $this-&gt;objectCount      = 0;
+        $this-&gt;iteratorPosition = $this-&gt;resetIterator();
+        return $this;
+    }
+
+    /**
+     * Destroy all the data contained in the StandardCollection
+     * @method __destruct
+     * @access public
+     */
+    public function __destruct()
+    {
+        foreach ($this-&gt;collection as $object) {$object = null;}
+        $this-&gt;collection       = null;
+        $this-&gt;objectCount      = null;
+        $this-&gt;iteratorPosition = null;
+    }
+
+    /**
+     * Check if that offset index exists in the collection
+     * @method offsetExists
+     * @param  boolean       $offset Does it exist
+     * @access
+     */
+    public function offsetExists($offset)
+    {
+        return isset($this-&gt;collection[$offset]);
+    }
+
+    /**
+     * offsetGet
+     *
+     * Get the item stored in the requested position or throw exception
+     *
+     * @param int|string
+     * @return resource
+     * @throws \Framework\Exceptional\UndefinedIndexException
+     * @access public
+     *
+     */
+    public function offsetGet($offset)
+    {
+        /** Check if the array index exists in the collection */
+        if (isset($this-&gt;collection[$offset])) {
+            /* we have something in the offset return it */
+            return $this-&gt;collection[$offset];
+        }
+        /**
+         * @var array store back trace position 0 to the bt var
+         * we use this get get the paramaters to throw an exception
+         */
+        $bt = debug_backtrace()[0];
+        /** Build the exception and throw it we are done */
+        throw new \Framework\Exceptional\UndefinedIndexException(
+            &quot;Undefined Index: $offset&quot;, 0, 1, $bt['file'], $bt['line'], null);
+    }
+
+    /**
+     * Set the object for a given index then reset the count
+     * @param int
+     * @param mixed
+     * @return void
+     * @access public
+     * @uses function Collection::setObjectCount()
+     */
+    public function offsetSet($offset, $value)
+    {
+        $this-&gt;collection[$offset] = $value;
+        $this-&gt;setObjectCount(count($this-&gt;collection));
+    }
+
+    /**
+     * Unset something in the collection reindex the
+     * collection then reset the count to the new amount
+     * @param int
+     * @return void
+     * @access public
+     * @uses function Collection::setObjectCount()
+     */
+    public function offsetUnset($offset)
+    {
+        unset($this-&gt;Collection[$offset]);
+        $this-&gt;collection = array_values($this-&gt;collection);
+        $this-&gt;setObjectCount(count($this-&gt;collection));
+    }
+
+    /**
+     * Subtract one from the count of objects in the collection
+     * @return void
+     * @access private
+     */
+    private function decrementCount()
+    {
+        $this-&gt;objectCount--;
+    }
+
+    /**
+     * Add one from the count of objects in the collection
+     * @return void
+     * @access private
+     */
+    private function incrementCount()
+    {
+        $this-&gt;objectCount++;
+    }
+
+    /**
+     * This checks if the iterator is at the last element in  the collection
+     * @return true|false
+     * @access private
+     */
+    private function isLast()
+    {
+        return ((($this-&gt;objectCount - 1) == $this-&gt;iteratorPosition) ? true : false);
+    }
+
+    /**
+     * Resets the IteratorPosition back to 0
+     * @return void
+     * @access private
+     */
+    private function resetIterator()
+    {
+        $this-&gt;iteratorPosition = 0;
+    }
+
+    /**
+     * SetThe Iterator current as a reference the current selected obect
+     * @return void
+     * @access private
+     */
+    private function setIteratorCurrent()
+    {
+        $this-&gt;iteratorCurrent &amp;= $this-&gt;collection[$this-&gt;iteratorPosition];
+    }
+
+    /**
+     * Set the current position of the iterator
+     * @param int $IteratorPosition The position we want to set
+     * @return void
+     * @access private
+     */
+    private function setIteratorPosition(int $iteratorPosition)
+    {
+        $this-&gt;iteratorPosition = $iteratorPosition;
+    }
+
+    /**
+     * Sets the count of objects in this collection
+     * @param int $Count new count we are setting
+     * @return void
+     * @access private
+     */
+    private function setObjectCount(int $count)
+    {
+        $this-&gt;objectCount = $count;
+    }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

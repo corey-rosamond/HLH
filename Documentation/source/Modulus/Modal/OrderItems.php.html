@@ -1,0 +1,91 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+
+namespace Framework\Modulus\Modal;
+
+
+class OrderItems extends \Framework\Modulus\Query
+{
+
+
+  public function addToOrder($order, $product, $name, $price, $cost, $digital, $status )
+  {
+    $query = &quot;INSERT INTO `funnel-order-items`
+      (`order-key`,`product-key`,`name`,`price`,`cost`,`is-digital`,`status`) VALUES
+      (:order,:product,:name,:price,:cost,:digital,:status)&quot;;
+      $preparedStatement = $this-&gt;Prepare($query);
+      $preparedStatement-&gt;bindValue(':order',   $order,   \PDO::PARAM_INT);
+      $preparedStatement-&gt;bindValue(':product', $product, \PDO::PARAM_INT);
+      $preparedStatement-&gt;bindValue(':name',    $name,    \PDO::PARAM_INT);
+      $preparedStatement-&gt;bindValue(':price',   $price,   \PDO::PARAM_INT);
+      $preparedStatement-&gt;bindValue(':cost',    $cost,    \PDO::PARAM_INT);
+      $preparedStatement-&gt;bindValue(':digital', $digital, \PDO::PARAM_INT);
+      $preparedStatement-&gt;bindValue(':status',  $status,  \PDO::PARAM_INT);
+      return $this-&gt;Execute( $preparedStatement );
+  }
+
+  public function setStatus($key, $status)
+  {
+    $query = &quot;UPDATE `funnel-order-items` SET `status`=:status WHERE `key`=:key&quot;;
+    $preparedStatement = $this-&gt;Prepare($query);
+    $preparedStatement-&gt;bindValue(':status',  $status,  \PDO::PARAM_INT);
+    $preparedStatement-&gt;bindValue(':key',     $key,     \PDO::PARAM_INT);
+    return $this-&gt;Execute( $preparedStatement );
+  }
+
+  public function getOrderItems( $order )
+  {
+    $query = 'SELECT * FROM `funnel-order-items` WHERE `order-key`=:order';
+    $preparedStatement = $this-&gt;Prepare($query);
+    $preparedStatement-&gt;bindValue(':order', $order, \PDO::PARAM_INT);
+    $preparedStatement = $this-&gt;Execute( $preparedStatement );
+		if( $preparedStatement-&gt;rowCount() &lt;= 0 ){
+      return [];
+    }
+    return $preparedStatement-&gt;fetchAll(\PDO::FETCH_ASSOC);
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,324 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * Dashboard
+ *
+ * @package App\Event\Page\Main
+ * @version 1.0.0
+ */
+namespace App\Event\Page\CustomerRelations\Orders;
+
+/**
+ * Main Dashboard
+ *
+ * The main dashboard is the v1 dashboard that everyone will
+ * get to see more dashboards will come after that
+ */
+\Framework\_IncludeCorrect( APP_ROOT . &quot;Abstracts&quot; . DSEP . &quot;FunnelPage.php&quot; );
+class OrderList extends \App\Abstracts\Page
+{
+  /**
+   * Does this page require that the user be logged in
+   * @var     boolean     $requireLogin
+   * @access  protected
+   */
+  public static $requiresLogin = true;
+
+  /**
+   * Permission group required to view this page or false if none
+   * @var     mixed     $permissionGroup  FALSE if none
+   * @access  protected
+   */
+  public static $permissionGroup = false;
+
+  /**
+   * Permission required in the group defined above required to view this page
+   * @var     mixed     $permission   FALSE if none
+   * @access  protected
+   */
+  public static $permission = false;
+
+  /**
+   * These are the modals this page will use. Nothing needs to be done
+   * Beyond this to get them the framework will just do it for you
+   * @var     array       $modal
+   * @access  protected
+   */
+  protected $modal = [ 'Orders.Holylandhealth' =&gt; null ];
+
+  /**f
+   * Templates are a snipet oh html that we break into parts then
+   * we transpose the data on top of the html and give it back
+   * @var     array       $modal
+   * @access  protected
+   */
+  protected $template = [];
+
+  /**
+   * Controllers are more function intensive they are in charge of controlling
+   * groups of methods that logicly belong together
+   * @var     array      $controller
+   * @access  protected
+   */
+  protected $controller = [];
+
+  /**
+   * Page Header
+   * @var     string      $pageHeader
+   * @access  protected
+   */
+  protected $pageHeader = &quot;Orders: &quot;;
+
+  /**
+   * Page Sub Header
+   * @var     string      $pageSubHeader
+   * @access  protected
+   */
+  protected $pageSubHeader = &quot;list&quot;;
+
+  /**
+   * This will build the body of the docment out the rest of the sections of the
+   * page will be handled by the Application\Page abstract or by the
+   * Advent\Page Abstract
+   * @method  body
+   * @param   array   $paramaters   This is an optional array of paramtars that can be passed
+   * @return  string                The html needed to render the body for this page
+   * @access  public
+   */
+  public function Body( array $paramaters = array() )
+  {
+    /** Set the Document title for this Page Event */
+    $this-&gt;setDocumentTitle( 'Orders: list' );
+    $this-&gt;writeBody( $this-&gt;makePortlet() );
+    $this-&gt;addScript( 'CustomerRelations.Orders.js', self::application );
+  }
+
+  /**
+   * Make a select box for orders
+   * @method  orderStatusSelect
+   * @return  string  HTML to make the select box
+   * @access  private
+   */
+  private function orderStatusSelect()
+  {
+    return &quot;
+    &lt;select name=\&quot;order_status\&quot; class=\&quot;form-control form-filter input-sm\&quot;&gt;
+      &lt;option value=\&quot;\&quot;&gt;Select...&lt;/option&gt;
+      &lt;option value=\&quot;Created\&quot;&gt;Created&lt;/option&gt;
+      &lt;option value=\&quot;Captured\&quot;&gt;Captured&lt;/option&gt;
+      &lt;option value=\&quot;Canceled\&quot;&gt;Canceled&lt;/option&gt;
+      &lt;option value=\&quot;Authorized\&quot;&gt;Authorized&lt;/option&gt;
+      &lt;option value=\&quot;Auth Capture\&quot;&gt;Auth Capture&lt;/option&gt;
+      &lt;option value=\&quot;Approved\&quot;&gt;Approved&lt;/option&gt;
+      &lt;option value=\&quot;Fulfillment\&quot;&gt;Fulfillment&lt;/option&gt;
+      &lt;option value=\&quot;Complete\&quot;&gt;Complete&lt;/option&gt;
+    &lt;/select&gt;&quot;;
+  }
+
+  /**
+   * Make a butt with drop down to list all of the export types
+   * @method  exportFormats
+   * @return  string html string to make the button and drop down
+   * @access  private
+   */
+  private function exportFormats()
+  {
+    return &quot;
+    &lt;div class=\&quot;btn-group\&quot;&gt;
+      &lt;a class=\&quot;btn red btn-outline btn-circle\&quot; href=\&quot;javascript:;\&quot; data-toggle=\&quot;dropdown\&quot;&gt;
+        &lt;i class=\&quot;fa fa-share\&quot;&gt;&lt;/i&gt;
+        &lt;span class=\&quot;hidden-xs\&quot;&gt; Tools &lt;/span&gt;
+        &lt;i class=\&quot;fa fa-angle-down\&quot;&gt;&lt;/i&gt;
+      &lt;/a&gt;
+      &lt;ul class=\&quot;dropdown-menu pull-right\&quot;&gt;
+        &lt;li&gt;&lt;a href=\&quot;javascript:;\&quot;&gt; Export to Excel &lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=\&quot;javascript:;\&quot;&gt; Export to CSV &lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=\&quot;javascript:;\&quot;&gt; Export to XML &lt;/a&gt;&lt;/li&gt;
+        &lt;li class=\&quot;divider\&quot;&gt; &lt;/li&gt;
+        &lt;li&gt;&lt;a href=\&quot;javascript:;\&quot;&gt; Print Invoices &lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/div&gt;&quot;;
+  }
+
+  /**
+   * Make an actions button
+   * @method  actions
+   * @return  string  html content needed to make the button
+   * @access  private
+   */
+  private function actions()
+  {
+    return &quot;
+    &lt;div class=\&quot;actions\&quot;&gt;
+      &lt;div class=\&quot;btn-group btn-group-devided\&quot; data-toggle=\&quot;buttons\&quot;&gt;
+        &lt;label class=\&quot;btn btn-transparent green btn-outline btn-outline btn-circle btn-sm active\&quot;&gt;
+        &lt;input type=\&quot;radio\&quot; name=\&quot;options\&quot; class=\&quot;toggle\&quot; id=\&quot;option1\&quot;&gt;Actions&lt;/label&gt;
+        &lt;label class=\&quot;btn btn-transparent blue btn-outline btn-circle btn-sm\&quot;&gt;
+        &lt;input type=\&quot;radio\&quot; name=\&quot;options\&quot; class=\&quot;toggle\&quot; id=\&quot;option2\&quot;&gt;Settings&lt;/label&gt;
+      &lt;/div&gt;
+      {$this-&gt;exportFormats()}
+    &lt;/div&gt;&quot;;
+  }
+
+  /**
+   * Column Ordering section
+   * @method  columnOrdering
+   * @return  string of html to create this section
+   * @access  private
+   */
+  private function columnOrdering()
+  {
+    return &quot;
+    &lt;tr role=\&quot;row\&quot; class=\&quot;heading\&quot;&gt;
+      &lt;th width=\&quot;5%\&quot;&gt; Order&amp;nbsp &lt;/th&gt;
+      &lt;th width=\&quot;15%\&quot;&gt; Purchased&amp;nbsp;On &lt;/th&gt;
+      &lt;th width=\&quot;15%\&quot;&gt; First Name &lt;/th&gt;
+      &lt;th width=\&quot;15%\&quot;&gt; Last Name &lt;/th&gt;
+      &lt;th width=\&quot;10%\&quot;&gt; Amount &lt;/th&gt;
+      &lt;th width=\&quot;10%\&quot;&gt; Status &lt;/th&gt;
+      &lt;th width=\&quot;5%\&quot;&gt; Actions &lt;/th&gt;
+    &lt;/tr&gt;&quot;;
+  }
+
+  /**
+   * Search
+   * @method  Search
+   * @return  string of html to create this section
+   * @access  private
+   */
+  private function search()
+  {
+    return &quot;
+    &lt;div class=\&quot;margin-bottom-5\&quot;&gt;
+      &lt;button class=\&quot;btn btn-sm btn-success filter-submit margin-bottom\&quot;&gt;
+      &lt;i class=\&quot;fa fa-search\&quot;&gt;&lt;/i&gt; Search&lt;/button&gt;
+    &lt;/div&gt;
+    &lt;button class=\&quot;btn btn-sm btn-default filter-cancel\&quot;&gt;
+    &lt;i class=\&quot;fa fa-times\&quot;&gt;&lt;/i&gt; Reset&lt;/button&gt;&quot;;
+  }
+
+  /**
+   * Filter the results out by date
+   * @method  dateFilter
+   * @return  string of html to create this section
+   * @access  private
+   */
+  private function dateFilter()
+  {
+    return &quot;
+    &lt;div class=\&quot;input-group date date-picker margin-bottom-5\&quot; data-date-format=\&quot;dd-mm-yyyy\&quot;&gt;
+      &lt;input type=\&quot;text\&quot; class=\&quot;form-control form-filter input-sm\&quot; readonly name=\&quot;order_date_from\&quot; placeholder=\&quot;From\&quot;&gt;
+      &lt;span class=\&quot;input-group-btn\&quot;&gt;&lt;button class=\&quot;btn btn-sm default\&quot; type=\&quot;button\&quot;&gt;&lt;i class=\&quot;fa fa-calendar\&quot;&gt;&lt;/i&gt;&lt;/button&gt;&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;div class=\&quot;input-group date date-picker\&quot; data-date-format=\&quot;dd-mm-yyyy\&quot;&gt;
+      &lt;input type=\&quot;text\&quot; class=\&quot;form-control form-filter input-sm\&quot; readonly name=\&quot;order_date_to\&quot; placeholder=\&quot;To\&quot;&gt;
+      &lt;span class=\&quot;input-group-btn\&quot;&gt;&lt;button class=\&quot;btn btn-sm default\&quot; type=\&quot;button\&quot;&gt;&lt;i class=\&quot;fa fa-calendar\&quot;&gt;&lt;/i&gt;&lt;/button&gt;&lt;/span&gt;
+    &lt;/div&gt;&quot;;
+  }
+
+  /**
+   * Make the shell for the datatable
+   * @method  makeDatatable
+   * @return  string of html to create this section
+   * @access  private
+   */
+  private function makeDatatable()
+  {
+    return &quot;
+    &lt;table class=\&quot;table table-striped table-bordered table-hover\&quot; id=\&quot;datatable_orders\&quot;&gt;
+      &lt;thead&gt;
+        {$this-&gt;columnOrdering()}
+        &lt;tr role=\&quot;row\&quot; class=\&quot;filter\&quot;&gt;
+          &lt;td&gt;&lt;input type=\&quot;text\&quot; class=\&quot;form-control form-filter input-sm\&quot; name=\&quot;order_id\&quot;&gt; &lt;/td&gt;
+          &lt;td&gt;{$this-&gt;dateFilter()}&lt;/td&gt;
+          &lt;td&gt;&lt;input type=\&quot;text\&quot; class=\&quot;form-control form-filter input-sm\&quot; name=\&quot;first_name\&quot;&gt; &lt;/td&gt;
+          &lt;td&gt;&lt;input type=\&quot;text\&quot; class=\&quot;form-control form-filter input-sm\&quot; name=\&quot;last_name\&quot;&gt; &lt;/td&gt;
+          &lt;td&gt;&lt;input type=\&quot;text\&quot; class=\&quot;form-control form-filter input-sm\&quot; name=\&quot;amount\&quot;&gt; &lt;/td&gt;
+          &lt;td&gt;{$this-&gt;orderStatusSelect()}&lt;/td&gt;
+          &lt;td&gt;{$this-&gt;search()}&lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/thead&gt;
+      &lt;tbody&gt;&lt;/tbody&gt;
+    &lt;/table&gt;&quot;;
+  }
+
+  /**
+   * Make the title section of the datatable portlet
+   * @method  portletTitle
+   * @return  string of html to create this section
+   * @access  private
+   */
+  private function portletTitle()
+  {
+    return &quot;
+    &lt;div class=\&quot;portlet-title\&quot;&gt;
+      &lt;div class=\&quot;caption\&quot;&gt;
+        &lt;i class=\&quot;icon-settings font-green\&quot;&gt;&lt;/i&gt;
+        &lt;span class=\&quot;caption-subject font-green sbold uppercase\&quot;&gt; Order Listing &lt;/span&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;&quot;;
+  }
+
+  /**
+   * Make the outer shell for the datatable portlet
+   * @method  portlet
+   * @return  string of html to create this section
+   * @access  private
+   */
+  private function makePortlet()
+  {
+    return &quot;
+    &lt;div class=\&quot;portlet light portlet-fit portlet-datatable bordered\&quot;&gt;
+    {$this-&gt;portletTitle()}
+    &lt;div class=\&quot;portlet-body\&quot;&gt;
+      &lt;div class=\&quot;table-container\&quot;&gt;
+        &lt;div class=\&quot;table-actions-wrapper\&quot;&gt;&lt;span&gt;&lt;/span&gt;
+        &lt;/div&gt;{$this-&gt;makeDatatable()}
+      &lt;/div&gt;
+    &lt;/div&gt;&quot;;
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,781 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * Funnel
+ *
+ * @package Framework\Commander
+ * @version 1.2.0
+ */
+namespace Framework\Commander;
+
+/**
+ * Funnel
+ *
+ * This is the main funnel command object.
+ */
+class Funnel extends Commander
+{
+  /** THESE ARE THE MODES A FUNNEL CAN BE IN */
+  /** @const live Live mode */
+  const live = 0;
+  /** @const development Development Mode */
+  const development = 1;
+  /** @const maintance Maintance Mode */
+  const maintance = 2;
+  /** @const comingsoon Coming Soon Mode */
+  const comingsoon = 3;
+  /** @const outofstock Out of Stock Mode */
+  const outofstock = 4;
+  /** THESE CONSTANTS REPRESENT DIFFERENT PAGE TYPES */
+  /** @const vsl */
+  const vsl = 1;
+  /** @const checkout */
+  const checkout = 2;
+  /** @const checkout */
+  const upsell1 = 3;
+  /** @const upsell1 */
+  const upsell2 = 4;
+  /** @const upsell2 */
+  const upsell3 = 5;
+  /** @const upsell3 */
+  const upsell4 = 6;
+  /** @const upsell4 */
+  const upsell5 = 7;
+  /** @const upsell5 */
+  const antiSpamPolicy = 8;
+  /** @const antiSpamPolicy */
+  const contactUs = 9;
+  /** @const contactUs */
+  const disclaimer = 10;
+  /** @const privacyPolicy */
+  const privacyPolicy = 11;
+  /** @const refunds */
+  const refunds = 12;
+  /** @const termsAndConditions */
+  const termsAndConditions = 13;
+  /** @const thankYou */
+  const thankYou = 14;
+  /** @const download */
+  const download = 15;
+  /** @const downsell1 */
+  const downsell1 = 16;
+  /** @const downsell2 */
+  const downsell2 = 17;
+  /** @const downsell3 */
+  const downsell3 = 18;
+  /** @const downsell4 */
+  const downsell4 = 19;
+  /** @const downsell5 */
+  const downsell5 = 20;
+  /** @const advertorial */
+  const advertorial = 21;
+  /** @const error */
+  const error = 22;
+  /** @const notFound */
+  const notFound = 23;
+  /** @const tsl */
+  const tsl = 24;
+  /** @var \Framework\Commander\Tracking $_cTracking */
+  private $_cTracking;
+  /** @var \Framework\Commander\Services $_cServices */
+  private $_cServices;
+  /** @var \Framework\Commander\Products $_cProducts */
+  private $_cProducts;
+  /** @var \Framework\Commander\Email $_cEmail*/
+  private $_cEmail;
+  /** @var \Framework\Commander\EmailLog $_cEmailLog */
+  private $_cEmailLog;
+  /** @var \Framework\Commander\SmartStreets $_cSmartStreets */
+  private $_cSmartStreets;
+  /** @var \Framework\Commander\Customer $_cCustomer */
+  private $_cCustomer;
+  /** @var \Framework\Commander\Orders $_cOrders */
+  private $_cOrders;
+  /** @var \Framework\Modulus\Modal\Funnel $_mFunnel */
+  private $_mFunnel;
+  /** @var \Framework\Modulus\Modal\FunnelPage $_mPage */
+  private $_mFunnelPage;
+  /** @var \Framework\Modulus\Modal\EmailTemplates $_mTemplates */
+  private $_mEmailTemplates;
+  /** DATA */
+  private $_fData;
+  private $_fpData;
+  private $_fpProducts;
+  private $_dOrder;
+  /** PAGE DESTINATIONS BASED ON SUCCESS OR FAILURE */
+  private $_PageSuccessDestination;
+  private $_PageFailureDestination;
+  /** SESSION PREFIX FOR SYSTEM AND CONTROLLER */
+  protected $_sPrefix;
+  private $_cPrefix = 'funnel-data';
+  /** EMAIL TEMPLATES */
+  private $_templateSupportCustomer;
+  private $_templateSupportCompany;
+  private $_templateEmailReceipt;
+  /** SERVICE TOKENS */
+  private $_tSupportEmail;
+  private $_tOrderEmail;
+  private $_tAddressValidation;
+  private $_tPaymentProcessor;
+  /** LOG KEYS */
+  private $_ContactUsEmailLogKey;
+  private $_CustomReceiptEmailLogKey;
+  private $_oKey;
+  /** @var array $_funnelMap This is a map that represents the path each visitor can follow */
+  private $_funnelMap = [
+    0=&gt;self::vsl,
+    1=&gt;self::checkout,
+    2=&gt;self::upsell1,
+    3=&gt;self::downsell1,
+    4=&gt;self::upsell2,
+    5=&gt;self::downsell2,
+    6=&gt;self::upsell3,
+    7=&gt;self::downsell3,
+    8=&gt;self::upsell4,
+    9=&gt;self::downsell4,
+    10=&gt;self::upsell5,
+    11=&gt;self::downsell5,
+    12=&gt;self::thankYou
+  ];
+  /** @var array $_funnelPageNames */
+  private $_funnelPageNames = [
+    self::vsl =&gt; 'Video Sales Letter',
+    self::checkout =&gt; 'Checkout Page',
+    self::upsell1 =&gt; 'Upsell 1',
+    self::upsell2 =&gt; 'Upsell 2',
+    self::upsell3 =&gt; 'Upsell 3',
+    self::upsell4 =&gt; 'Upsell 4',
+    self::upsell5 =&gt; 'Upsell 5',
+    self::antiSpamPolicy =&gt; 'Anti Spam Policy',
+    self::contactUs =&gt; 'Contact Us',
+    self::disclaimer =&gt; 'Disclaimer',
+    self::privacyPolicy =&gt; 'Privacy Policy',
+    self::refunds =&gt; 'Refunds',
+    self::termsAndConditions =&gt; 'Terms and Conditions',
+    self::thankYou =&gt; 'Thank You page',
+    self::download =&gt; 'Download',
+    self::downsell1 =&gt; 'Downsell 1',
+    self::downsell2 =&gt; 'Downsell 2',
+    self::downsell3 =&gt; 'Downsell 3',
+    self::downsell4 =&gt; 'Downsell 4',
+    self::downsell5 =&gt; 'Downsell 5',
+    self::advertorial =&gt; 'Advertorial',
+    self::error =&gt; 'Error Page',
+    self::notFound =&gt; '404 Page not found',
+    self::tsl =&gt; 'Text Sales Letter'
+  ];
+
+  /**
+   * Construct the funnel object
+   * @method construct
+   * @return \Framework\Commander\Funnel
+   */
+  public static function construct()
+  {
+    /** @var \Framework\Commander\Funnel $instance */
+    $instance = self::getInstance();
+    /** @var \Framework\Core\Euri $_coreEuri */
+    $instance-&gt;_coreEuri = \Framework\Core\Euri::getInstance();
+    /** @var \Framework\Modulus\Modal\Funnel $_mFunnel */
+    $instance-&gt;_mFunnel = \Framework\Core\Receptionist::modal(&quot;Funnel&quot;, &quot;Holylandhealth&quot;, true);
+    /** @var \Framework\Modulus\Modal\FunnelPage $_mFunnelPage */
+    $instance-&gt;_mFunnelPage = \Framework\Core\Receptionist::modal(&quot;FunnelPage&quot;, &quot;Holylandhealth&quot;, true);
+    /** @var \Framework\Modulus\Modal\EmailTemplates _mEmailTemplates */
+    $instance-&gt;_mEmailTemplates = \Framework\Core\Receptionist::modal(&quot;EmailTemplates&quot;, &quot;Holylandhealth&quot;, true);
+    /** @var \Framework\Commander\Tracking $_cTracking */
+    $instance-&gt;_cTracking = \Framework\Core\Receptionist::controller(&quot;Tracking&quot;, true);
+    /** @var \Framework\Commander\Services $_cServices */
+    $instance-&gt;_cServices = \Framework\Core\Receptionist::controller(&quot;Services&quot;, true);
+    /** @var \Framework\Commander\Products $_cProducts */
+    $instance-&gt;_cProducts = \Framework\Core\Receptionist::controller(&quot;Products&quot;, true);
+    /** @var \Framework\Commander\Email $_cEmail */
+    $instance-&gt;_cEmail = \Framework\Core\Receptionist::controller(&quot;Email&quot;, true);
+    /** @var \Framework\Commander\EmailLog $_cEmailLog */
+    $instance-&gt;_cEmailLog = \Framework\Core\Receptionist::controller(&quot;EmailLog&quot;, true);
+    /** @var \Framework\Commander\SmartStreets $_cSmartStreets */
+    $instance-&gt;_cSmartStreets = \Framework\Core\Receptionist::controller(&quot;SmartStreets&quot;, true);
+    /** @var \Framework\Commander\Customer $_cCustomer */
+    $instance-&gt;_cCustomer = \Framework\Core\Receptionist::controller(&quot;Customer&quot;, true);
+    /** @var \Framework\Commander\Order $_cOrders */
+    $instance-&gt;_cOrders = \Framework\Core\Receptionist::controller(&quot;Orders&quot;, true);
+    /** @var string $_sPrefix */
+    $instance-&gt;_sPrefix = $instance-&gt;_coreEuri-&gt;server('host');
+    /** Check the session for any data we can load and save on the data base query */
+    $instance-&gt;_checkSession();
+    /** Return the confugred funnel object to the caller */
+    return $instance;
+  }
+
+  public function defaultNotFoundPage()
+  {
+    unset($this-&gt;_fpData);
+    $entry = $this-&gt;_mFunnelPage-&gt;getPageByType( $this-&gt;_fData['key'], self::vsl );
+    if($entry===false){
+      $entry = ['footer-content' =&gt; &quot;&amp;copy; HolylandHealth LLC &amp;at; 2015&quot;];
+    }
+    $this-&gt;_fpData = [
+      'key'           =&gt; 0,
+      'funnel-key'    =&gt; $this-&gt;_fData['key'],
+      'page-type-key' =&gt; self::notFound,
+      'name'          =&gt; 'Default 404 Page',
+      'header-content'=&gt; '404 Page not found',
+      'footer-content'=&gt; $entry['footer-content'],
+      'content'       =&gt; &quot;{\&quot;title\&quot;:\&quot;404: %s not found! \&quot;,\&quot;content\&quot;:\&quot;Ooops It looks like the requested page (%s) does not exist!\&quot;}&quot;,
+      'title'         =&gt; '404 Page not found!'
+    ];
+  }
+
+  public function defaultErrorPage()
+  {
+    $entry = $this-&gt;_mFunnelPage-&gt;getPageByType( $this-&gt;_fData['key'], self::vsl );
+    if($entry===false){
+      $entry = ['footer-content' =&gt; &quot;&amp;copy; HolylandHealth LLC &amp;at; 2015&quot;];
+    }
+    unset($this-&gt;_fpData);
+    $this-&gt;_fpData = [
+      'key'           =&gt; 0,
+      'funnel-key'    =&gt; $this-&gt;_fData['key'],
+      'page-type-key' =&gt; self::error,
+      'name'          =&gt; 'Default Error Page',
+      'header-content'=&gt; 'Opps Our system has encountered an error!',
+      'footer-content'=&gt; $entry['footer-content'],
+      'content'       =&gt; &quot;{\&quot;title\&quot;:\&quot;Error\&quot;,\&quot;content\&quot;:\&quot;Our System has encountered an error. Our staff has been notified and will work to resolve the problem in a timely fashion!\&quot;}&quot;,
+      'title'         =&gt; 'Error!'
+    ];
+  }
+
+  /**
+   * Use the Host to get the current funnel key
+   * @method
+   * @param $host
+   * @return boolean
+   */
+  public function findFunnelKey( $host )
+  { return $this-&gt;_mFunnel-&gt;findFunnelKey(&quot;https://{$host}&quot;); }
+
+  public function load($key)
+  {
+    if(!is_null($this-&gt;_fData)&amp;&amp;intval($this-&gt;_fData['key'])==intval($key)){
+      return $this-&gt;_fData;
+    }
+    $this-&gt;_fData = $this-&gt;_mFunnel-&gt;get($key);
+    $this-&gt;_fData['tokens'] = json_decode($this-&gt;_fData['tokens'],true);
+    $_SESSION[$this-&gt;_sPrefix][$this-&gt;_cPrefix]['fData'] = $this-&gt;_fData;
+    return $this-&gt;_fData;
+  }
+
+  private function _checkSession()
+  {
+    if(isset($_SESSION[$this-&gt;_sPrefix][$this-&gt;_cPrefix]['fData'])){
+      $this-&gt;_fData = $_SESSION[$this-&gt;_sPrefix][$this-&gt;_cPrefix]['fData'];
+      if(isset($_SESSION[$this-&gt;_sPrefix][$this-&gt;_cPrefix]['ContactUsEmailLogKey'])){
+        $this-&gt;_ContactUsEmailLogKey = $_SESSION[$this-&gt;_sPrefix][$this-&gt;_cPrefix]['ContactUsEmailLogKey'];
+      }
+      if(isset($_SESSION[$this-&gt;_sPrefix][$this-&gt;_cPrefix]['CustomRecieptEmailLogKey'])){
+        $this-&gt;_CustomReceiptEmailLogKey = $_SESSION[$this-&gt;_sPrefix][$this-&gt;_cPrefix]['CustomRecieptEmailLogKey'];
+      }
+      if(isset($_SESSION[$this-&gt;_sPrefix][$this-&gt;_cPrefix]['oKey'])){
+        $this-&gt;_oKey = $_SESSION[$this-&gt;_sPrefix][$this-&gt;_cPrefix]['oKey'];
+        $this-&gt;_dOrder = $this-&gt;_cOrders-&gt;loadOrder( $this-&gt;_oKey );
+      }
+    }
+    return false;
+  }
+
+  private function _configurePage()
+  {
+    if(isset($this-&gt;_fpData['configuration'])&amp;&amp;!is_array($this-&gt;_fpData['configuration'])){
+      $this-&gt;_fpData['configuration'] = json_decode($this-&gt;_fpData['configuration'],true);
+    }
+    return $this-&gt;_fpData;
+  }
+
+  private function _prepSession()
+  {
+    if(!isset($_SESSION[$this-&gt;_sPrefix])){
+      $_SESSION[$this-&gt;_sPrefix] = [];
+    }
+    if(!isset($_SESSION[$this-&gt;_sPrefix][$this-&gt;_cPrefix])){
+      $_SESSION[$this-&gt;_sPrefix][$this-&gt;_cPrefix] = [];
+    }
+  }
+
+  public function getProducts($products)
+  {
+    $this-&gt;_fpProducts = $products;
+    foreach( $this-&gt;_fpProducts as $key =&gt; &amp;$data ){
+      $this-&gt;_fpProducts[$key] = $this-&gt;_cProducts-&gt;getProduct( $key );
+    }
+    return $this-&gt;_fpProducts;
+  }
+
+  public function getCustomer($email)
+  {
+    $customer = $this-&gt;_cCustomer-&gt;emailLookup($email);
+    if(!$customer){
+      $customer = $this-&gt;_cCustomer-&gt;createCustomer($email, $this-&gt;_fData['key']);
+    }
+    return $customer;
+  }
+
+  public function customer( $customer = false )
+  {
+    if($customer === false){
+      if(!isset($this-&gt;_dOrder['customer-key'])){
+        $this-&gt;_dOrder = $this-&gt;order();
+      }
+      $customer = $this-&gt;_dOrder['customer-key'];
+    }
+    return $this-&gt;_cCustomer-&gt;get( $customer );
+  }
+
+  public function order()
+  { return $this-&gt;_cOrders-&gt;order(); }
+
+  public function orderItems()
+  { return $this-&gt;_cOrders-&gt;orderItems(); }
+
+  public function billingAddress()
+  { return $this-&gt;_cOrders-&gt;billingAddress(); }
+
+  public function shippingAddress()
+  { return $this-&gt;_cOrders-&gt;shippingAddress(); }
+
+  public function loadOrder()
+  {
+    if(is_null($this-&gt;_oKey)){
+      return false;
+    }
+    return true;
+  }
+
+  public function makeOrder($customerKey, $firstName, $lastName, $phoneNumber, $billingAddress, $shippingAddress, $isTest=false)
+  {
+    $this-&gt;_oKey = $this-&gt;_cOrders-&gt;makeOrder(
+      $customerKey,
+      $firstName,
+      $lastName,
+      $phoneNumber,
+      $this-&gt;_cTracking-&gt;sessionKey(),
+      $this-&gt;_fData['key'],
+      $this-&gt;_cTracking-&gt;campaignKey(),
+      $billingAddress,
+      $shippingAddress,
+      $isTest
+    );
+    $_SESSION[$this-&gt;_sPrefix][$this-&gt;_cPrefix]['oKey'] = $this-&gt;_oKey;
+    return true;
+  }
+
+  public function processCart($products)
+  {
+    foreach($products as &amp;$product){
+      if(!$this-&gt;_cOrders-&gt;inOrderItems($product)){
+        $this-&gt;_cOrders-&gt;addProductToOrder($product);
+      }
+    }
+    $this-&gt;_tPaymentProcessor = $this-&gt;_cServices-&gt;get( $this-&gt;_fData['payment-processor'] );
+    $ccData = ['card-number'=&gt;$_POST['card-number'],'cvv'=&gt;$_POST['cvv'],'expiration-month'=&gt;$_POST['expiration-month'],'expiration-year'=&gt;$_POST['expiration-year']];
+    return $this-&gt;_cOrders-&gt;reconcileOrder($this-&gt;_tPaymentProcessor, $ccData, $this-&gt;_sPrefix);
+  }
+
+  public function processCartAdditions($products)
+  {
+    foreach($products as &amp;$product){
+      if(!$this-&gt;_cOrders-&gt;inOrderItems($product)){ $this-&gt;_cOrders-&gt;addProductToOrder($product); }
+    }
+    $this-&gt;_tPaymentProcessor = $this-&gt;_cServices-&gt;get( $this-&gt;_fData['payment-processor'] );
+    return $this-&gt;_cOrders-&gt;reconcileOrderAdditions( $this-&gt;_tPaymentProcessor, $this-&gt;_sPrefix );
+  }
+
+  public function closeoutOrder()
+  {
+    $order = $this-&gt;order();
+    $this-&gt;_cOrders-&gt;_setOrderTotals($order['key']);
+    $this-&gt;_cOrders-&gt;markOrderCompleted($order['key']);
+    $this-&gt;_cCustomer-&gt;updateCustomerValue($order['customer-key']);
+    $this-&gt;sendEmailReceipt();
+    return true;
+  }
+
+  public function orderBalance()
+  {
+    $orderItems = $this-&gt;orderItems();
+    $balance = 0;
+    foreach($orderItems as &amp;$item){
+      if( $item['status'] == \Framework\Commander\OrderItems::added ){
+        $balance += $item['price'];
+      }
+    }
+    return $balance;
+  }
+
+  public function sendEmailReceipt()
+  {
+    if(is_null($this-&gt;_tOrderEmail)){
+      $this-&gt;_tOrderEmail = $this-&gt;_cServices-&gt;get( $this-&gt;_fData['order-email'] );
+    }
+    if(is_null($this-&gt;_templateEmailReceipt)){
+      $this-&gt;_templateEmailReceipt = $this-&gt;_mEmailTemplates-&gt;get( $this-&gt;_fData['order-receipt-email-template'] );
+    }
+    $customer   = $this-&gt;customer();
+    $order      = $this-&gt;order();
+    $billing    = $this-&gt;_cOrders-&gt;billingAddress();
+    $shipping   = $this-&gt;_cOrders-&gt;shippingAddress();
+    $items      = $this-&gt;orderItems();
+    $orderTable = '&lt;table cellspacing=&quot;0&quot; cellpadding=&quot;10&quot; style=&quot;width:580px;&quot;&gt;';
+    $orderTotal = 0;
+    foreach ($items as $item){
+      if($item['status']==\Framework\Commander\OrderItems::reconciled){
+        $orderTable .= '&lt;tr&gt;';
+          $orderTable .= '&lt;td style=&quot;text-align:center;width:50px;font-size:14px;&quot;&gt;1&lt;/td&gt;';
+          $orderTable .= '&lt;td style=&quot;font-size:14px;text-align:left;&quot;&gt;' . $item['name'] . '&lt;/td&gt;';
+          $orderTable .= '&lt;td style=&quot;width:100px;font-size:14px;text-align:right;&quot;&gt;$' . number_format ($item['price'], 2) . '&lt;/td&gt;';
+        $orderTable .= '&lt;/tr&gt;';
+        $orderTotal += $item['price'];
+      }
+    }
+    $orderTable .= '&lt;/table&gt;';
+    $tokens = [
+      '{site-name}'           =&gt; $this-&gt;_fData['tokens']['{site-name}'],
+      '{support-email}'       =&gt; $this-&gt;_fData['tokens']['{support-email}'],
+      '{support-number}'      =&gt; $this-&gt;_fData['tokens']['{support-phone}'],
+      '{order-number}'        =&gt; sprintf('#%08d',$order['key']),
+      '{order-date}'          =&gt; date(&quot;l jS \of F Y h:i:s A&quot;,strtotime($this-&gt;_dOrder['order-date'])),
+      '{shipping-information}'=&gt; &quot;{$shipping['name']}&lt;br /&gt;{$shipping['address-line-one']}&lt;br /&gt;{$shipping['address-line-two']}&lt;br /&gt;{$shipping['city']} {$shipping['state']}, {$shipping['zip']}&quot;,
+      '{billing-information}' =&gt; &quot;{$billing['name']}&lt;br /&gt;{$billing['address-line-one']}&lt;br /&gt;{$billing['address-line-two']}&lt;br /&gt;{$billing['city']} {$billing['state']}, {$billing['zip']}&quot;,
+      '{order-table}'         =&gt; $orderTable,
+      '{subtotal}'            =&gt; number_format( $orderTotal, 2 ),
+      '{order-total}'         =&gt; number_format( $orderTotal, 2 ),
+      '{shipping}'            =&gt; '0.00',
+      '{tax}'                 =&gt; '0.00'
+    ];
+    $emailReceipt = $this-&gt;_cEmail-&gt;emailHandle( $this-&gt;_tOrderEmail );
+    $emailReceipt-&gt;to($customer['email-address']);
+    $emailReceipt-&gt;from(array($this-&gt;_tOrderEmail-&gt;username() =&gt; $this-&gt;_tOrderEmail-&gt;name()));
+    $emailReceipt-&gt;subject($this-&gt;_templateEmailReceipt['subject'], $tokens);
+    $emailReceipt-&gt;body($this-&gt;_templateEmailReceipt['message'], $tokens);
+    $emailReceipt-&gt;send();
+    $this-&gt;_CustomReceiptEmailLogKey = $this-&gt;_cEmailLog-&gt;logSend(
+      $emailReceipt-&gt;getTo(),
+      $emailReceipt-&gt;getFrom(),
+      $emailReceipt-&gt;getSubject(),
+      $emailReceipt-&gt;getBody(),
+      $this-&gt;_fData['key'],
+      $customer['key'],
+      $order['key'],
+      0,
+      $this-&gt;_cTracking-&gt;sessionKey()
+    );
+    $this-&gt;_CustomReceiptEmailLogKey;
+    $_SESSION[$this-&gt;_sPrefix][$this-&gt;_cPrefix]['CustomRecieptEmailLogKey'] = $this-&gt;_CustomReceiptEmailLogKey;
+    return $this-&gt;_CustomReceiptEmailLogKey;
+  }
+
+  public function customerSupportSent()
+  { return ((isset($_SESSION[$this-&gt;_sPrefix][$this-&gt;_cPrefix]['ContactUsEmailLogKey']))?true:false); }
+
+  public function customerSupportLogKey()
+  { return $_SESSION[$this-&gt;_sPrefix][$this-&gt;_cPrefix]['ContactUsEmailLogKey']; }
+
+  public function sendSupportEmail($to, $tokens, $customer = 0, $order = 0)
+  {
+    if(is_null($this-&gt;_templateSupportCustomer)){
+      $this-&gt;_templateSupportCustomer = $this-&gt;_mEmailTemplates-&gt;get($this-&gt;_fData['support-email-template-customer']);
+    }
+    if(is_null($this-&gt;_templateSupportCompany)){
+      $this-&gt;_templateSupportCompany  = $this-&gt;_mEmailTemplates-&gt;get($this-&gt;_fData['support-email-template-company']);
+    }
+    if(is_null($this-&gt;_tSupportEmail)){
+      $this-&gt;_tSupportEmail = $this-&gt;_cServices-&gt;get($this-&gt;_fData['support-email']);
+    }
+    $tokens['{site-name}'] = $this-&gt;_fData['tokens']['{site-name}'];
+    $customerEmail  = $this-&gt;_cEmail-&gt;emailHandle($this-&gt;_tSupportEmail);
+    $companyEmail   = $this-&gt;_cEmail-&gt;emailHandle($this-&gt;_tSupportEmail);
+    $customerEmail-&gt;to($to);
+    $customerEmail-&gt;from(array($this-&gt;_tSupportEmail-&gt;username() =&gt; $this-&gt;_tSupportEmail-&gt;name()));
+    $customerEmail-&gt;subject($this-&gt;_templateSupportCustomer['subject'], $tokens);
+    $customerEmail-&gt;body($this-&gt;_templateSupportCustomer['message'], $tokens);
+    $customerEmail-&gt;send();
+    $this-&gt;_cEmailLog-&gt;logSend(
+      $customerEmail-&gt;getTo(),
+      $customerEmail-&gt;getFrom(),
+      $customerEmail-&gt;getSubject(),
+      $customerEmail-&gt;getBody(),
+      $this-&gt;_fData['key'],
+      $customer,
+      $order,
+      0,
+      $this-&gt;_cTracking-&gt;sessionKey()
+    );
+    $companyEmail-&gt;to($this-&gt;_tSupportEmail-&gt;username());
+    $companyEmail-&gt;from(array($this-&gt;_tSupportEmail-&gt;username()=&gt;$this-&gt;_tSupportEmail-&gt;name()));
+    $companyEmail-&gt;subject($this-&gt;_templateSupportCompany['subject'], $tokens);
+    $companyEmail-&gt;body($this-&gt;_templateSupportCompany['message'], $tokens);
+    $companyEmail-&gt;send();
+    $this-&gt;_ContactUsEmailLogKey = $this-&gt;_cEmailLog-&gt;logSend(
+      $companyEmail-&gt;getTo(),
+      $companyEmail-&gt;getFrom(),
+      $companyEmail-&gt;getSubject(),
+      $companyEmail-&gt;getBody(),
+      $this-&gt;_fData['key'],
+      $customer,
+      $order,
+      1,
+      $this-&gt;_cTracking-&gt;sessionKey()
+    );
+    $this-&gt;_prepSession();
+    $_SESSION[$this-&gt;_sPrefix][$this-&gt;_cPrefix]['ContactUsEmailLogKey'] = $this-&gt;_ContactUsEmailLogKey;
+    return $this-&gt;_ContactUsEmailLogKey;
+  }
+
+  /**
+   * Return a map of a the funnel path
+   * @method funnelMap
+   * @return array
+   */
+  public function funnelMap()
+  { return $this-&gt;_funnelMap; }
+
+
+  /** ADMINISTRATION METHODS FOR FUNNEL SYSTEM */
+
+  /**
+   * Build a funnel select form element
+   * @method buildFunnelSelect
+   * @param      $selected
+   * @param null $documentId
+   * @return string
+   */
+  public function buildFunnelSelect($selected, $documentId=null)
+  {
+    /** @var string $id */
+    $id = &quot;funnelKey&quot;;
+    /** Check if a different id was specified */
+    if(!is_null($documentId)){
+      /** @var string $id set id to the specified id */
+      $id = $documentId;
+    }
+    /** @var array $funnels */
+    $funnels = $this-&gt;_mFunnel-&gt;getFunnelKeyAndName();
+    /** @var string $select Build the select box into the select variable */
+    $select = &quot;&lt;select id=\&quot;{$id}\&quot; name=\&quot;{$id}\&quot;&gt;&quot;;
+    /** @var array $funnel */
+    foreach($funnels as $funnel){
+      $isSelected = (($selected==$funnel['key'])?' selected=selected':'');
+      /** add the option to the select */
+      $select .= &quot;&lt;option value=\&quot;{$funnel['key']}\&quot;{$isSelected}&gt;{$funnel['name']}&lt;/option&gt;&quot;;
+    }
+    /** return the select box */
+    return &quot;$select&lt;/select&gt;&quot;;
+  }
+
+  public function registerToken( $token, $value )
+  { $this-&gt;_fData['tokens'][$token] = $value; }
+
+  /****************************************************/
+  /*                   PAGE GETTERS                   */
+  /****************************************************/
+
+  /**
+   * Get and return the configured page using its name
+   * @method getRequestedPage
+   * @param string $name
+   * @return mixed
+   */
+  public function getRequestedPage($name)
+  {
+    $this-&gt;_fpData = $this-&gt;_mFunnelPage-&gt;getByName(strtolower($name['event']), $this-&gt;_fData['key']);
+    return $this-&gt;_configurePage();
+  }
+
+  /**
+   * Get and return the configured page using its type
+   * @method getPageByType
+   * @param integer $type
+   * @return mixed
+   */
+  public function getPageByType($type)
+  {
+    $this-&gt;_fpData = $this-&gt;_mFunnelPage-&gt;getPageByType( $this-&gt;_fData['key'], $type );
+    return $this-&gt;_configurePage();
+  }
+
+  /**
+   * Get and return the configured entry page
+   * @method getEntryPage
+   * @return mixed
+   */
+  public function getEntryPage()
+  {
+    $this-&gt;_fpData = $this-&gt;_mFunnelPage-&gt;getPageByType($this-&gt;_fData['key'], self::vsl);
+    return $this-&gt;_configurePage();
+  }
+
+  /**
+   * Get and return the configured not found page
+   * @method getNotFoundPage
+   * @return mixed
+   */
+  public function getNotFoundPage()
+  {
+    $this-&gt;_fpData = $this-&gt;_mFunnelPage-&gt;getPageByType($this-&gt;_fData['key'], self::notFound);
+    return $this-&gt;_configurePage();
+  }
+
+  /**
+   * Get and return the configured error page
+   * @method getErrorPage
+   * @return mixed
+   */
+  public function getErrorPage()
+  {
+    $this-&gt;_fpData = $this-&gt;_mFunnelPage-&gt;getPageByType($this-&gt;_fData['key'], self::error);
+    return $this-&gt;_configurePage();
+  }
+
+  /****************************************************/
+  /*               PAGE ATTRIBUTE GETTERS             */
+  /****************************************************/
+
+  /**
+   * Return the name of the page
+   * @method pageName
+   * @param $key
+   * @return mixed
+   */
+  public function getPageName($key)
+  { return $this-&gt;_funnelPageNames[$key]; }
+
+  /**
+   * Return the tokens for this page
+   * @method getTokens
+   * @return mixed
+   */
+  public function getTokens()
+  { return $this-&gt;_fData['tokens']; }
+
+  /**
+   * Return the configuration
+   * @method getConfiguration
+   * @return mixed
+   */
+  public function getConfiguration()
+  { return $this-&gt;_fpData['configuration']; }
+
+  /**
+   * Return content for this page
+   * @method getContent
+   * @return mixed
+   */
+  public function getContent()
+  { return $this-&gt;_fpData['content']; }
+
+  /**
+   * Return the header content
+   * @method getHeader
+   * @return mixed
+   */
+  public function getHeader()
+  { return $this-&gt;_fpData['header-content']; }
+
+  /**
+   * Return the footer content
+   * @method getFooter
+   * @return mixed
+   */
+  public function getFooter()
+  { return $this-&gt;_fData['footer']; }
+
+  /**
+   * Return the page title
+   * @method getTitle
+   * @return mixed
+   */
+  public function getTitle()
+  { return $this-&gt;_fpData['title']; }
+
+  /**
+   * Return asset location
+   * @method getAssetLocation
+   * @return mixed
+   */
+  public function getAssetDirectory()
+  { return $this-&gt;_fData['asset-directory']; }
+
+  /**
+   * Return google analytics
+   * @method getGoogleAnalytics
+   * @return mixed
+   */
+  public function getGoogleAnalytics()
+  { return $this-&gt;_fData['google-analytics']; }
+
+  /**
+   * Return fresh desk
+   * @method getFreshDesk
+   * @return mixed
+   */
+  public function getFreshDesk()
+  { return $this-&gt;_fData['fresh-desk']; }
+
+  /**
+   * Return the mode key this funnel is in
+   * @method mode
+   * @return mixed
+   */
+  public function getMode()
+  { return $this-&gt;_fData['mode']; }
+
+  /**
+   * Return the page type key
+   * @method pageType
+   * @return mixed
+   */
+  public function getPageType()
+  { return $this-&gt;_fpData['page-type-key']; }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

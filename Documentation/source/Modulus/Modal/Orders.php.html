@@ -1,0 +1,237 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * Orders
+ *
+ * @package Framework\Modulus\Orders
+ * @version 1.2.0
+ */
+namespace Framework\Modulus\Modal;
+
+/**
+ * Orders
+ *
+ * This should contain all queries against the order table
+ */
+class Orders extends \Framework\Modulus\Query
+{
+
+  /**
+   * Get a list all order records for a specific customer
+   * @method customerOrders
+   * @param $customerKey
+   * @return bool
+   * @throws \Framework\Exceptional\PDOdatabasesException
+   */
+  public function customerOrders($customerKey)
+  {
+    $query = &quot;SELECT * FROM `funnel-orders` WHERE `customer-key`=:customerKey&quot;;
+    $preparedStatement = $this-&gt;Prepare($query);
+    $preparedStatement-&gt;bindValue(':customerKey', $customerKey, \PDO::PARAM_INT);
+    $preparedStatement = $this-&gt;Execute( $preparedStatement );
+		if( $preparedStatement-&gt;rowCount() &lt;= 0 ){
+      return false;
+    }
+    return $preparedStatement-&gt;fetchAll(\PDO::FETCH_ASSOC);
+  }
+
+  /**
+   * Get everything in a specific order row
+   * @method get
+   * @param $key
+   * @return bool
+   * @throws \Framework\Exceptional\PDOdatabasesException
+   */
+  public function get($key)
+  {
+    $query = &quot;SELECT * FROM `funnel-orders` WHERE `key`=:key&quot;;
+    $preparedStatement = $this-&gt;Prepare($query);
+    $preparedStatement-&gt;bindValue(':key', $key, \PDO::PARAM_INT);
+    $preparedStatement = $this-&gt;Execute( $preparedStatement );
+		if( $preparedStatement-&gt;rowCount() &lt;= 0 ){
+      return false;
+    }
+    return $preparedStatement-&gt;fetch(\PDO::FETCH_ASSOC);
+  }
+
+  /**
+   * Make a new order
+   * @method makeOrder
+   * @param $customer
+   * @param $first
+   * @param $last
+   * @param $phone
+   * @param $session
+   * @param $funnel
+   * @param $campaign
+   * @param $status
+   * @param $billing
+   * @param $shipping
+   * @param $test
+   * @return bool
+   * @throws \Framework\Exceptional\PDOdatabasesException
+   */
+  public function makeOrder($customer, $first, $last, $phone, $session, $funnel, $campaign, $status, $billing, $shipping, $test)
+  {
+    $query = &quot;INSERT INTO `funnel-orders`
+      (`customer-key`,`first-name`,`last-name`,`phone-number`,`session-key`,`funnel-key`,`campaign-key`,`status`,`billing-address`,`shipping-address`,`is-test`) VALUES
+      (:customer,:first,:last,:phone,:session,:funnel,:campaign,:status,:billing,:shipping,:test)&quot;;
+    $preparedStatement = $this-&gt;Prepare($query);
+    $preparedStatement-&gt;bindValue(':customer',  $customer,  \PDO::PARAM_INT);
+    $preparedStatement-&gt;bindValue(':first',     $first,     \PDO::PARAM_STR);
+    $preparedStatement-&gt;bindValue(':last',      $last,      \PDO::PARAM_STR);
+    $preparedStatement-&gt;bindValue(':phone',     $phone,     \PDO::PARAM_STR);
+    $preparedStatement-&gt;bindValue(':session',   $session,   \PDO::PARAM_INT);
+    $preparedStatement-&gt;bindValue(':funnel',    $funnel,    \PDO::PARAM_INT);
+    $preparedStatement-&gt;bindValue(':campaign',  $campaign,  \PDO::PARAM_INT);
+    $preparedStatement-&gt;bindValue(':status',    $status,    \PDO::PARAM_STR);
+    $preparedStatement-&gt;bindValue(':billing',   $billing,   \PDO::PARAM_INT);
+    $preparedStatement-&gt;bindValue(':shipping',  $shipping,  \PDO::PARAM_INT);
+    $preparedStatement-&gt;bindValue(':test',      $test,      \PDO::PARAM_INT);
+    $this-&gt;Execute( $preparedStatement );
+    return $this-&gt;get($this-&gt;LastInsertID());
+  }
+
+  /**
+   * Set the order status
+   * @method setOrderStatus
+   * @param $order
+   * @param $status
+   * @return mixed
+   * @throws \Framework\Exceptional\PDOdatabasesException
+   */
+  public function setOrderStatus( $order, $status )
+  {
+    $query = &quot;UPDATE `funnel-orders` SET `status`=:status WHERE `key`=:key&quot;;
+    $preparedStatement = $this-&gt;Prepare($query);
+    $preparedStatement-&gt;bindValue(':key',     $order,   \PDO::PARAM_INT);
+    $preparedStatement-&gt;bindValue(':status',  $status,  \PDO::PARAM_INT);
+    return $this-&gt;Execute( $preparedStatement );
+  }
+
+  /**
+   * Set order-total-before and order-total-after values for a specific order
+   * @method setTotals
+   * @param $key
+   * @param $before
+   * @param $after
+   * @throws \Framework\Exceptional\PDOdatabasesException
+   */
+  public function setTotals( $key, $before, $after )
+  {
+    $query = &quot;UPDATE `funnel-orders` SET `order-total-before`=:before, `order-total-after`=:after WHERE `key`=:key&quot;;
+    $preparedStatement = $this-&gt;Prepare( $query );
+    $preparedStatement-&gt;bindValue(':key',     $key,     \PDO::PARAM_INT);
+    $preparedStatement-&gt;bindValue(':before',  $before,  \PDO::PARAM_STR);
+    $preparedStatement-&gt;bindValue(':after',   $after,   \PDO::PARAM_STR);
+    $this-&gt;Execute( $preparedStatement );
+  }
+
+  /**
+   * Return all of the orders that are ready to go to fulfillment
+   * @method ordersReadyForFulfillment
+   * @return bool
+   * @throws \Framework\Exceptional\PDOdatabasesException
+   */
+  public function ordersReadyForFulfillment()
+  {
+    $query = &quot;select `key` from `funnel-orders` WHERE `order-date`&lt; DATE_SUB(NOW(),INTERVAL 1 DAY) AND`status` IN(:completed, :completedWithBalance) AND `is-test`=0&quot;;
+    $preparedStatement = $this-&gt;Prepare( $query );
+    $preparedStatement-&gt;bindValue(':completed', \Framework\Commander\Orders::completed, \PDO::PARAM_INT);
+    $preparedStatement-&gt;bindValue(':completedWithBalance', \Framework\Commander\Orders::completedWithBalance, \PDO::PARAM_INT);
+    $preparedStatement = $this-&gt;Execute($preparedStatement);
+    if ($preparedStatement-&gt;rowCount() &lt;= 0) {
+      return false;
+    }
+    return $preparedStatement-&gt;fetchAll(\PDO::FETCH_ASSOC);
+  }
+
+  /**
+   * Set the complemar transaction key so we can refer back to this order
+   * @method setComplemarTransactionKey
+   * @param $orderKey
+   * @param $transKey
+   * @return mixed
+   * @throws \Framework\Exceptional\PDOdatabasesException
+   */
+  public function setComplemarTransactionKey($orderKey, $transKey)
+  {
+    $query = &quot;UPDATE `funnel-orders` SET `fulfillment-key`=:transKey WHERE `key`=:key&quot;;
+    $preparedStatement = $this-&gt;Prepare($query);
+    $preparedStatement-&gt;bindValue(':transKey', $transKey, \PDO::PARAM_STR);
+    $preparedStatement-&gt;bindValue(':key', $orderKey, \PDO::PARAM_INT);
+    return $this-&gt;Execute( $preparedStatement );
+  }
+
+  // TEMPORARY
+
+  public function getOrdersWithStatusAndKey()
+  {
+    $query = &quot;select `key`, `status` from `funnel-orders` order by `key` desc&quot;;
+    $preparedStatement = $this-&gt;Prepare( $query );
+    $preparedStatement = $this-&gt;Execute($preparedStatement);
+    return $preparedStatement-&gt;fetchAll(\PDO::FETCH_ASSOC);
+  }
+
+  public function getMatureOrders(){
+    $query = &quot;SELECT `key` FROM `funnel-orders` WHERE `is-test`=0
+        AND `order-total-before`&gt;0 AND `order-date` &lt;
+        DATE_SUB(NOW(),INTERVAL 24 HOUR) AND `status`
+        IN('Created','Captured') limit 10&quot;;
+    $preparedStatement = $this-&gt;Prepare($query);
+    $preparedStatement = $this-&gt;Execute($preparedStatement);
+    if ($preparedStatement-&gt;rowCount() &lt;= 0) {return false;}
+    return $preparedStatement-&gt;fetchAll(\PDO::FETCH_ASSOC);
+  }
+
+  public function setOrderApproved($key){
+    $query = &quot;UPDATE `funnel-orders` set `status`='Approved' WHERE `key`=:key&quot;;
+    $preparedStatement = $this-&gt;Prepare($query);
+    $preparedStatement-&gt;bindValue(':key', $key, \PDO::PARAM_INT);
+    $preparedStatement = $this-&gt;Execute($preparedStatement);
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

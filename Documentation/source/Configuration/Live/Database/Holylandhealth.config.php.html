@@ -1,0 +1,100 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * Holylandhealth
+ *
+ * @package Framework\Modulus
+ * @version 1.0.0
+ */
+namespace Framework\Modulus;
+
+/**
+ * Holylandhealth
+ *
+ * This is the holylandhealth main database connection
+ * @todo  Remove other database connection objects and move their tables into this one
+ * @todo  once that is done change the current connection password and remove all other users
+ */
+class HolylandhealthConfig implements DBConfig
+{
+    /**
+     * host name
+     *
+     * @var string this is the database host
+     * @access public
+     */
+    public static $host = 'holylandhealth.ct7zhjvjzrqh.us-west-2.rds.amazonaws.com';
+
+    /**
+     * port
+     *
+     * @var int port number to connect on
+     * @access public
+     */
+    public static $port = 3306;
+
+    /**
+     * user
+     *
+     * @var string username to connect with
+     */
+    public static $user = 'holylandlive';
+
+    /**
+     * password
+     *
+     * @var string password required for connection
+     */
+    public static $password = 'rWv]8:c##k(P#W*h';
+
+    /**
+     * database
+     *
+     * @var string the database to connect to
+     */
+    public static $database = 'holylandhealth-live';
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

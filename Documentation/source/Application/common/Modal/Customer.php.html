@@ -1,0 +1,127 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * Customer
+ *
+ * @package Framework\Modulus\Modal
+ * @version 1.0.0
+ */
+namespace Framework\Modulus\Modal;
+
+/**
+ * Customer
+ *
+ * This is your main interface to the user table
+ */
+class Customer extends \Framework\Modulus\Query
+{
+
+  public function get( $key )
+  {
+    $Query = &quot;SELECT * FROM `funnel-customers` WHERE `key`=:Key&quot;;
+    $PreparedStatement = $this-&gt;Prepare( $Query );
+    $PreparedStatement-&gt;bindValue( ':Key', $key, \PDO::PARAM_STR );
+    $PreparedStatement = $this-&gt;Execute( $PreparedStatement );
+    if($PreparedStatement-&gt;rowCount() == 0){
+      return false;
+    }
+    return $PreparedStatement-&gt;fetch( \PDO::FETCH_ASSOC );
+  }
+
+
+  public function CustomerByEmail($EmailAddress)
+  {
+    $Query = &quot;SELECT * FROM `funnel-customers` WHERE `email-address`=:EmailAddress&quot;;
+    $PreparedStatement = $this-&gt;Prepare($Query);
+    $PreparedStatement-&gt;bindValue(':EmailAddress', $EmailAddress, \PDO::PARAM_STR);
+    $PreparedStatement = $this-&gt;Execute($PreparedStatement);
+    if($PreparedStatement-&gt;rowCount() == 0){
+      return false;
+    }
+    return $PreparedStatement-&gt;fetch(\PDO::FETCH_ASSOC);
+  }
+
+
+  public function CreateAndReturn( $EmailAddress, $ValueBeforeCost, $ValueAfterCost, $OriginSite, $OriginFunnel )
+  {
+    $Query = &quot;INSERT INTO `funnel-customers` ( `email-address`, `value-before-cost`, `value-after-cost`, `origin-site`, `origin-funnel` ) VALUES
+              ( :EmailAddress, :ValueBeforeCost, :ValueAfterCost, :OriginSite, :OriginFunnel )&quot;;
+    $PreparedStatement = $this-&gt;Prepare($Query);
+    $PreparedStatement-&gt;bindValue(':EmailAddress', $EmailAddress, \PDO::PARAM_STR);
+    $PreparedStatement-&gt;bindValue(':ValueBeforeCost', $ValueBeforeCost, \PDO::PARAM_STR);
+    $PreparedStatement-&gt;bindValue(':ValueAfterCost', $ValueAfterCost, \PDO::PARAM_STR);
+    $PreparedStatement-&gt;bindValue(':OriginSite', $OriginSite, \PDO::PARAM_INT);
+    $PreparedStatement-&gt;bindValue(':OriginFunnel', $OriginFunnel, \PDO::PARAM_INT);
+    $this-&gt;Execute( $PreparedStatement );
+    return $this-&gt;CustomerByKey( $this-&gt;LastInsertID() );
+  }
+
+  public function CustomerByKey($Key)
+  {
+    $Query = &quot;SELECT * FROM `funnel-customers` WHERE `key`=:Key&quot;;
+    $PreparedStatement = $this-&gt;Prepare( $Query );
+    $PreparedStatement-&gt;bindValue( ':Key', $Key, \PDO::PARAM_STR );
+    $PreparedStatement = $this-&gt;Execute( $PreparedStatement );
+    if($PreparedStatement-&gt;rowCount() == 0){
+      return false;
+    }
+    return $PreparedStatement-&gt;fetch( \PDO::FETCH_ASSOC );
+  }
+
+  public function getCustomerEmail( $key )
+  {
+    $Query = &quot;SELECT `funnel-customers` FROM `customer` WHERE `key`=:Key&quot;;
+    $PreparedStatement = $this-&gt;Prepare($Query);
+    $PreparedStatement-&gt;bindValue( ':Key', $key, \PDO::PARAM_STR );
+    $PreparedStatement = $this-&gt;Execute( $PreparedStatement );
+    if ($PreparedStatement-&gt;rowCount() == 0) {
+      return false;
+    }
+    $resource = $PreparedStatement-&gt;fetch( \PDO::FETCH_ASSOC );
+    return $resource['email-address'];
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

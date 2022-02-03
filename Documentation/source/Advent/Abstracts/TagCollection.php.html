@@ -1,0 +1,161 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * StyleSheet
+ *
+ * @package Framework\Advent\Abstracts
+ * @version 1.0.0
+ */
+namespace Framework\Advent\Abstracts;
+
+/**
+ * StyleSheet
+ *
+ * PHP Object to generage style sheets
+ */
+\Framework\_IncludeCorrect( FRAMEWORK_ROOT.&quot;Advent&quot;.DSEP.&quot;Interfaces&quot;.DSEP.&quot;TagCollection.php&quot; );
+
+class TagCollection extends implements \Framework\Advent\Interfaces\TagCollection{
+
+
+    protected $_elements;
+
+    protected $_count = 3;
+
+    public function __construct(array $elements = array())
+    {
+
+    }
+
+    public function __destruct()
+    {
+
+    }
+
+    public function add( $key, $value ){
+
+
+    }
+
+    public function remove($key, $reindex=false)
+    {
+      array_splice( $this-&gt;_$elements, $key);
+    }
+
+
+    public function keys($search=null, $strict=null)
+    {
+      return array_keys($this-&gt;_elements, $search, $strict);
+    }
+
+
+    public function count()
+    {
+      return $this-&gt;_count;
+    }
+
+
+
+    public function set($key, $value)
+    {
+
+
+    }
+
+    public function exists($sheet)
+    {
+
+
+    }
+
+
+    public function get($sheet)
+    {
+
+    }
+
+
+    public function offsetExists($offset)
+    {
+
+    }
+
+
+    public function getKeys()
+    {
+
+    }
+
+
+    public function offsetGet($offset)
+    {
+
+    }
+
+    public function offsetSet($offset, $value)
+    {
+
+    }
+
+
+    public function offsetUnset($offset)
+    {
+
+    }
+
+
+    public function count()
+    {
+
+    }
+
+
+    public function getIterator()
+    {
+
+    }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,346 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * ExceptionLog
+ *
+ * @package Framework\Commander
+ * @version 1.2.0
+ */
+namespace Framework\Commander;
+
+/**
+ * ExceptionLog
+ *
+ * Handles the logging of exceptions
+ */
+\Framework\_IncludeCorrect(FRAMEWORK_ROOT.&quot;Commander&quot;.DSEP.&quot;Commander.php&quot;);
+class ExceptionLog extends \Framework\Commander\Commander
+{
+  /****************************************************/
+  /*              REQUIRED CORE OBJECTS               */
+  /****************************************************/
+  /** @var \Framework\Core\Euri $_coreEuri */
+  private $_coreEuri;
+  /****************************************************/
+  /*                   CONTROLLERS                    */
+  /****************************************************/
+  /** @var \Framework\Commander\Tracking $_cTracking */
+  private $_cTracking;
+  /****************************************************/
+  /*                     MODALS                       */
+  /****************************************************/
+  /** @var \Framework\Modulus\Modal\ $_mException */
+  private $_mException;
+  /****************************************************/
+  /*                  DATA MEMBERS                    */
+  /****************************************************/
+  /** @var array _dModals */
+  private $_dModals = [
+    self::sTypeAdministration =&gt; 'AdministrationException',
+    self::sTypeFunnel =&gt; 'FunnelException',
+    self::sTypeSite =&gt; 'SiteException',
+    self::sTypeCron =&gt; 'CronException'
+  ];
+
+  /**
+   * Runs all the setup for the ExceptionLogger object
+   * @method construct
+   * @return \Framework\Commander\ExceptionLog
+   */
+  public static function construct()
+  {
+    /** @var \Framework\Commander\ExceptionLog $instance */
+    $instance = self::getInstance();
+    /** @var \Framework\Core\Euri _coreEuri */
+    $instance-&gt;_coreEuri = \Framework\Core\Euri::getInstance();
+    /** @var \Framework\Commander\Tracking $_cTracking */
+    $instance-&gt;_cTracking = \Framework\Core\Receptionist::controller('Tracking', true);
+    /** @var \Framework\Modulus\Modal\ $_mException */
+    $instance-&gt;_mException = \Framework\Core\Receptionist::modal($instance-&gt;_modal(), true);
+    /** Return the instance */
+    return $instance;
+  }
+
+  /**
+   * Log the exception
+   * @method log
+   * @param $exception
+   * @param $host
+   */
+  public function log($exception, $host)
+  {
+    /** Log the exception to the database */
+    $this-&gt;_toDatabase($exception, $host);
+    /** Log the exception to a file */
+    $this-&gt;_toFile($exception, $host);
+  }
+
+  /**
+   * Log the exception to the database
+   * @method _toDatabase
+   * @param $exception
+   * @param $host
+   * @todo add other system type base exception logs
+   */
+  private function _toDatabase($exception, $host)
+  {
+    switch($this-&gt;_coreEuri-&gt;systemType()){
+      case self::administration: $this-&gt;_administrationToDatabase($exception, $host); break;
+      case self::funnel: $this-&gt;_funnelToDatabase($exception, $host); break;
+    }
+  }
+
+  private function _administrationToDatabase($exception, $host)
+  {
+    /** @var mixed $previous */
+    $previous = $this-&gt;_getPrevious($exception);
+    /** Write the exception to ethe database */
+    $this-&gt;_mException-&gt;write(
+      $this-&gt;_getName($exception),
+      $this-&gt;_getMessage($exception),
+      $this-&gt;_getCode($exception),
+      0,
+      $this-&gt;_getFile($exception),
+      $this-&gt;_getLine($exception),
+      $this-&gt;_serialize($exception),
+      $previous,
+      $host
+    );
+  }
+
+  /**
+   * Log funnel exception to the database
+   * @method _funnelToDatabase
+   * @param $exception
+   * @param $host
+   */
+  private function _funnelToDatabase($exception, $host)
+  {
+    /** @var mixed $previous */
+    $previous = $this-&gt;_getPrevious($exception);
+    /** Write the exception to ethe database */
+    $this-&gt;_mException-&gt;write(
+      $this-&gt;_getName($exception),
+      $this-&gt;_getMessage($exception),
+      $this-&gt;_getCode($exception),
+      0,
+      $this-&gt;_getFile($exception),
+      $this-&gt;_getLine($exception),
+      $this-&gt;_serialize($exception),
+      $previous,
+      $this-&gt;_cTracking-&gt;sessionKey(),
+      $this-&gt;_cTracking-&gt;_ipAddress(),
+      $host
+    );
+  }
+
+  /**
+   * Log the exception to a flat file
+   * @method _toFile
+   * @param $exception
+   * @param $host
+   */
+  private function _toFile($exception, $host)
+  {
+    /** @var mixed $previousException get the value returned */
+    $previous = $this-&gt;_getPrevious($exception);
+    /** @var string $message Write the message to the error log */
+    $message = &quot;EXCEPTION NAME:{$this-&gt;_getName($exception)}\n
+      MESSAGE: {$this-&gt;_getMessage($exception)}\n
+      CODE: {$this-&gt;_getCode($exception)}\n
+      SEVERITY 0\n
+      FILE: {$this-&gt;_getFile($exception)}\n
+      LINE: {$this-&gt;_getLine($exception)}\n
+      STACKTRACE: {$this-&gt;_serialize($exception)}\n
+      PREVIOUS: {$previous}\n
+      SESSION KEY: {$this-&gt;_cTracking-&gt;sessionKey()}\n
+      IP ADDRESS: {$this-&gt;_cTracking-&gt;_ipAddress()}\n
+      HOST: {$host}\n&quot;;
+    error_log($message);
+  }
+
+  /**
+   * Get Exception name
+   * @method _getName
+   * @param $exception
+   * @return string
+   */
+  private function _getName($exception)
+  {
+    if(method_exists($exception,'getName')){
+      return $exception-&gt;getName();
+    }
+    return &quot;UnNamed&quot;;
+  }
+
+  /**
+   * Get Exception message
+   * @method _getMessage
+   * @param $exception
+   * @return string
+   */
+  private function _getMessage($exception)
+  {
+    if(method_exists($exception,'getMessage')){
+      return $exception-&gt;getName();
+    }
+    if(isset($exception['message'])){
+      return $exception['message'];
+    }
+    return 'No Message';
+  }
+
+  /**
+   * Get Exception Code
+   * @method _getCode
+   * @param $exception
+   * @return int
+   */
+  private function _getCode($exception)
+  {
+    if(method_exists($exception,'getCode')){
+      return $exception-&gt;getCode();
+    }
+    if(isset($exception['type'])){
+      return $exception['type'];
+    }
+    return 0;
+  }
+
+  /**
+   * Get Exception File
+   * @method _getFile
+   * @param $exception
+   * @return string
+   */
+  private function _getFile($exception)
+  {
+    if(method_exists($exception,'getFile')){
+      return $exception-&gt;getFile();
+    }
+    if(isset($exception['file'])){
+      return $exception['file'];
+    }
+    return 'undefinedFile';
+  }
+
+  /**
+   * Get Exception Line
+   * @method _getLine
+   * @param $exception
+   * @return int
+   */
+  private function _getLine($exception)
+  {
+    if(method_exists($exception,'getLine')){
+      return $exception-&gt;getLine();
+    }
+    if(isset($exception['line'])){
+      return $exception['line'];
+    }
+    return 0;
+  }
+
+  /**
+   * Compact the error into a simple form
+   * @method _serialize
+   * @param $exception
+   * @return mixed|null
+   */
+  private function _serialize($exception)
+  {
+    if(method_exists($exception,'serialize')){
+      return $exception-&gt;serialize();
+    }
+    if(is_array($exception)){
+      return print_r($exception,true);
+    }
+    return null;
+  }
+
+  /**
+   * Get the previous exception safely
+   * @method _getPrevious
+   * @param $exception
+   * @return mixed|null
+   */
+  private function _getPrevious($exception)
+  {
+    /** Check if this is null */
+    if(is_null($exception)){
+      /** Return null */
+      return null;
+    }
+    /** Check if this is an array */
+    if(is_array($exception)){
+      /** Return a print_r string of the array */
+      return print_r($exception,true);
+    }
+    /** CHeck if the getPrevious method exists */
+    if(method_exists($exception,'getPrevious')){
+      /** @var mixed $previous Get the previous exception */
+      $previous = $exception-&gt;getPrevious();
+      /** Check if previous is null */
+      if(is_null($previous)){
+        /** Return previous */
+        return $previous;
+      }
+      /** Return the output of serialize the exception will do the rest */
+      return $previous-&gt;serialize();
+    }
+    /** Not sure how this would happen */
+    return null;
+  }
+
+  /**
+   * Return the modal name
+   * @method _modal
+   * @return mixed
+   */
+  private function _modal()
+  { return $this-&gt;_dModals[$this-&gt;_coreEuri-&gt;systemType()]; }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

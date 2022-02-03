@@ -1,0 +1,386 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * CheckoutPage
+ *
+ * @package App\Page
+ * @version 1.2.0
+ */
+namespace App\Page;
+
+/**
+ * CheckoutPage
+ *
+ * The checkout page
+ */
+class CheckoutPage extends \App\Abstracts\FunnelPage
+{
+  const compTypeCheckoutTitle = 0;
+  const compTypeSupportMessage = 1;
+  const compTypeErrorBox = 2;
+  const compTypeCheckoutForm = 3;
+  const compTypeProductBox = 4;
+  const compTypeTotalsBox = 5;
+  const compTypeGuaranteeBox = 6;
+  const compTypeTrustBox = 7;
+  const compTypeTermsBox = 8;
+
+
+  /** @var int Include the pageType */
+  protected $_pageType = self::checkout;
+  /** @var boolean $_formHandler */
+  protected $_formHandler;
+  /** @var boolean $_sHideErrors */
+  protected $_sHideErrors = true;
+  /** @var boolean $_sPreQualify */
+  protected $_sPreQualify = false;
+
+  /**
+   * Builds the content area and calls all sub functions to build
+   * the ui specific to this page
+   * @method _content
+   * @param $data
+   * @return string|void
+   * @internal param $tokens
+   */
+  protected function _content($data)
+  {
+    /** Setup the form handler */
+    $this-&gt;_formHandler = \Framework\Core\Receptionist::controller(&quot;FunnelFormHandler&quot;,true);
+    /** Set the funnel prefix for the handler */
+    $this-&gt;_formHandler-&gt;setPrefix($this-&gt;_sPrefix);
+    /** Now just let it run */
+    return $this-&gt;_contentBox($this-&gt;_buildComponents($data['components']), &quot;funnel-content&quot;, null).$this-&gt;_productPopups().$this-&gt;_validation();
+  }
+
+
+  private function _buildComponents($components)
+  {
+    $content = null;
+    foreach($components as $component){
+      $content .= $this-&gt;_buildComponent($component);
+    }
+    return $content;
+  }
+
+  private function _buildComponent($component)
+  {
+    if(!$component['settings']['enabled']){
+      return null;
+    }
+    switch($component['type']){
+      case self::compTypeCheckoutTitle:
+        return $this-&gt;_checkoutTitle($component['settings'], $component['components']);
+        break;
+      case self::compTypeSupportMessage:
+        return $this-&gt;_supportMessage($component['settings'], $component['components']);
+        break;
+      case self::compTypeErrorBox:
+        return $this-&gt;_errorBox($component['settings'], $component['components']);
+        break;
+      case self::compTypeCheckoutForm:
+        return $this-&gt;_checkoutForm($component['settings'], $component['components']);
+        break;
+      case self::compTypeProductBox:
+        return $this-&gt;_productBox($component['settings'], $component['components']);
+        break;
+      case self::compTypeTotalsBox:
+        return $this-&gt;_totalsBox($component['settings'], $component['components']);
+        break;
+      case self::compTypeGuaranteeBox:
+        return $this-&gt;_guaranteeBox($component['settings'], $component['components']);
+        break;
+      case self::compTypeTrustBox:
+        return $this-&gt;_trustBox($component['settings'], $component['components']);
+        break;
+      case self::compTypeTermsBox:
+        return $this-&gt;_termsBox($component['settings'], $component['components']);
+        break;
+    }
+  }
+
+
+  private function _checkoutTitle($settings, $components)
+  {
+    return &quot;&lt;div id=\&quot;checkout-title\&quot;&gt;&quot;.
+      &quot;{$this-&gt;_icon($components['icon'], $settings['icon'])}&amp;nbsp;&quot;.
+      &quot;{$this-&gt;_text($components['text'], $settings['text'])}&quot;.
+    &quot;&lt;/div&gt;&quot;;
+  }
+
+  private function _supportMessage($settings, $components)
+  {
+    if($settings['icon-position']==0){
+      return &quot;&lt;div id=\&quot;support-message\&quot;&gt;&quot;.
+        &quot;{$this-&gt;_icon($components['icon'], $settings['icon'])}&amp;nbsp;&quot;.
+        &quot;{$this-&gt;_text($components['text'], $settings['text'])}&quot;.
+      &quot;&lt;/div&gt;&quot;;
+    }
+    return &quot;&lt;div id=\&quot;support-message\&quot;&gt;&quot;.
+      &quot;{$this-&gt;_text($components['text'], $settings['text'])}&amp;nbsp;&quot;.
+      &quot;{$this-&gt;_icon($components['icon'], $settings['icon'])}&quot;.
+    &quot;&lt;/div&gt;&quot;;
+  }
+
+  private function _errorBox($settings, $components)
+  {
+    $components['title']['text'] = &quot;&lt;span class=\&quot;count\&quot;&gt;0&lt;/span&gt;&amp;nbsp;&quot;.$components['title']['text'];
+    return &quot;&lt;div id=\&quot;funnel-checkout-errors\&quot; class=\&quot;checkout-box\&quot;&gt;&quot;.
+      &quot;{$this-&gt;_title($components['title'], $settings)}&quot;.
+      &quot;&lt;div class=\&quot;content\&quot;&gt;&lt;ul&gt;&lt;/ul&gt;&lt;/div&gt;&quot;.
+    &quot;&lt;/div&gt;&quot;;
+  }
+
+  private function _checkoutForm($settings, $components)
+  {
+    $title = null;
+    if($settings['title']){
+      $title = &quot;&lt;h3 class=\&quot;title\&quot;&gt;&quot;.
+        &quot;&lt;span class=\&quot;icon\&quot;&gt;{$this-&gt;_icon($components['title']['icon'], $settings['icon'])}&lt;/span&gt;&quot;.
+        &quot;&lt;span class=\&quot;title\&quot;&gt;{$this-&gt;_text($components['title']['text'], $settings['text'])}&lt;/span&gt;&quot;.
+      &quot;&lt;/h3&gt;&quot;;
+    }
+    return &quot;&lt;div id=\&quot;checkout-box\&quot; class=\&quot;checkout-box\&quot;&gt;&quot;.
+      &quot;{$title}&quot;.
+      &quot;&lt;div class=\&quot;content\&quot;&gt;&quot;.
+        $this-&gt;_formHandler-&gt;form($components['form'],$this-&gt;_data[self::dataProducts]).
+      &quot;&lt;/div&gt;&quot;.
+    &quot;&lt;/div&gt;&quot;;
+  }
+
+  private function _productBox($settings, $components)
+  {
+    $content = &quot;&quot;;
+    foreach($this-&gt;_data[self::dataProducts] as &amp;$product) {
+      $content .= &quot;&lt;div class=\&quot;funnel-product-image product-image-{$product['key']}\&quot; id=\&quot;image-{$product['key']}\&quot;&gt;&quot;.
+        &quot;&lt;img src=\&quot;{$product['image']}\&quot; alt=\&quot;{$product['name']}\&quot; /&gt;&quot;.
+      &quot;&lt;/div&gt;&quot;;
+    }
+    return &quot;&lt;div id=\&quot;product-box\&quot; class=\&quot;checkout-box\&quot;&gt;&quot;.
+      &quot;{$this-&gt;_title($components['title'], $settings)}&quot;.
+      &quot;&lt;div class=\&quot;content\&quot;&gt;{$content}&lt;/div&gt;&quot;.
+    &quot;&lt;/div&gt;&quot;;
+  }
+
+  private function _totalsBox($settings, $components)
+  {
+    $count = 0;
+    $total = 0;
+    $content = &quot;&lt;table cellspacing=\&quot;0\&quot; cellpadding=\&quot;0\&quot;&gt;&quot;;
+    foreach($this-&gt;_data[self::dataProducts] as &amp;$product){
+      $class = (($count%2)?'even':'odd');
+      $content .= &quot;&lt;tr class=\&quot;{$class}\&quot;&gt;&quot;;
+      $content .= &quot;&lt;td id=\&quot;product-name-{$product['key']}\&quot;&gt;{$product['name']}:&lt;/td&gt;&quot;;
+      $content .= &quot;&lt;td id=\&quot;product-price-{$product['key']}\&quot;&gt;$&quot;.number_format($product['price'],2).&quot;&lt;/td&gt;&quot;;
+      $total += $product['price'];
+      $content .= &quot;&lt;/tr&gt;&quot;;
+      $count++;
+    }
+    $class = (($count%2)?'even':'odd');
+    $content .= &quot;&lt;tr class=\&quot;{$class}\&quot;&gt;&quot;;
+    $content .= &quot;&lt;td id=\&quot;shipping-label\&quot;&gt;Shipping:&lt;/td&gt;&quot;;
+    $content .= &quot;&lt;td id=\&quot;shipping-value\&quot;&gt;&lt;span&gt;FREE&lt;/span&gt;&lt;/td&gt;&quot;;
+    $content .= &quot;&lt;/tr&gt;&quot;;
+    $count++;
+    $class = (($count%2)?'even':'odd');
+    $content .= &quot;&lt;tr class=\&quot;{$class}\&quot;&gt;&quot;;
+    $content .= &quot;&lt;td id=\&quot;salestax-label\&quot;&gt;Sales Tax:&lt;/td&gt;&quot;;
+    $content .= &quot;&lt;td id=\&quot;salestax-value\&quot;&gt;&lt;span&gt;$0.00&lt;/span&gt;&lt;/td&gt;&quot;;
+    $content .= &quot;&lt;/tr&gt;&quot;;
+    $count++;
+    $class = (($count%2)?'even':'odd');
+    $content .= &quot;&lt;tr class=\&quot;{$class}\&quot;&gt;&quot;;
+    $content .= &quot;&lt;td id=\&quot;total-label\&quot;&gt;Order Total:&lt;/td&gt;&quot;;
+    $content .= &quot;&lt;td id=\&quot;total-value\&quot;&gt;&lt;span&gt;$&quot;.number_format($total,2).&quot;&lt;/span&gt;&lt;/td&gt;&quot;;
+    $content .= &quot;&lt;/tr&gt;&lt;/table&gt;&quot;;
+    return &quot;&lt;div id=\&quot;totals-box\&quot; class=\&quot;checkout-box\&quot;&gt;&lt;h3 class=\&quot;title\&quot;&gt;&lt;/h3&gt;&quot;.
+      &quot;{$this-&gt;_title($components['title'], $settings)}&quot;.
+      &quot;&lt;div class=\&quot;content\&quot;&gt;{$content}&lt;/div&gt;&quot;.
+    &quot;&lt;/div&gt;&quot;;
+  }
+
+  private function _guaranteeBox($settings, $components)
+  {
+    $components['image']['src'] = $this-&gt;_data[self::dataAssetLocation].&quot;images/&quot;.$components['image']['src'];
+    return &quot;&lt;div id=\&quot;guarantee-box\&quot; class=\&quot;checkout-box\&quot;&gt;&quot;.
+      &quot;&lt;div class=\&quot;content\&quot;&gt;&quot;.
+        &quot;{$this-&gt;_image($components['image'])}&quot;.
+        &quot;{$components['content']}&quot;.
+      &quot;&lt;/div&gt;&quot;.
+    &quot;&lt;/div&gt;&quot;;
+  }
+
+  private function _trustBox($settings, $components)
+  {
+    $content = null;
+    $index = 0;
+    foreach($components['images'] as &amp;$image){
+      $image['src'] = $this-&gt;_data[self::dataAssetLocation].&quot;images/&quot;.$image['src'];
+      $content .= $this-&gt;_image($image, &quot;trust-{$index}&quot;);
+      $index++;
+    }
+    return &quot;&lt;div id=\&quot;trust-box\&quot; class=\&quot;checkout-box\&quot;&gt;&quot;.
+      &quot;{$this-&gt;_title($components['title'], $settings)}&quot;.
+      &quot;&lt;div class=\&quot;content\&quot;&gt;{$content}&lt;/div&gt;&quot;.
+    &quot;&lt;/div&gt;&quot;;
+  }
+
+  private function _termsBox($settings, $components)
+  {
+    return &quot;&lt;div id=\&quot;terms-box\&quot; class=\&quot;checkout-box\&quot;&gt;&quot;.
+      &quot;{$this-&gt;_title($components['title'], $settings)}&quot;.
+      &quot;&lt;div class=\&quot;content\&quot;&gt;{$components['content']}&lt;/div&gt;&quot;.
+    &quot;&lt;/div&gt;&quot;;
+  }
+
+  private function _title($configuration, $settings)
+  {
+    if(!isset($settings['close'])||!$settings['close']){
+      return &quot;&lt;h3 class=\&quot;title\&quot;&gt;&quot;.
+        &quot;&lt;span class=\&quot;icon\&quot;&gt;{$this-&gt;_icon($configuration['icon'], $settings['icon'])}&lt;/span&gt;&amp;nbsp;&quot;.
+        &quot;&lt;span class=\&quot;text\&quot;&gt;{$this-&gt;_text($configuration['text'], $settings['text'])}&lt;/span&gt;&quot;.
+      &quot;&lt;/h3&gt;&quot;;
+    }
+    return &quot;&lt;h3 class=\&quot;title\&quot;&gt;&quot;.
+      &quot;&lt;span class=\&quot;icon\&quot;&gt;{$this-&gt;_icon($configuration['icon'], $settings['icon'])}&lt;/span&gt;&amp;nbsp;&quot;.
+      &quot;&lt;span class=\&quot;title\&quot;&gt;{$this-&gt;_text($configuration['text'], $settings['text'])}&lt;/span&gt;&quot;.
+      &quot;&lt;span class=\&quot;close\&quot;&gt;{$this-&gt;_close($configuration['close'], $settings['close'])}&lt;/span&gt;&quot;.
+    &quot;&lt;/h3&gt;&quot;;
+  }
+
+  private function _productPopups()
+  {
+    $html = &quot;&quot;;
+    foreach( $this-&gt;_data[self::dataProducts] as &amp;$product ){
+      $html .= &quot;&lt;div class=\&quot;product-description-popup\&quot; id=\&quot;product-{$product['key']}\&quot;&gt;&quot;;
+      $html .= &quot;&lt;div class=\&quot;header\&quot;&gt;&quot;;
+      $html .= &quot;&lt;div class=\&quot;title\&quot;&gt;&lt;i class=\&quot;fa fa-info-circle\&quot;&gt;&lt;/i&gt; {$product['name']}&lt;/div&gt;&quot;;
+      $html .= &quot;&lt;div class=\&quot;close\&quot;&gt;&quot;;
+      $html .= &quot;&lt;span class=\&quot;fa-stack\&quot;&gt;&quot;;
+      $html .= &quot;&lt;i class=\&quot;fa fa-square fa-stack-2x\&quot;&gt;&lt;/i&gt;&quot;;
+      $html .= &quot;&lt;i class=\&quot;fa fa fa-times fa-stack-1x fa-inverse\&quot; style=\&quot;margin: -1px 0px 0px -1px;\&quot;&gt;&lt;/i&gt;&quot;;
+      $html .= &quot;&lt;/span&gt;&quot;;
+      $html .= &quot;&lt;/div&gt;&quot;;
+      $html .= &quot;&lt;/div&gt;&quot;;
+      $html .= &quot;&lt;div class=\&quot;content\&quot;&gt;&quot;;
+      $html .= &quot;&lt;img class=\&quot;image\&quot; src=\&quot;{$product['image']}\&quot; alt=\&quot;{$product['image']} Image\&quot; /&gt;&quot;;
+      $html .= &quot;&lt;span class=\&quot;product-description\&quot;&gt;{$product['description']}&lt;/span&gt;&quot;;
+      $html .= &quot;&lt;/div&gt;&quot;;
+      $html .= &quot;&lt;/div&gt;&quot;;
+    }
+    return $html;
+  }
+
+  private function _validation(){
+    return &quot;&lt;script type=\&quot;text/javascript\&quot;&gt;{$this-&gt;_formHandler-&gt;validation()}&lt;/script&gt;&quot;;
+  }
+
+
+
+  private function _checkoutBox($id)
+  {
+    return &quot;&lt;div {$this-&gt;_id($id)} {$this-&gt;_class('checkout-box')}&gt;&quot;.
+
+    &quot;&lt;/div&gt;&quot;;
+  }
+
+
+
+  private function _text($text, $setting)
+  {
+    if(!$setting){
+      return null;
+    }
+    return $text;
+  }
+
+  private function _icon($configuration, $setting)
+  {
+    if(!$setting){
+      return null;
+    }
+    $size = null;
+    if($configuration['size']!=0){
+
+    }
+    return &quot;&lt;i class=\&quot;{$configuration['type']}{$size}\&quot;&gt;&amp;nbsp;&lt;/i&gt;&quot;;
+  }
+
+  private function _close($content, $setting)
+  {
+    if(!$setting){
+      return null;
+    }
+    return &quot;{$content}&quot;;
+  }
+
+  private function _image($configuration, $class=null, $id=null)
+  {
+    return &quot;&lt;img
+      src=\&quot;{$configuration['src']}\&quot;
+      alt=\&quot;{$configuration['alt']}\&quot;
+      {$this-&gt;_id($id)}
+      {$this-&gt;_class($class)}
+     /&gt;&quot;;
+  }
+
+  private function _id($id)
+  {
+    if(is_null($id)){
+      return null;
+    }
+    return &quot; id=\&quot;{$id}\&quot;&quot;;
+  }
+
+  private function _class($class)
+  {
+    if(is_null($class)){
+      return null;
+    }
+    return &quot; class=\&quot;{$class}\&quot;&quot;;
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

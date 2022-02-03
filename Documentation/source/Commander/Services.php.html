@@ -1,0 +1,105 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+
+namespace Framework\Commander;
+
+\Framework\_IncludeCorrect(FRAMEWORK_ROOT.&quot;Objectify&quot;.DSEP.&quot;Service&quot;.DSEP.&quot;ServiceToken.php&quot;);
+class Services extends \Framework\Support\Abstracts\Singleton
+{
+  private $_mService;
+
+  /** TYPE CONSTANTS */
+  const email             = 0;
+  const paymentProcessor  = 1;
+  const fulfillment       = 2;
+  const addressValidation = 3;
+
+  /**
+   * @var array Service types
+   */
+  private $_types = [0 =&gt; 'Email', 1 =&gt; 'Payment', 2 =&gt; 'Fulfillment', 3 =&gt; 'Address Validation'];
+
+
+  public static function construct()
+  {
+    $instance = self::getInstance();
+    $instance-&gt;_mService = \Framework\Core\Receptionist::modal( &quot;Service&quot;, &quot;Holylandhealth&quot;, true );
+    return $instance;
+  }
+
+  public function get( $key )
+  {
+    $data = $this-&gt;_mService-&gt;get( $key );
+    $data['configuration'] = json_decode($data['configuration'],true);
+    return $this-&gt;_makeObject($data);
+  }
+
+  private function _makeObject($data)
+  {
+    switch($data['type']){
+      case self::email:
+        /** Email tokens **/
+        \Framework\_IncludeCorrect(FRAMEWORK_ROOT.&quot;Objectify&quot;.DSEP.&quot;Email&quot;.DSEP.&quot;EmailToken.php&quot;);
+        return new \Framework\Objectify\EmailToken($data['key'], $data['name'], $data['type'], $this-&gt;_types[$data['type']], $data['configuration']);
+      break;
+      case self::paymentProcessor:
+        /** Support payment tokens */
+        \Framework\_IncludeCorrect(FRAMEWORK_ROOT.&quot;Objectify&quot;.DSEP.&quot;PaymentProcessor&quot;.DSEP.&quot;PaymentProcessorToken.php&quot;);
+        return new \Framework\Objectify\PaymentProcessorToken($data['key'], $data['name'], $data['type'], $this-&gt;_types[$data['type']], $data['configuration']);
+      break;
+      case self::fulfillment:
+        /** support fulfillment tokens */
+
+      break;
+      case self::addressValidation:
+        /** support address validation tokens */
+        \Framework\_IncludeCorrect(FRAMEWORK_ROOT.&quot;Objectify&quot;.DSEP.&quot;AddressValidation&quot;.DSEP.&quot;AddressValidationToken.php&quot;);
+        return new \Framework\Objectify\AddressValidationToken($data['key'], $data['name'], $data['type'], $this-&gt;_types[$data['type']], $data['configuration']);
+      break;
+    }
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

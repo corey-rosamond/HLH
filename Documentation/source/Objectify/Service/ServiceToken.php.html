@@ -1,0 +1,121 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+
+namespace Framework\Objectify;
+
+
+class ServiceToken
+{
+  protected $_key;
+  protected $_typeKey;
+  protected $_typeName;
+  protected $_name;
+
+  public function __construct( $key, $name, $typeKey, $typeName, array $arguments = array() )
+  {
+    $this-&gt;_key       = $key;
+    $this-&gt;_name      = $name;
+    $this-&gt;_typeKey   = $typeKey;
+    $this-&gt;_typeName  = $typeName;
+    return $this;
+  }
+
+  public function __toString()
+  {
+    $string = &quot;&lt;div&gt;&quot;;
+      $string .= &quot;&lt;h1&gt;Service Token&lt;/h1&gt;&quot;;
+      $string .= &quot;&lt;strong&gt;Name: &lt;/strong&gt;{$this-&gt;_name}&quot;;
+      $string .= &quot;&lt;sup&gt;({$this-&gt;_key})&lt;/sup&gt;&lt;br /&gt;&quot;;
+      $string .= &quot;&lt;strong&gt;Type: &lt;/strong&gt;{$this-&gt;_typeName}&quot;;
+      $string .= &quot;&lt;sup&gt;({$this-&gt;_typeKey})&lt;/sup&gt;&lt;br /&gt;&quot;;
+      foreach( $this-&gt;_paramaters as $name =&gt; $label ){
+        $value = &quot;_{$name}&quot;;
+        $string .= &quot;&lt;strong&gt;{$label}: &lt;/strong&gt;{$this-&gt;$value}&lt;br /&gt;&quot;;
+      }
+    return &quot;{$string}&lt;/html&gt;&quot;;
+  }
+
+  public function key( $key = null )
+  {
+    if( !is_null( $key ) ){
+      $this-&gt;_key = $key;
+    }
+    return $this-&gt;_key;
+  }
+
+  public function name( $name = null )
+  {
+    if( !is_null( $name ) ){
+      $this-&gt;_name = $name;
+    }
+    return $this-&gt;_name;
+  }
+
+  public function typeKey( $typeKey = null )
+  {
+    if( !is_null( $typeKey ) ){
+      $this-&gt;_typeKey = $typeKey;
+    }
+    return $this-&gt;_typeKey;
+  }
+
+  public function typeName( $typeName = null )
+  {
+    if( !is_null( $typeName ) ){
+      $this-&gt;_typeName = $typeName;
+    }
+    return $this-&gt;_typeName;
+  }
+
+  public function __destruct()
+  {
+    unset( $this-&gt;_key );
+    unset( $this-&gt;_typeKey );
+    unset( $this-&gt;_typeName );
+    unset( $this-&gt;_name );
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

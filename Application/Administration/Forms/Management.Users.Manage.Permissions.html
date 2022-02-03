@@ -1,0 +1,31 @@
+<div class="modal-header bg-grey-steel">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+    <span class="fa-stack fa-lg">
+      <i class="fa fa-square-o fa-stack-2x font-blue-ebonyclay"></i>
+      <i class="fa fa-times fa-stack-1x font-blue-ebonyclay" style="margin-top:-1px;margin-left:0px;"></i>
+    </span>
+  </button>
+  <h4 class="modal-title font-blue-ebonyclay">
+    <i class="fa fa-key"></i>
+    User Permissions
+  </h4>
+</div>
+<div class="modal-body">
+  <form class="form-horizontal form-bordered" id="user-permissions-form">
+    <input type="hidden" id="key" value="" />
+    <input type="hidden" id="action" value="update-user-permissions" />
+    <div class="form-body">
+      <div id="permission-list">
+
+      </div>
+    </div>
+  </form>
+</div>
+<div class="modal-footer bg-grey-steel">
+    <button type="button" data-dismiss="modal" class="btn btn-default btn-outline dark border-blue-dark">
+      <i class="fa fa-times fa-lg" style="margin-top:-1px;"></i> Close
+    </button>
+    <button type="button" class="btn btn-default green bold border-blue-dark save-model">
+      <i class="fa fa-check fa-lg" style="margin-top:-1px;"></i> Save changes
+    </button>
+</div>

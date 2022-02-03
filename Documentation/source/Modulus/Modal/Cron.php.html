@@ -1,0 +1,109 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * Cron
+ *
+ * @package Framework\Modulus\Model
+ * @version 1.0.0
+ */
+namespace Framework\Modulus\Modal;
+
+/**
+ * Cron
+ *
+ * This model is used for the framework cron system. It help
+ * keep track of previous cron job runs and their stats as well
+ * as what cron jobs need to be run in the future
+ */
+class Cron extends \Framework\Modulus\Query
+{
+	/**
+	 * Get a list of the active cron jobs
+	 * @return false|\PDOResource
+	 * @access public
+	 */
+	public function getJobs()
+  {
+		$query = &quot;SELECT * FROM `system-cronjobs` WHERE `active`=1 ORDER BY `order`&quot;;
+		$preparedStatement = $this-&gt;Prepare( $query );
+		$preparedStatement = $this-&gt;Execute( $preparedStatement );
+		if( $preparedStatement-&gt;rowCount() &lt;= 0 ){ 
+      return false;
+    }
+		return $preparedStatement-&gt;fetchAll(\PDO::FETCH_ASSOC);
+	}
+
+	/**
+	 * gets the minimum data to run a job
+	 * @return false|\PDOResource
+	 * @access public
+	 */
+	public function getJobsMin()
+  {
+		$query = &quot;SELECT `key`, `simple-name`, `class-name`, `is-framework`, `interval`, `last-run` FROM `system-cronjobs` WHERE `active`=1 ORDER BY `order`&quot;;
+		$preparedStatement = $this-&gt;Prepare( $query );
+		$preparedStatement = $this-&gt;Execute( $preparedStatement );
+		if( $preparedStatement-&gt;rowCount() &lt;= 0 ){
+      return false;
+    }
+		return $preparedStatement-&gt;fetchAll( \PDO::FETCH_ASSOC );
+	}
+
+	/**
+	 * Updates
+	 * @return [type] [description]
+	 */
+	public function updateJobStatus( $key, $status )
+  {
+		$query = &quot;UPDATE `system-cronjobs` SET `status`=:status, `last-run`= NOW() WHERE `key` = :key&quot;;
+		$preparedStatement = $this-&gt;Prepare( $query );
+		$preparedStatement-&gt;bindValue(':key',     $key,     \PDO::PARAM_INT);
+		$preparedStatement-&gt;bindValue(':status',  $status,  \PDO::PARAM_INT);
+		return $this-&gt;Execute( $preparedStatement );
+	}
+
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

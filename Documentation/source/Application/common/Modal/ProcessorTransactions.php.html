@@ -1,0 +1,69 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+
+namespace Framework\Modulus\Model;
+
+/**
+ * User
+ *
+ * This is your main interface to the user table
+ */
+class ProcessorTransactions extends \Framework\Modulus\Query
+{
+    /**
+     * @param $Key
+     * @return mixed
+     */
+    public function getForOrder( $Key )
+    {
+        $Query = &quot;SELECT * FROM `funnel-order-transactions` WHERE `order-key`=:Key ORDER BY `timestamp` DESC&quot;;
+        $PreparedStatement = $this-&gt;Prepare($Query);
+        $PreparedStatement-&gt;bindValue(':Key', $Key, \PDO::PARAM_INT);
+        $PreparedStatement = $this-&gt;Execute($PreparedStatement);
+        return $PreparedStatement-&gt;fetchAll(\PDO::FETCH_ASSOC);
+    }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

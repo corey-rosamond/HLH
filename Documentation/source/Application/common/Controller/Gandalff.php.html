@@ -1,0 +1,241 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * Gandalff
+ *
+ * @package Framework\Commander
+ * @version 1.0.0
+ */
+namespace Framework\Commander;
+
+/**
+ * 	Order
+ *
+ * 	Gandalff is my answer to getting things done Quickly
+ */
+class Gandalff extends \Framework\Support\Abstracts\Singleton
+{
+  /** Gandalff has a collection of collections */
+  private $_cKeys = [];
+  private $_collection = [];
+  /** Get / Set your key */
+  public function _cKey( $prefix = false )
+  { return ((!$prefix)?false:$this-&gt;cKeys[$prefix]); }
+  /** Get a pramater from your section collection */
+  public function _cParam( $cKey, $param )
+  {
+    if(!isset($this-&gt;_cCollection[$cKey])){ $this-&gt;_eRouter(); }
+    if(!isset($this-&gt;_cCollection[$cKey][$param])){ $this-&gt;_eRouter(); }
+    return $this-&gt;_cCollection[$cKey][$param];
+  }
+
+
+
+  /** Check if gKey is valid */
+  private function _gKeySet( $gKey )
+  {return((isset($this-&gt;_gSystems))?true:false); }
+  /** Return the _gName if the $this-&gt;_gKeySet() method returns true */
+  private function _gName( $gKey )
+  {return(($this-&gt;_gKeySet($gKey))?$this-&gt;_gSystems[$gKey][self::gsName]:false));}
+  /** Return the _gPrefix if the $this-&gt;_gKeySet() method returns true */
+  private function _gPrefix( $gKey )
+  {return(($this-&gt;_gKeySet($gKey))?$this-&gt;_gSystems[$gKey][self::gPrefix]:false));}
+  /** Return the _gCodes if the $this-&gt;_gKeySet() method returns true */
+  private function _gCodes( $gKey )
+  {return(($this-&gt;_gKeySet($gKey))?$this-&gt;_gSystems[$gKey][self::geCodes]:false));}
+  /** Return the _gConstruct if the $this-&gt;_gKeySet() method returns true */
+  private function _gConstruct( $gKey )
+  {return(($this-&gt;_gKeySet($gKey))?$this-&gt;_gSystems[$gKey][self::gsConstruct]:false));}
+  /** Return the _gCollection if the $this-&gt;_gKeySet() method returns true */
+  private function _gCollection( $gKey )
+  {return(($this-&gt;_gKeySet($gKey))?$this-&gt;_gSystems[$gKey][self::gCollection]:false));}
+  /** Galndolff Does construct Better */
+  public static function construct( $paramaters = false )
+  {
+    try {
+      $instance = self::getInstance();
+      $instance-&gt;_constructor()
+      return $instance-&gt;_construct( $key );
+    } catch ( \Framework\Exceptional\BaseException $exception ){
+      //$instance-&gt;_eRouter( $exception );
+    }
+  }
+
+  private function _construct( $paramaters )
+  {
+    $gandalf =&amp; $this;
+    array_map( function( $gKey ) use ( &amp;$gandalf ){
+
+    }, array_keys( $gandalf-&gt;_gSystems ) );
+    foreach( $this-&gt;_gSystems as $gKey =&gt; $gData )
+  }
+
+
+  /** Color System */
+  private $_dcKey = 2;
+  private function _dcConstruct( ){}
+  private $_dcCollection;
+  private $_dcTagTypes      = ['standard'=&gt;0,'font'=&gt;1,'background'=&gt;3];
+  private $_dcTags          = [0=&gt;'',1=&gt;'font',3=&gt;'bg'];
+  private $_dcColorNames    = [&quot;Crusta&quot;=&gt;0,&quot;Hoki&quot;=&gt;1,&quot;Meadow&quot;=&gt;2,&quot;Sunglo&quot;=&gt;3,&quot;Cascade&quot;=&gt;4];
+  private $_dcColorTypes    = ['Class'=&gt;'_dcClass','Hex'=&gt;'_dcHex','RGB'=&gt;'_dcRgb'];
+  private $_dcClass         = [0=&gt;&quot;yellow-crusta&quot;,1=&gt;&quot;blue-hoki&quot;,2=&gt;&quot;green-meadow&quot;,3=&gt;&quot;red-sunglo&quot;,4=&gt;&quot;grey-cascade&quot;];
+  private $_dcHex           = [0=&gt;,1=&gt;,2=&gt;,3=&gt;,4=&gt;];
+  private $_dcRgb           = [0=&gt;,1=&gt;,2=&gt;,3=&gt;,4=&gt;];
+  private function _dcParamater( $paramater )
+  { return $this-&gt;cParam( $this-&gt;_cKey, $paramater ); }
+  public function _dfColor( $color, $cType, $tType )
+  {
+    $cIndex = $this-&gt;_dfColorKey( $color );
+    if( $cIndex === false ){
+      return false;
+    }
+    $cType  = $this-&gt;_dfColorType( $cType, $cIndex );
+    $tType  = $this-&gt;_dfTagType( $tType );
+    if( $cType === false || $tType === false ){
+      return false;
+    }
+    return &quot;{$tType}{$cType}&quot;;
+  }
+  /** Get the type of color return they want */
+  public function _dfColorType( $cType, $cIndex )
+  {
+    if(!isset($this-&gt;_dcColorTypes[$cType])){
+      return false;
+    }
+    $array = $this-&gt;_dcColorTypes[$cType];
+    return $this-&gt;$array( $cIndex );
+  }
+  /** Get the type of tag return they want */
+  public function _dfTagType( $tType )
+  {
+    if(!isset($this-&gt;_dcTagTypes[$tType])){
+      return false;
+    }
+    $tagIndex = $this-&gt;_dcTagTypes[$tType];
+    if(!isset($this-&gt;_dcTags[$tagIndex])){
+      return false;
+    }
+    return $this-&gt;_dcTags[$tagIndex];
+  }
+  /** Get the color index from the name */
+  public function _dfColorKey( $color )
+  {
+    if(!isset($this-&gt;_dcColorNames[$color])){
+      return false;
+    }
+    return $this-&gt;_dcColorNames[$color]
+  }
+
+  /** The Transformer System */
+  private $_tKey = 7;
+
+  private function _tTransform( $type, $data )
+  {
+    $method = $this-&gt;_tType( $type );
+    if( !$method ){ return $data; }
+    return $this-&gt;_tCall( $method, $data );
+  }
+
+  private function _tType( $type )
+  {
+    switch( $this-&gt;_tTrim( $type ) ){
+      case 'Trim': return '_tTrim'; break;
+      case 'LowerCase': return '_tLowerCase'; break;
+      case 'UpperCase': return '_tUpperCase'; break;
+      case 'TUpperCase':return '_tTUpperCase'; break;
+    }
+  }
+
+  private function _tCall( $method, $data )
+  { return $this-&gt;$method( $data ); }
+
+  private function _tTrim( $data )
+  { return rtrim(ltrim($data)); }
+
+  private function _tLowerCase( $data )
+  { return strtolower($data); }
+
+  private function _tTUpperCase( $data )
+  { return  strtolower($data); }
+
+  private function _tTUpper( $data )
+  { return $this-&gt;_tTrim( $this-&gt;_tUpperCase( $data ) ); }
+
+
+  /** The log System */
+  private function _lLog( )
+  {
+
+  }
+
+
+  /** The registry for all of the gSystems and their data parts */
+  /** Collection of all the gSystems */
+  private  $_gSystems = [
+    0 =&gt; [ 0 =&gt; &quot;Collector&quot;,  1 =&gt; &quot;&quot;,    2 =&gt; &quot;&quot;,      3 =&gt; &quot;&quot;,      4 =&gt; &quot;&quot; ],
+    1 =&gt; [ 0 =&gt; &quot;Exception&quot;,  1 =&gt; &quot;&quot;,    2 =&gt; &quot;&quot;,      3 =&gt; &quot;&quot;,      4 =&gt; &quot;&quot; ],
+    2 =&gt; [ 0 =&gt; &quot;Color&quot;,      1 =&gt; &quot;&quot;,    2 =&gt; &quot;&quot;,      3 =&gt; &quot;&quot;,      4 =&gt; &quot;&quot; ],
+    3 =&gt; [ 0 =&gt; &quot;Portlet&quot;,    1 =&gt; &quot;&quot;,    2 =&gt; &quot;&quot;,      3 =&gt; &quot;&quot;,      4 =&gt; &quot;&quot; ],
+    4 =&gt; [ 0 =&gt; &quot;Datatable&quot;,  1 =&gt; &quot;&quot;,    2 =&gt; &quot;&quot;,      3 =&gt; &quot;&quot;,      4 =&gt; &quot;&quot; ],
+    5 =&gt; [ 0 =&gt; &quot;Tabs&quot;,       1 =&gt; &quot;&quot;,    2 =&gt; &quot;&quot;,      3 =&gt; &quot;&quot;,      4 =&gt; &quot;&quot; ],
+    6 =&gt; [ 0 =&gt; &quot;Formatter&quot;   1 =&gt; &quot;&quot;,    2 =&gt; &quot;&quot;,      3 =&gt; &quot;&quot;,      4 =&gt; &quot;&quot; ],
+    7 =&gt; [ 0 =&gt; &quot;Transformer&quot; 1 =&gt; &quot;&quot;,    2 =&gt; &quot;&quot;,      3 =&gt; &quot;&quot;,      4 =&gt; &quot;&quot; ],
+    8 =&gt; [ 0 =&gt; &quot;Log&quot;         1 =&gt; &quot;&quot;,    2 =&gt; &quot;&quot;,      3 =&gt; &quot;&quot;,      4 =&gt; &quot;&quot; ],
+  ];
+
+
+  /** Gandalf is a pretty important guy he has alot of constants */
+  const gsName      = 0;
+  const gPrefix     = 1;
+  const geCodes     = 2;
+  const gsConstruct = 3;
+  const gCollection = 4;
+
+
+
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,321 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * Orders
+ *
+ * @package Framework\Modulus\Modal
+ * @version 1.0.0
+ */
+namespace Framework\Modulus\Modal;
+
+/**
+ * Orders
+ *
+ * This is your main interface to the user table
+ */
+class Orders extends \Framework\Modulus\Query
+{
+
+  /**
+   * This is the primary table for this modal
+   * @var     string    $_table
+   * @access  private
+   */
+  private $_table = 'funnel-orders';
+
+  /**
+   * Get the count of orders in each status for an interval amount of time backwards
+   * @method  getCountPerStatusInterval
+   * @param   integer       $interval         Number of the interval type to move back
+   * @param   string        $intervalType     Day, Week, Month
+   * @return  mixed                           \PDOResource or false if no records found
+   * @access  public
+   */
+  public function getCountPerStatusInterval( $interval = 1, $intervalType = &quot;DAY&quot; )
+  {
+    $query = &quot;SELECT count(*) as `count`, `status` as `status` FROM `{$this-&gt;_table}`
+      WHERE `order-date` &gt; DATE( DATE_SUB( NOW() , INTERVAL $interval $intervalType )) GROUP BY `status`&quot;;
+    $preparedStatement = $this-&gt;Prepare( $query );
+    $preparedStatement = $this-&gt;Execute( $preparedStatement );
+    if( $preparedStatement-&gt;rowCount() === 0 ){
+      return 0;
+    }
+    return $preparedStatement-&gt;fetchAll( \PDO::FETCH_ASSOC );
+  }
+
+  /**
+   * Get orders in a current status before a set amount of hours before now
+   * @method  getOrdersIn
+   * @param   string        $status Status to match
+   * @param   string        $before Hours to go back
+   * @return  mixed               Assocative arrray of records or false
+   * @access  public
+   */
+  public function getOrdersIn( $status, $before = false )
+  {
+    $query = &quot;SELECT * FROM `{$this-&gt;_table}` WHERE `status`=:status&quot;;
+    if( $before ){
+      $query .= &quot; AND `order-date` &lt; DATE( DATE_SUB( NOW(), INTERVAL :before HOUR ) )&quot;;
+    }
+    $preparedStatement = $this-&gt;Prepare( $query );
+    $preparedStatement-&gt;bindValue( ':status', $status, \PDO::PARAM_INT );
+    if( $before ){
+      $preparedStatement-&gt;bindValue( ':before', $before, \PDO::PARAM_INT );
+    }
+    $preparedStatement = $this-&gt;Execute( $preparedStatement );
+    if( $preparedStatement-&gt;rowCount() === 0 ){
+      return 0;
+    }
+    return $preparedStatement-&gt;fetchAll( \PDO::FETCH_ASSOC );
+  }
+
+  /**
+   * Get the customer record from the key
+   * @method  get
+   * @param   int           $key
+   * @return  mixed         PDOResource or false
+   * @access  public
+   */
+  public function get( $key )
+  {
+    $query = &quot;SELECT * FROM `{$this-&gt;_table}` WHERE `key`=:key&quot;;
+    $preparedStatement = $this-&gt;prepare($query);
+    $preparedStatement-&gt;bindValue(':key', $key, \PDO::PARAM_INT);
+    $preparedStatement = $this-&gt;Execute($preparedStatement);
+    if ($preparedStatement-&gt;rowCount() &lt;= 0) {return false;}
+    return $preparedStatement-&gt;fetch(\PDO::FETCH_ASSOC);
+  }
+
+
+
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /**                          Bellow here really needs to be removed                                     */
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////
+  public function getLinkTotalSales($key){
+    $query = 'SELECT count(`key`) as `total` FROM `funnel-orders` WHERE `campaign-key`=:key';
+    $preparedStatement = $this-&gt;Prepare($query);
+    $preparedStatement-&gt;bindValue(':key', $key, \PDO::PARAM_INT);
+    $preparedStatement = $this-&gt;Execute($preparedStatement);
+    if ($preparedStatement-&gt;rowCount() == 0) {return 0;}
+    $resource = $preparedStatement-&gt;fetch( \PDO::FETCH_ASSOC );
+    return $resource['total'];
+  }
+
+  public function getLinkTotalProfit($key){
+    $query = 'SELECT sum(`order-total-before`) as `total` FROM `funnel-orders` WHERE `campaign-key`=:key';
+
+    $preparedStatement = $this-&gt;Prepare($query);
+    $preparedStatement-&gt;bindValue(':key', $key, \PDO::PARAM_INT);
+    $preparedStatement = $this-&gt;Execute($preparedStatement);
+    if ($preparedStatement-&gt;rowCount() == 0) {return 0;}
+    $resource = $preparedStatement-&gt;fetch(\PDO::FETCH_ASSOC);
+    return $resource['total'];
+  }
+  public function getOrderTotals($key){
+    $query = '
+      SELECT
+        `foi`.`product-key` as `product-key`,
+        count(`foi`.`key`) AS `total-sale`,
+        sum(`foi`.`price`) as `total-profit`
+      FROM `funnel-orders` AS `fo`
+      RIGHT join `funnel-order-items` AS `foi`
+      ON `fo`.`key` = `foi`.`order-key`
+      WHERE `fo`.`campaign-key`=:key
+      GROUP BY `foi`.`product-key`';
+    $preparedStatement = $this-&gt;Prepare($query);
+    $preparedStatement-&gt;bindValue(':key', $key, \PDO::PARAM_INT);
+    $preparedStatement = $this-&gt;Execute($preparedStatement);
+    if ($preparedStatement-&gt;rowCount() == 0) {return 0;}
+    return $preparedStatement-&gt;fetchAll(\PDO::FETCH_ASSOC);
+  }
+  public function getCountAndSales($key, $link){
+    $query = '
+      SELECT
+        ifnull(count(`foi`.`key`),0) AS `total-sales`,
+        ifnull(sum(`foi`.`price`),0) as `total-profit`
+      FROM `funnel-orders` AS `fo`, `funnel-order-items` AS `foi`
+      WHERE `fo`.`key` = `foi`.`order-key`
+      AND `fo`.`campaign-key`=:link
+      AND `foi`.`product-key` = :key';
+    $preparedStatement = $this-&gt;Prepare($query);
+    $preparedStatement-&gt;bindValue(':link', $link, \PDO::PARAM_INT);
+    $preparedStatement-&gt;bindValue(':key', $key, \PDO::PARAM_INT);
+    $preparedStatement = $this-&gt;Execute($preparedStatement);
+    if ($preparedStatement-&gt;rowCount() == 0) {
+      return array('total-sale'=&gt;0,'total-profit'=&gt;0);
+    }
+    return $preparedStatement-&gt;fetch(\PDO::FETCH_ASSOC);
+  }
+
+  /**
+   * [getOrdersDatatable description]
+   * @method  getOrdersDatatable
+   * @param   mixed              $oID
+   * @param   mixed              $oDateStart
+   * @param   mixed              $oDateEnd
+   * @param   mixed              $oFirstName
+   * @param   mixed              $oLastName
+   * @param   mixed              $oAmount
+   * @param   mixed              $oStatus
+   * @param   mixed              $lStart
+   * @param   mixed              $lEnd
+   * @param   mixed              $oColumn
+   * @param   string             $oDirection
+   * @param   boolean            $countOnly
+   * @return  mixed                           Assocative Array OR FALSE
+   * @access  public
+   */
+  public function getOrdersDatatable(
+    $oID = false, $oDateStart = false, $oDateEnd = false, $oFirstName = false, $oLastName = false, $oAmount = false,
+    $oStatus = false, $lStart = false, $lEnd = false, $oColumn = false, $oDirection = 'asc', $countOnly = false
+  ){
+    $selectors = ['`is-test`=0'];
+    /** Start of the query */
+    $s = &quot;SELECT `key`, `order-date`, `first-name`, `last-name`, FORMAT(`order-total-before`,2) as `total-before`,
+      FORMAT(`order-total-after`,2) as `total-after`, `status` FROM `funnel-orders`&quot;;
+    if( $countOnly ){ $s = &quot;SELECT count(`key`) as `records` FROM `funnel-orders`&quot;; }
+    /** Add the selectors */
+    if( $oID !== false ){ array_push( $selectors, &quot;`key` LIKE :key&quot; ); }
+    if( $oFirstName !== false ){ array_push( $selectors, &quot;`first-name` LIKE :firstName&quot; ); }
+    if( $oLastName !== false ){ array_push( $selectors, &quot;`last-name` LIKE :lastName&quot; ); }
+    if( $oAmount !== false ){ array_push( $selectors, &quot;`order-total-before` = :orderTotal&quot; ); }
+    if( $oStatus !== false ){ array_push( $selectors, &quot;`status` = :orderStatus&quot; ); }
+    if( $oDateStart !== false ){ array_push( $selectors, &quot;`order-date` &gt; :sDate&quot; ); }
+    if( $oDateEnd !== false ){ array_push( $selectors, &quot;`order-date` &lt; :eDate&quot; ); }
+    /* Query middle */
+    $m = &quot;&quot;;
+    /** Add the selectors to the query */
+    for( $i = 0; $i &lt; count( $selectors ); $i++ ){ $m .= (($i===0)?' WHERE ':' AND ').&quot;{$selectors[$i]}&quot;; }
+    /** End of the query */
+    $e = &quot;&quot;;
+    $orderables = ['key','order-date','first-name','last-name','order-total-before','status'];
+    if( $oColumn !== false ){ $e .= &quot; ORDER BY `{$orderables[$oColumn]}` {$oDirection}&quot;; }
+    if( !$countOnly ){ if( $lStart !== false ){ $e .= &quot; LIMIT {$lStart}, {$lEnd}&quot;; } }
+    /** Prep the query for some binds */
+    $preparedStatement = $this-&gt;Prepare( &quot;{$s}{$m}{$e}&quot; );
+    /** Bind selectors */
+    if( $oID !== false ){ $preparedStatement-&gt;bindValue( ':key', &quot;%&quot;.ltrim( rtrim( $oID ) ).&quot;%&quot;, \PDO::PARAM_STR ); }
+    if( $oFirstName !== false ){ $preparedStatement-&gt;bindValue( ':firstName', ltrim( rtrim( $oFirstName ) ), \PDO::PARAM_STR ); }
+    if( $oLastName !== false ){ $preparedStatement-&gt;bindValue( ':lastName', ltrim( rtrim( $oLastName ) ), \PDO::PARAM_STR ); }
+    if( $oAmount !== false ){ $preparedStatement-&gt;bindValue( ':orderTotal', ltrim( rtrim( $oAmount ) ), \PDO::PARAM_STR ); }
+    if( $oStatus !== false ){ $preparedStatement-&gt;bindValue( ':orderStatus', ltrim( rtrim( $oStatus ) ), \PDO::PARAM_STR ); }
+    if( $oDateStart !== false ){ $preparedStatement-&gt;bindValue( ':sDate', ltrim( rtrim( $oDateStart ) ), \PDO::PARAM_STR ); }
+    if( $oDateEnd !== false ){ $preparedStatement-&gt;bindValue( ':eDate', ltrim( rtrim( $oDateEnd ) ), \PDO::PARAM_STR ); }
+    /** Run the query */
+    $preparedStatement = $this-&gt;Execute( $preparedStatement );
+    if( $preparedStatement-&gt;rowCount() &lt;= 0 ){ return false; }
+    if( $countOnly ){
+      $resource = $preparedStatement-&gt;fetch( \PDO::FETCH_ASSOC );
+      return $resource['records'];
+    }
+    return $preparedStatement-&gt;fetchAll( \PDO::FETCH_ASSOC );
+  }
+
+
+
+  /**                            BELOW HERE NEEDS TO BE REWORKED                **/
+  /**
+   * orderCountByStatus
+   *
+   * Gives you the order count for that status
+   * @param  $status string
+   * @return int|false
+   */
+  public function orderCountByStatus($status)
+  {
+      $query = &quot;SELECT count(*) as `value` FROM `funnel-orders` WHERE `status`=:status and `is-test`=0 and `order-total-before`&gt;0&quot;;
+      $preparedStatement = $this-&gt;prepare($query);
+      $preparedStatement-&gt;bindValue(':status', $status, \PDO::PARAM_STR);
+      $preparedStatement = $this-&gt;Execute($preparedStatement);
+      if ($preparedStatement-&gt;rowCount() &lt;= 0) {return false;}
+      $resource = $preparedStatement-&gt;fetch(\PDO::FETCH_ASSOC);
+      return $resource['value'];
+  }
+
+  public function ordersPerCampaign()
+  {
+      $Query = &quot;SELECT `campaign-key`, FORMAT(count(*),0) as `sales`, FORMAT(sum(`order-total-before`),2) as `sold`
+          FROM `funnel-orders` where `is-test`=0
+          and `order-total-before` &gt;0 group by `campaign-key`&quot;;
+      $PreparedStatement = $this-&gt;Prepare($Query);
+      $PreparedStatement = $this-&gt;Execute($PreparedStatement);
+      if ($PreparedStatement-&gt;rowCount() &lt;= 0) {return false;}
+      return $PreparedStatement-&gt;fetchAll(\PDO::FETCH_ASSOC);
+  }
+
+  public function totalOrders()
+  {
+    $query = &quot;SELECT count(`key`) as `value` FROM `funnel-orders` WHERE `is-test`=0&quot;;
+    $preparedStatement = $this-&gt;Prepare($query);
+    $preparedStatement = $this-&gt;Execute($preparedStatement);
+    if( $preparedStatement-&gt;rowCount() &lt;= 0 ){
+      return 0;
+    }
+    $resource = $preparedStatement-&gt;fetch( \PDO::FETCH_ASSOC );
+    return $resource['value'];
+  }
+
+  // TEMPORARY
+  public function getMatureOrders(){
+    $query = &quot;SELECT `key` FROM `funnel-orders` WHERE `is-test`=0
+        AND `order-total-before`&gt;0 AND `order-date` &lt;
+        DATE_SUB(NOW(),INTERVAL 24 HOUR) AND `status`
+        IN('Created','Captured') limit 10&quot;;
+    $preparedStatement = $this-&gt;Prepare($query);
+    $preparedStatement = $this-&gt;Execute($preparedStatement);
+    if ($preparedStatement-&gt;rowCount() &lt;= 0) {return false;}
+    return $preparedStatement-&gt;fetchAll(\PDO::FETCH_ASSOC);
+  }
+
+  public function setOrderApproved($key){
+    $query = &quot;UPDATE `funnel-orders` set `status`='Approved' WHERE `key`=:key&quot;;
+    $preparedStatement = $this-&gt;Prepare($query);
+    $preparedStatement-&gt;bindValue(':key', $key, \PDO::PARAM_INT);
+    $preparedStatement = $this-&gt;Execute($preparedStatement);
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

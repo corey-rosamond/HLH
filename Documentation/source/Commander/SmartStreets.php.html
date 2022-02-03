@@ -1,0 +1,115 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+
+namespace Framework\Commander;
+
+\Framework\_IncludeCorrect(FRAMEWORK_ROOT.&quot;Objectify&quot;.DSEP.&quot;Email&quot;.DSEP.&quot;EmailMessage.php&quot;);
+class SmartStreets extends \Framework\Support\Abstracts\Singleton
+{
+
+  private $_errorCodes = [
+    'AA' =&gt; &quot;City, State and Zip code are valid&quot;,
+    'A1' =&gt; &quot;ZIP+4 not matched; address is invalid. (City/state/ZIP + street don't match.)&quot;,
+    'BB' =&gt; &quot;ZIP+4 matched; confirmed entire address; address is valid.&quot;,
+    'CC' =&gt; &quot;Confirmed address by dropping secondary (apartment, suite, etc.) information&quot;,
+    'F1' =&gt; &quot;Matched to military address&quot;,
+    'G1' =&gt; &quot;Matched to general delivery address (e.g., General Delivery WLS Bridge NY 13859)&quot;,
+    'M1' =&gt; &quot;Primary number (e.g., house number) is missing.&quot;,
+    'M3' =&gt; &quot;Primary number (e.g., house number) is invalid.&quot;,
+    'N1' =&gt; &quot;Address missing secondary number (apartment, suite, etc.)&quot;,
+    'P1' =&gt; &quot;PO, RR, or HC box number is missing. (e.g., RR 5 Cadiz KY)&quot;,
+    'P3' =&gt; &quot;PO, RR, or HC box number is invalid.&quot;,
+    'RR' =&gt; &quot;Confirmed address with private mailbox (PMB) info&quot;,
+    'R1' =&gt; &quot;Confirmed address without private mailbox (PMB) info&quot;,
+    'U1' =&gt; &quot;Matched a unique ZIP Code&quot;
+  ];
+
+  public static function construct()
+  {
+    $instance = self::getInstance();
+    return $instance;
+  }
+
+  public function validateAddress($token, $streetOne, $streetTwo, $city, $state, $zip)
+  {
+    $errors   = [];
+    $street   = $streetOne.(($streetTwo=='')?'':&quot; {$streetTwo}&quot;);
+    if($street==&quot;&quot;||$city==&quot;&quot;||$zip==&quot;&quot;){
+      array_push($errors, &quot;Address failed validation!&quot;);
+      return ['result'=&gt;false,'messages'=&gt;$errors];
+    }
+    $street   = urlencode($street);
+    $city     = urlencode($city);
+    $state    = urlencode($state.&quot;, &quot;);
+    $zip      = urlencode($zip);
+    $authID   = urlencode($token-&gt;authenticationID());
+    $authToken= urlencode($token-&gt;authenticationToken());
+    $request  = &quot;{$token-&gt;address()}street-address/?street={$street}&amp;city={$city}&amp;state={$state}&amp;zipcode=&amp;candidates=3{$zip}&amp;auth-id={$authID}&amp;auth-token={$authToken}&quot;;
+    $response = file_get_contents($request);
+    $result   = json_decode($response,true);
+    if(!isset($result[0])){
+      array_push($errors, &quot;Address failed validation!&quot;);
+      return ['result'=&gt;false,'messages'=&gt;$errors];
+    }
+    $analysis = $result[0]['analysis'];
+    $matchcode = $analysis['dpv_match_code'];
+    if($matchcode=='Y'){
+      return ['result'=&gt;true,'messages'=&gt;$errors];
+    }
+    if($matchcode=='D'){
+      $ssErrors   = str_split($analysis['dpv_footnotes'], 2);
+      foreach($ssErrors as $code){
+        if(isset($this-&gt;_errorCodes[$code])){
+          array_push($errors, $this-&gt;_errorCodes[$code]);
+        }
+      }
+      return ['result'=&gt;false,'messages'=&gt;$errors];
+    }
+    array_push($errors, &quot;Address failed validation!&quot;);
+    return ['result'=&gt;false,'messages'=&gt;$errors];
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

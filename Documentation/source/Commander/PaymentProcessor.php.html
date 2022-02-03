@@ -1,0 +1,288 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+
+namespace Framework\Commander;
+
+\Framework\_IncludeCorrect(FRAMEWORK_ROOT.&quot;vendor&quot;.DSEP.&quot;NetworkMerchant&quot;.DSEP.&quot;nmiCustomerVault.class.php&quot;);
+class PaymentProcessor extends \Framework\Support\Abstracts\Singleton
+{
+
+  private $_document;
+  private $_modal;
+
+  private $_responseCodeAVS = [
+    'Y' =&gt;	'Exact match, 5-character numeric ZIP',
+    'X' =&gt;	'Exact match, 9-character numeric ZIP',
+    'D' =&gt;	'Exact match, 5-character numeric ZIP',
+    'M' =&gt;	'Exact match, 5-character numeric ZIP',
+    'A' =&gt;	'Address match only',
+    'B' =&gt;	'Address match only',
+    'W' =&gt;	'9-character numeric ZIP match only',
+    'Z' =&gt;	'5-character ZIP match only',
+    'P' =&gt;	'5-character ZIP match only',
+    'L' =&gt;	'5-character ZIP match only',
+    'N' =&gt;	'No address or ZIP match only',
+    'C' =&gt;	'No address or ZIP match only',
+    'U' =&gt;	'Address unavailable',
+    'G' =&gt;	'Non-U.S. issuer does not participate',
+    'I' =&gt;	'Non-U.S. issuer does not participate',
+    'R' =&gt;	'Issuer system unavailable',
+    'E' =&gt;	'Not a mail/phone order',
+    'S' =&gt;	'Service not supported',
+    'O' =&gt;	'AVS not available',
+    'B' =&gt;	'AVS not available'
+  ];
+
+  private $_responseCodeCVV = [
+    'M' =&gt; 'CVV2/CVC2 match',
+    'N' =&gt; 'CVV2/CVC2 no match',
+    'P' =&gt; 'Not processed',
+    'S' =&gt; 'Merchant has indicated that CVV2/CVC2 is not present on card',
+    'U' =&gt; 'Issuer is not certified and/or has not provided Visa encryption keys'
+  ];
+
+  private $_responseCode = [
+    '200' =&gt;	'Transaction was declined by processor.',
+    '201' =&gt;	'Do not honor.',
+    '202' =&gt;	'Insufficient funds.',
+    '203' =&gt;	'Over limit.',
+    '204' =&gt;	'Transaction not allowed.',
+    '220' =&gt;	'Incorrect payment information.',
+    '221' =&gt;	'No such card issuer.',
+    '222' =&gt;	'No card number on file with issuer.',
+    '223' =&gt;	'Expired card.',
+    '224' =&gt;	'Invalid expiration date.',
+    '225' =&gt;	'Invalid card security code.',
+    '240' =&gt;	'Call issuer for further information.',
+    '250' =&gt;	'Pick up card.',
+    '251' =&gt;	'Lost card.',
+    '252' =&gt;	'Stolen card.',
+    '253' =&gt;	'Fraudulent card.',
+    '260' =&gt;	'Declined with further instructions available. (See response text)',
+    '261' =&gt;	'Declined-Stop all recurring payments.',
+    '262' =&gt;	'Declined-Stop this recurring program.',
+    '263' =&gt;	'Declined-Update cardholder data available.',
+    '264' =&gt;	'Declined-Retry in a few days.',
+    '300' =&gt;	'Transaction was rejected by gateway.',
+    '400' =&gt;	'Transaction error returned by processor.',
+    '410' =&gt;	'Invalid merchant configuration.',
+    '411' =&gt;	'Merchant account is inactive.',
+    '420' =&gt;	'Communication error.',
+    '421' =&gt;	'Communication error with issuer.',
+    '430' =&gt;	'Duplicate transaction at processor.',
+    '440' =&gt;	'Processor format error.',
+    '441' =&gt;	'Invalid transaction information.',
+    '460' =&gt;	'Processor feature not available.',
+    '461' =&gt;	'Unsupported card type.',
+  ];
+
+
+  public static function construct()
+  {
+    $instance = self::getInstance();
+    $instance-&gt;_mPaymentProcessor = \Framework\Core\Receptionist::modal( &quot;PaymentProcessor&quot;, true );
+    $instance-&gt;_document= \Framework\Core\Receptionist::controller( 'Document', true );
+    return $instance;
+  }
+
+  private function _logReturnMessage( $message, $order, $amount = '0.00' )
+  {
+    return $this-&gt;_mPaymentProcessor-&gt;addLogEntry(
+      $order, $message['response'], $message['responsetext'], $message['authcode'], $message['transactionid'], $message['avsresponse'],
+      $message['cvvresponse'], $message['type'], $message['response_code'], $amount
+    );
+  }
+
+  private function _parseResponse($message)
+  {
+    $errors = [];
+    $code = intval(ltrim(rtrim($message['response_code'])));
+    if($code=='100'||$code==100){
+      return $errors;
+    }
+    if(isset($this-&gt;_responseCode[$message['response_code']])){
+      array_push($errors,$this-&gt;_responseCode[$message['response_code']]);
+    }
+    //if(isset($this-&gt;_responseCodeAVS[$message['avsresponse']])){
+      ///array_push($errors,$this-&gt;_responseCodeAVS[$message['avsresponse']]);
+    ///}
+    //if(isset($this-&gt;_responseCodeCVV[$message['cvvresponse']])){
+     // array_push($errors,$this-&gt;_responseCodeCVV[$message['cvvresponse']]);
+    //}
+    if(sizeof($errors)&gt;=1){
+      $rtext = $message['responsetext'];
+      if( strpos($rtext,'REFID') !== false ){
+        $rtext = substr($rtext,0,(strpos($rtext,'REFID')-1));
+      }
+      array_push($errors, $rtext);
+    }
+    return $errors;
+  }
+
+  public function updateCustomer( $data, $token )
+  {
+    $options  = ['nmi_url'=&gt;$token-&gt;address(),'nmi_user'=&gt;$token-&gt;username(),'nmi_password'=&gt;$token-&gt;password()];
+    $vault = new \nmiCustomerVault($options);
+    $vault-&gt;setCustomerVaultId( $data['customer']);
+    $vault-&gt;setCcNumber(        $data['cc-data']['card-number']);
+    $vault-&gt;setCcExp(           sprintf('%02d', $data['cc-data']['expiration-month']).&quot;/&quot;.$data['cc-data']['expiration-year']);
+    $vault-&gt;setCvv(             $data['cc-data']['cvv']);
+    $vault-&gt;setFirstName(       $data['first-name']);
+    $vault-&gt;setLastName(        $data['last-name']);
+    $vault-&gt;setAddress1(        $data['address-one']);
+    $vault-&gt;setAddress2(        $data['address-two']);
+    $vault-&gt;setCity(            $data['city']);
+    $vault-&gt;setState(           $data['state']);
+    $vault-&gt;setZip(             $data['zip']);
+    $vault-&gt;setCountry('US');
+    $vault-&gt;setPhone(           $data['phone-number']);
+    $vault-&gt;setEmail(           $data['email-address']);
+    $vault-&gt;update();
+    $result = $vault-&gt;executeChild();
+    $this-&gt;_logReturnMessage($result, $data['order']);
+    $errors = $this-&gt;_parseResponse($result);
+    if(sizeof($errors)&gt;=1){
+      return ['result'=&gt;false,'messages'=&gt;$errors];
+    }
+    return ['result'=&gt;true,'messages'=&gt;[]];
+  }
+
+  public function createCustomer( $data, $token )
+  {
+    $options  = ['nmi_url'=&gt;$token-&gt;address(),'nmi_user'=&gt;$token-&gt;username(),'nmi_password'=&gt;$token-&gt;password()];
+    $vault    = new \nmiCustomerVault($options);
+    $vault-&gt;setCustomerVaultId( $data['customer']);
+    $vault-&gt;setCcNumber(        $data['cc-data']['card-number']);
+    $vault-&gt;setCcExp(           sprintf('%02d', $data['cc-data']['expiration-month']).&quot;/&quot;.$data['cc-data']['expiration-year']);
+    $vault-&gt;setCvv(             $data['cc-data']['cvv']);
+    $vault-&gt;setFirstName(       $data['first-name']);
+    $vault-&gt;setLastName(        $data['last-name']);
+    $vault-&gt;setAddress1(        $data['address-one']);
+    $vault-&gt;setAddress2(        $data['address-two']);
+    $vault-&gt;setCity(            $data['city']);
+    $vault-&gt;setState(           $data['state']);
+    $vault-&gt;setZip(             $data['zip']);
+    $vault-&gt;setCountry('US');
+    $vault-&gt;setPhone(           $data['phone-number']);
+    $vault-&gt;setEmail(           $data['email-address']);
+    $vault-&gt;add();
+    $result = $vault-&gt;executeChild();
+    $this-&gt;_logReturnMessage($result, $data['order']);
+    $errors = $this-&gt;_parseResponse($result);
+    if(sizeof($errors)&gt;=1){
+      return ['result'=&gt;false,'messages'=&gt;$errors];
+    }
+    return ['result'=&gt;true,'messages'=&gt;[]];
+  }
+
+
+  public function charge($data, $token)
+  {
+    $options = ['nmi_url'=&gt;$token-&gt;address(),'nmi_user'=&gt;$token-&gt;username(),'nmi_password'=&gt;$token-&gt;password()];
+    $vault = new \nmiCustomerVault($options);
+    $vault-&gt;setCustomerVaultId( $data['customer'] );
+    $vault-&gt;setOrderId( $data['order'] );
+    $vault-&gt;setOrderDescription( $data['product'] );
+    $vault-&gt;charge(number_format( $data['order-total'], 2));
+    $result = $vault-&gt;executeChild();
+    $this-&gt;_logReturnMessage($result, $data['order'], number_format( $data['order-total'], 2));
+    $errors = $this-&gt;_parseResponse($result);
+    if(sizeof($errors)&gt;=1){
+      return ['result'=&gt;false,'messages'=&gt;$errors];
+    }
+    return ['result'=&gt;true,'messages'=&gt;[]];
+  }
+}
+
+
+/*
+public function orderCount( $key )
+{
+  return $this-&gt;_modal-&gt;getOrderCount( $key );
+}
+
+public function orderLogDatatable( $key )
+{
+  return $this-&gt;_document-&gt;portlet(
+    &quot;box&quot;,
+    &quot;green-meadow&quot;,
+    'icon-credit-card',
+    'Payment Processor Log',
+    '',
+    $this-&gt;_document-&gt;datatable(
+      'payment-processor-log',
+      [
+        ['label'=&gt;'Log #',          'style'=&gt;'text-align:center;',  'order'=&gt;true],
+        ['label'=&gt;'Order #',        'style'=&gt;'text-align:center;',  'order'=&gt;true],
+        ['label'=&gt;'Code',           'style'=&gt;'text-align:center;',  'order'=&gt;true],
+        ['label'=&gt;'Response',       'style'=&gt;'',                    'order'=&gt;true],
+        ['label'=&gt;'Auth #',         'style'=&gt;'text-align:center;',  'order'=&gt;true],
+        ['label'=&gt;'Transaction #',  'style'=&gt;'',                    'order'=&gt;true],
+        ['label'=&gt;'AVS Response',   'style'=&gt;'',                    'order'=&gt;true],
+        ['label'=&gt;'CVV Response',   'style'=&gt;'',                    'order'=&gt;true],
+        ['label'=&gt;'Type',           'style'=&gt;'',                    'order'=&gt;true],
+        ['label'=&gt;'RCode',          'style'=&gt;'text-align:center;',  'order'=&gt;true],
+        ['label'=&gt;'Amount',         'style'=&gt;'text-align:center;',  'order'=&gt;true],
+        ['label'=&gt;'Timestamp',      'style'=&gt;'',                    'order'=&gt;true]
+      ],
+      $this-&gt;_orderLogFormatted( $key )
+    ), array(), array(), true
+  );
+}
+
+private function _orderLogFormatted($key)
+{
+  $log = $this-&gt;_modal-&gt;getOrder( $key );
+  foreach( $log as &amp;$entry ){
+    $entry['order-key'] = sprintf('#%08d', $entry['order-key'] );
+    $entry['authcode'] = &quot;#{$entry['authcode']}&quot;;
+    $entry['amount'] = &quot;$&quot;.number_format( $entry['amount'], 2 );
+    $entry['timestamp'] = date( &quot;l jS \of F Y h:i:s A&quot;, strtotime( $entry['timestamp'] ) );
+  }
+  return $log;
+}
+ */
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

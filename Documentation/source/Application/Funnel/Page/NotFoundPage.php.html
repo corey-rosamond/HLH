@@ -1,0 +1,103 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * NotFoundPage
+ *
+ * @package App\Page
+ * @version 1.2.0
+ */
+namespace App\Page;
+
+/**
+ * NotFoundPage
+ *
+ * The NotFoundPage
+ */
+class NotFoundPage extends \App\Abstracts\FunnelPage
+{
+  /** @var int Include the pageType */
+  protected $_pageType = self::notFound;
+  /** @var array $_requested */
+  protected $_requested;
+  /**
+   * NotFoundPage constructor.
+   * @method __construct
+   * @param $system
+   */
+  public function __construct($system)
+  {
+    /** @var array _requested */
+    $this-&gt;_requested = \Framework\Core\Euri::getInstance()-&gt;param('event');
+    /** Return whatever the page abstract gives us back */
+    return parent::__construct($system);
+  }
+
+  /**
+   * Builds the content area and calls all sub functions to build
+   * the ui specific to this page
+   * @method _content
+   * @param $tokens
+   */
+  protected function _content($tokens)
+  {
+    /** @var string _content Decode the string into an array */
+    $this-&gt;_content = json_decode($this-&gt;_cFunnel-&gt;content(),true);
+    /** Set the title to the requested page name */
+    $this-&gt;_content['title'] = sprintf($this-&gt;_content['title'],$this-&gt;_requested['event']);
+    /** Set the content for display */
+    $this-&gt;_content['content'] = sprintf($this-&gt;_content['content'],$this-&gt;_requested['event']);
+    /** @var array $tokens overwrite the tokens variable with the real tokens */
+    $tokens = $this-&gt;_content;
+    /** Now just let it run */
+    $this-&gt;_write(&quot;
+      &lt;div id=\&quot;funnel-content\&quot;&gt;
+        &lt;h1 class=\&quot;title\&quot; id=\&quot;title\&quot;&gt;{$tokens['title']}&lt;/h1&gt;
+        {$tokens['content']}
+      &lt;/div&gt;\n
+    &quot;);
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

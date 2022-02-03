@@ -1,0 +1,110 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * Dashboard
+ *
+ * @package App\Event\Page\Main
+ * @version 1.0.0
+ */
+namespace App\Event\Main;
+
+/**
+ * Main Dashboard
+ *
+ */
+
+class NotFound extends \App\Event\Page
+{
+    /**
+     * @var string
+     */
+    public $view = &quot;NotFound&quot;;
+    /**
+     * @var string
+     */
+    public $title = &quot;404 Page not Found&quot;;
+
+    /**
+     * @return mixed
+     */
+    public function build()
+    {
+        return &quot;&quot;;
+    }
+    /**
+     * @param $view
+     */
+    public function addResources($view)
+    {
+        $view-&gt;addCss(&quot;Plugin/font-awesome/css/font-awesome.min.css&quot;)
+            -&gt;addCss(&quot;Plugin/simple-line-icons/simple-line-icons.min.css&quot;)
+            -&gt;addCss(&quot;Plugin/bootstrap/css/bootstrap.min.css&quot;)
+            -&gt;addCss(&quot;Plugin/uniform/css/uniform.default.css&quot;)
+            -&gt;addCss(&quot;Plugin/bootstrap-switch/css/bootstrap-switch.min.css&quot;)
+            -&gt;addCss(&quot;Plugin/select2/css/select2.min.css&quot;)
+            -&gt;addCss(&quot;Plugin/select2/css/select2-bootstrap.min.css&quot;)
+            -&gt;addCss(&quot;Style/Global/components.min.css&quot;)
+            -&gt;addCss(&quot;Style/Global/plugins.min.css&quot;)
+            -&gt;addCss(&quot;Style/Page/error.min.css&quot;)
+        /** Add script files */
+            -&gt;addJavascript(&quot;Plugin/jquery.min.js&quot;)
+            -&gt;addJavascript(&quot;Plugin/bootstrap/js/bootstrap.min.js&quot;)
+            -&gt;addJavascript(&quot;Plugin/js.cookie.min.js&quot;)
+            -&gt;addJavascript(&quot;Plugin/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js&quot;)
+            -&gt;addJavascript(&quot;Plugin/jquery-slimscroll/jquery.slimscroll.min.js&quot;)
+            -&gt;addJavascript(&quot;Plugin/jquery.blockui.min.js&quot;)
+            -&gt;addJavascript(&quot;Plugin/uniform/jquery.uniform.min.js&quot;)
+            -&gt;addJavascript(&quot;Plugin/bootstrap-switch/js/bootstrap-switch.min.js&quot;)
+            -&gt;addJavascript(&quot;Plugin/jquery-validation/js/jquery.validate.min.js&quot;)
+            -&gt;addJavascript(&quot;Plugin/jquery-validation/js/additional-methods.min.js&quot;)
+            -&gt;addJavascript(&quot;Plugin/select2/js/select2.full.min.js&quot;)
+            -&gt;addJavascript(&quot;Script/Global/app.min.js&quot;);
+        $view-&gt;addToken('title', $this-&gt;title)
+            -&gt;addToken('no-follow', $this-&gt;nofollow)
+            -&gt;addToken('body-class', 'page-404-3');
+    }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

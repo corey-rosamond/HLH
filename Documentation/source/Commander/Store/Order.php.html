@@ -1,0 +1,183 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+* Order
+*
+* @package Framework\Store
+* @version 1.2.0
+*/
+
+namespace Framework\Store;
+
+/**
+ * Order
+ *
+ * The order object is my solution to all of my annoying
+ * data here data there modal here modal there issues
+ */
+class Order{
+
+  public function __construct($key)
+  {
+    $this-&gt;__oLoad($key);
+
+  }
+
+
+  /** Customer Interface */
+
+  private $_cKey;
+
+  private $_cEmail;
+
+  private $_cValueBeforeCost;
+
+  private $_cValueAfterCost;
+
+  private $_cOriginDate;
+
+  private $_OriginFunnel;
+
+  private function __cLoad($key)
+  {
+
+  }
+
+
+  /** Order Interface */
+
+  private $_oKey;
+
+  private $_oFirstName;
+
+  private $_oLastName;
+
+  private $_oPhoneNumber;
+
+  private $_oSessionKey;
+
+  private $_oFunnelKey;
+
+  private $_oCampaignKey;
+
+  private $_oStatus;
+
+  private $_oTotalBeforeCost;
+
+  private $_oTotalAfterCost;
+
+  private $_oBillingAddressKey;
+
+  private $_oShippingAddressKey;
+
+  private $_oOrderDate;
+
+  private $_oIsTest;
+
+  private function __oLoad($key)
+  {
+
+  }
+
+
+  /** Billing Address Interface */
+
+  private $_bKey;
+
+  private $_bName;
+
+  private $_bLineOne;
+
+  private $_bLineTwo;
+
+  private $_bCity;
+
+  private $_btate;
+
+  private $_bZip;
+
+  private function __bLoad($key)
+  {
+
+
+  }
+
+
+  /** Shipping Address Interface */
+
+  private $_sKey;
+
+  private $_sName;
+
+  private $_sLineOne;
+
+  private $_sLineTwo;
+
+  private $_sCity;
+
+  private $_sState;
+
+  private $_sZip;
+
+  private function __sLoad($key)
+  {
+
+
+  }
+
+
+  /** Order Items Interface */
+
+
+
+
+  /** Order Payment Interface */
+
+
+
+
+  /** Order Fulfillment Interface */
+}</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

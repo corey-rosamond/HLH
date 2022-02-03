@@ -1,0 +1,262 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">
+
+​
+​
+   /**
+    * The initial public construct.  Similar to what is used in controller.php
+    * @method construct
+    * @param  emailToken The email token
+    * @return Email An instance of the email controller
+    */
+
+   public static function construct( $emailToken )
+   {
+​
+     try {
+       $instance = self::getInstance();
+       return $instance-&gt;_construct( $emailToken );
+     }
+     catch ( \Framework\Exception\BaseException $exception) {
+         $instance-&gt;_eRouter( $exception );
+       }
+​
+   }
+​
+   private function _construct( $emailToken )
+   {
+    //  require_once('lib/swift_required.php');
+     if (is_null($emailToken) || strlen($emailToken) &lt; 0) {
+       throw new Exception(&quot;Missing email token&quot;);
+     }
+​
+     //Now that we creating an instance of Email, lets get Swiftmail setup.
+     //If something bad happens, we can return an error on the construct...
+     require_once 'lib/swift_required.php';
+     $this-&gt;emailToken = $emailToken;
+     $this-&gt;useToken();
+  }
+​
+  public function setTransport($host, $port, $user, $pass)
+  {
+    $this-&gt;transport = Swift_SmtpTransport::newInstance($host, $port)
+    -&gt;setUsername($user)
+    -&gt;setPassword($pass)
+    ;
+    return true;
+  }
+​
+  /**
+   * Takes the information in the email token that was passed to the
+   * constructor.  Per Corey, that information is an assoc array with
+   * the to, from, subject, body, etc.  This will parse that out into an
+   * instance of this Email object
+   * @return boolean True if successful
+   */
+  private function useToken() {
+    $this-&gt;setFromAddress($this-&gt;emailToken[&quot;from&quot;]);
+    $this-&gt;setRecipient($this-&gt;emailToken[&quot;to&quot;]);
+    $this-&gt;setSubject($this-&gt;emailToken[&quot;subject&quot;]);
+    $this-&gt;setBody($this-&gt;emailToken[&quot;body&quot;]);
+  }
+​
+  private $_isLocked = false;
+
+  private function lock()
+  { $this-&gt;_isLocked = true }
+
+  private function unlock()
+  { $this-&gt;_isLocked = false }
+
+  public function fromAddress( $fromAddress = false )
+  {
+    if( !$fromAddress ){
+      return $this-&gt;_mFromAddress;
+    }
+    return $this-&gt;_mFromAddress = $fromAddress;
+  }
+
+  public function setRecipient($toAddress) {
+    $this-&gt;_mEmail = $toAddress;
+  }
+​
+  public function setBody($body) {
+    $this-&gt;_mBody = $body;
+  }
+​
+  public function setSubject($subject) {
+    $this-&gt;_mSubject = $subject;
+  }
+​
+
+
+
+
+
+
+
+  public function sendMessage($server = false)
+  {
+      if ($server) {
+        //TODO: Write the code to handle if server is populated
+        $username = $this-&gt;ServerUsername;
+        $password = $this-&gt;ServerPassword;
+        $from = 'Funnel Server';
+      }
+      else {
+        //TODO: This may not be useful anymore since we are using transport
+        $username = $this-&gt;username;
+        $password = $this-&gt;password;
+        $from = $this-&gt;from;
+      }
+​
+      /*
+      //Use the transport agent from Swift
+      $transport = Swift_SmtpTransport::newInstance('smtp.gmail.com', 465, &quot;ssl&quot;)
+        -&gt;setUsername($username)
+        -&gt;setPassword($password);
+      */
+      //mailer
+​
+      $mailer = Swift_Mailer::newInstance($this-&gt;transport);
+      //Build the message
+      $message = Swift_Message::newInstance($this-&gt;_mSubject)
+        -&gt;setFrom(array($this-&gt;_mFromAddress =&gt; $this-&gt;companyName))
+        -&gt;setTo(array($this-&gt;_mEmail))
+        -&gt;setBody($this-&gt;_mBody);
+      //Send the email
+      $mailer-&gt;sendMessage($message);
+      //return true;
+      echo(&quot;It worked!!!2&quot;);
+      return true;
+  }
+​
+​
+​
+​
+​
+  public function lessOldsendMessage($to, $subject, $message, $server=false)
+  {
+    if ( $server ) {
+      //TODO: Write the code to handle if server is populated
+      $username = $this-&gt;ServerUsername;
+      $password = $this-&gt;ServerPassword;
+      $from = 'Funnel Server';
+    }
+    else {
+      $username = $this-&gt;username;
+      $password = $this-&gt;password;
+      $from = $this-&gt;from;
+    }
+    //Use the transport agent from Swift
+    $transport = Swift_SmtpTransport::newInstance('smtp.gmail.com', 465, &quot;ssl
+      -&gt;setUsername($username )
+      -&gt;setPassword($password);
+    //mailer
+    $mailer = Swift_Mailer::newInstance($transport);
+    //Build the message
+    $message = Swift_Message::newInstance($subject)
+      -&gt;setFrom(array($username =&gt; $from))
+      -&gt;setTo(array($to))
+      -&gt;setBody($message,'text/html');
+    //Send the email
+    $mailer-&gt;sendMessage($message);
+    //return true;
+  }
+​
+  public function sendTemplate( $template, $data, $to ) {
+    //Switch case for template string
+​
+    /* Corey is going to write a tokenize function.  I am going to pass this stuff into that
+    and take its return value and use what it returns.
+    */
+​
+    $this-&gt;sendMessage($to, $subject, $message);
+    //return true
+    }
+​
+  /**
+   * Use Swiftmail to send the email
+   * @return boolean
+   */
+  public function OLDsendMesssage() {
+    if (is_null($this-&gt;transport)) {
+      throw new Exception(&quot;Transport has not been set.&quot;);
+    }
+    $message = Swift_Message::newInstance($this-&gt;_mSubject)
+    -&gt;setFrom($this-&gt;_mFromAddress)
+    -&gt;setTo($this-&gt;_mEmail)
+    -&gt;setBody($this-&gt;_mBody)
+    ;
+​
+    $result = $this-&gt;mailer-&gt;send($message);
+    //Returns the result to the function caller
+    return $result;
+  }
+​
+​
+  public function readEmail() {
+​
+  }
+​
+  private function _eThrow( $message, $code, $exception )
+  {
+    /** Check if this is an interger */
+    if( is_int( $message ) ){
+      /** This is an integer that means it is a message for this sytem get it from the message function */
+      $message = $this-&gt;_eMessage( $message );
+    }
+    throw new \Framework\Exceptional\EmailControllerException(
+      $message,
+      $code,
+      (( $exception !== false )? $exception-&gt;getCode() : 0),
+      (( $exception !== false )? $exception-&gt;getFile() : &quot;/Framework/Appliaction/common/Controller/Email.php&quot;),
+      (( $exception !== false )? $exception-&gt;getLine() : 0),
+      (( $exception !== false )? $exception : false )
+    );
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

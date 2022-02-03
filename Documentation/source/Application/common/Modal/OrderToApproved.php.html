@@ -1,0 +1,79 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * OrderToApproved
+ *
+ * @package Framework\Modulus\Model
+ * @version 1.0.0
+ */
+namespace Framework\Modulus\Model;
+
+/**
+ * OrderToApproved
+ *
+ * All the querys needed for the campaignKeyFixer
+ */
+class OrderToApproved extends \Framework\Modulus\Query
+{
+  public function getMatureOrders(){
+    $query = &quot;SELECT `key` FROM `funnel-orders` WHERE `is-test`=0
+        AND `order-total-before`&gt;0 AND `order-date` &lt;
+        DATE_SUB(NOW(),INTERVAL 24 HOUR) AND `status`
+        IN('Created','Captured') limit 10&quot;;
+    $preparedStatement = $this-&gt;Prepare($query);
+    $preparedStatement = $this-&gt;Execute($preparedStatement);
+    if ($preparedStatement-&gt;rowCount() &lt;= 0) {return false;}
+    return $preparedStatement-&gt;fetchAll(\PDO::FETCH_ASSOC);
+  }
+
+  public function setOrderApproved($key){
+    $query = &quot;UPDATE `funnel-orders` set `status`='Approved' WHERE `key`=:key&quot;;
+    $preparedStatement = $this-&gt;Prepare($query);
+    $preparedStatement-&gt;bindValue(':key', $key, \PDO::PARAM_INT);
+    $preparedStatement = $this-&gt;Execute($preparedStatement);
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

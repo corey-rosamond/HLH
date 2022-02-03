@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta charset="utf-8"/>
+    <title>    HLH Framework &raquo; \Framework\Support\Object\Table
+</title>
+    <meta name="author" content=""/>
+    <meta name="description" content=""/>
+
+            <link href="../css/template.css" rel="stylesheet" media="all"/>
+    
+            <!--[if lt IE 9]>
+        <script src="https://html5shim.googlecode.com/svn/trunk/html5.js" type="text/javascript"></script>
+        <![endif]-->
+        <script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script>
+        <script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script>
+        <script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script>
+        <script src="../js/bootstrap.js" type="text/javascript"></script>
+        <script src="../js/template.js" type="text/javascript"></script>
+        <script src="../js/prettify/prettify.min.js" type="text/javascript"></script>
+    
+            <link rel="shortcut icon" href="../img/favicon.ico"/>
+        <link rel="apple-touch-icon" href="../img/apple-touch-icon.png"/>
+        <link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png"/>
+        <link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png"/>
+    </head>
+<body>
+
+        <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                    <span class="icon-bar"></span> <span class="icon-bar"></span>
+                    <span class="icon-bar"></span> </a>
+                <a class="brand" href="../index.html">HLH Framework</a>
+
+                <div class="nav-collapse">
+                    <ul class="nav">
+                        <li class="dropdown">
+                            <a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                API Documentation <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                                                    <li><a>Namespaces</a></li>
+                                                                        <li><a href="../namespaces/Framework.html">Framework</a></li>
+                                                                        <li><a href="../namespaces/App.html">App</a></li>
+                                                                        <li><a href="../namespaces/Handler.html">Handler</a></li>
+                                                                                                                                </ul>
+                        </li>
+                        <li class="dropdown" id="charts-menu">
+                            <a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                Charts <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="../graph_class.html">
+                                        <i class="icon-list-alt"></i>&#160;Class hierarchy diagram
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown" id="reports-menu">
+                            <a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                Reports <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="../errors.html">
+                                        <i class="icon-list-alt"></i>&#160;Errors
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="../markers.html">
+                                        <i class="icon-list-alt"></i>&#160;Markers
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="../deprecated.html">
+                                        <i class="icon-list-alt"></i>&#160;Deprecated
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="go_to_top">
+            <a href="#___" style="color: inherit">Back to top&#160;&#160;<i class="icon-upload icon-white"></i></a>
+        </div>
+    </div>
+    
+    <div id="___" class="container">
+        <noscript>
+            <div class="alert alert-warning">
+                Javascript is disabled; several features are only available if Javascript is enabled.
+            </div>
+        </noscript>
+
+        
+            <style>
+        .deprecated h2 {
+            text-decoration: line-through;
+        }
+    </style>
+    <div class="row">
+        <div class="span4">
+                    <div class="btn-group view pull-right" data-toggle="buttons-radio">
+        <button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button>
+        <button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+    </div>
+    <div class="btn-group visibility" data-toggle="buttons-checkbox">
+        <button class="btn public active" title="Show public elements">Public</button>
+        <button class="btn protected" title="Show protected elements">Protected</button>
+        <button class="btn private" title="Show private elements">Private</button>
+        <button class="btn inherited active" title="Show inherited elements">Inherited</button>
+    </div>
+
+        <ul class="side-nav nav nav-list">
+        <li class="nav-header">
+            <i class="icon-custom icon-method"></i> Methods
+            <ul>
+                                                                                                    <li class="method public">
+        <a href="#method___construct" title="__construct :: This function builds out all of the options that are in the table object">
+            <span class="description">This function builds out all of the options that are in the table object</span><pre>__construct</pre>
+        </a>
+    </li>
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                        <li class="method public">
+        <a href="#method_render" title="render :: Render the page">
+            <span class="description">Render the page</span><pre>render</pre>
+        </a>
+    </li>
+
+                                                </ul>
+        </li>
+        <li class="nav-header protected">» Protected
+            <ul>
+                                                                                                                                                                                                                                                                                                                                            </ul>
+        </li>
+        <li class="nav-header private">» Private
+            <ul>
+                                                                                                                <li class="method private">
+                            <a href="#method_appendTD" title="appendTD :: Append the td object to the target and
+pass along the configuration object">
+                                <span class="description">Append the td object to the target and
+pass along the configuration object</span><pre>appendTD</pre>
+                            </a>
+                        </li>
+                                                                                <li class="method private">
+                            <a href="#method_appendText" title="appendText :: Append the text object to the target and
+pass along the configuration object">
+                                <span class="description">Append the text object to the target and
+pass along the configuration object</span><pre>appendText</pre>
+                            </a>
+                        </li>
+                                                                                <li class="method private">
+                            <a href="#method_appendTH" title="appendTH :: Append the th object to the target and
+pass along the configuration object">
+                                <span class="description">Append the th object to the target and
+pass along the configuration object</span><pre>appendTH</pre>
+                            </a>
+                        </li>
+                                                                                <li class="method private">
+                            <a href="#method_appendTR" title="appendTR :: Append the tr object to the target and
+pass along the configuration object">
+                                <span class="description">Append the tr object to the target and
+pass along the configuration object</span><pre>appendTR</pre>
+                            </a>
+                        </li>
+                                                                                <li class="method private">
+                            <a href="#method_construct" title="construct :: Construct all the elements in the data objects">
+                                <span class="description">Construct all the elements in the data objects</span><pre>construct</pre>
+                            </a>
+                        </li>
+                                                                                <li class="method private">
+                            <a href="#method_constructSection" title="constructSection :: Construct the head section of this table">
+                                <span class="description">Construct the head section of this table</span><pre>constructSection</pre>
+                            </a>
+                        </li>
+                                                                                    </ul>
+        </li>
+        <li class="nav-header">
+            <i class="icon-custom icon-constant"></i> Constants
+            <ul>
+                            </ul>
+        </li>
+    </ul>
+
+
+        </div>
+
+        <div class="span8">
+            <div class="element class">
+                <h1>Table</h1>
+                <small style="display: block; text-align: right">
+                                                        </small>
+                <p class="short_description">Table</p>
+                <div class="details">
+                    <div class="long_description">
+                        <p>This helps generate a very clean table</p>
+                    </div>
+                    <table class="table table-bordered">
+                                                                                    <tr>
+                                    <th>
+                                        package
+                                                                            </th>
+                                    <td>
+                                                                                    
+                                                                                <p>Framework\Support\Object</p>
+                                    </td>
+                                </tr>
+                                                                                                                                                                                </table>
+
+                    <h3><i class="icon-custom icon-method"></i> Methods</h3>
+                                                                <a id="method___construct"></a>
+                        <div class="element clickable method public  method___construct" data-toggle="collapse" data-target=".method___construct .collapse">
+                            <h2>This function builds out all of the options that are in the table object</h2>
+                            <pre>__construct(array|false $headData = false, array|false $bodyData = false, array|false $footData = false, false|object $tableConfiguration = false, false|object $theadConfiguration = false, false|object $tbodyConfiguration = false, false|object $tfootConfiguration = false, false|object $trConfiguration = false, false|array $headColumnConfiguration = false, false|array $bodyColumnConfiguration = false, false|array $footColumnConfiguration = false, false|string $evenClass = false, false|string $oddClass = false) : $this</pre>
+                            <div class="labels">
+                                                                                                                                                                                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    method
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                        <p>__construct</p>
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    access
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                        <p>public</p>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
+
+                                                                            <h3>Arguments</h3>
+                                                                                    <div class="subelement argument">
+                                                <h4>$headData</h4>
+                                                <code>array|false</code><p><p>Array of data to populate into the section or false</p></p>
+                                            </div>
+                                                                                    <div class="subelement argument">
+                                                <h4>$bodyData</h4>
+                                                <code>array|false</code><p><p>Array of data to populate into the section or false</p></p>
+                                            </div>
+                                                                                    <div class="subelement argument">
+                                                <h4>$footData</h4>
+                                                <code>array|false</code><p><p>Array of data to populate into the section or false</p></p>
+                                            </div>
+                                                                                    <div class="subelement argument">
+                                                <h4>$tableConfiguration</h4>
+                                                <code>false|object</code><p><p>Dom Configuration object or false if not provided</p></p>
+                                            </div>
+                                                                                    <div class="subelement argument">
+                                                <h4>$theadConfiguration</h4>
+                                                <code>false|object</code><p><p>Dom Configuration object or false if not provided</p></p>
+                                            </div>
+                                                                                    <div class="subelement argument">
+                                                <h4>$tbodyConfiguration</h4>
+                                                <code>false|object</code><p><p>Dom Configuration object or false if not provided</p></p>
+                                            </div>
+                                                                                    <div class="subelement argument">
+                                                <h4>$tfootConfiguration</h4>
+                                                <code>false|object</code><p><p>Dom Configuration object or false if not provided</p></p>
+                                            </div>
+                                                                                    <div class="subelement argument">
+                                                <h4>$trConfiguration</h4>
+                                                <code>false|object</code><p><p>Dom Configuration object or false if not provided</p></p>
+                                            </div>
+                                                                                    <div class="subelement argument">
+                                                <h4>$headColumnConfiguration</h4>
+                                                <code>false|array</code><p><p>Dom Configuration object or false if not provided</p></p>
+                                            </div>
+                                                                                    <div class="subelement argument">
+                                                <h4>$bodyColumnConfiguration</h4>
+                                                <code>false|array</code><p><p>Dom Configuration object or false if not provided</p></p>
+                                            </div>
+                                                                                    <div class="subelement argument">
+                                                <h4>$footColumnConfiguration</h4>
+                                                <code>false|array</code><p><p>Dom Configuration object or false if not provided</p></p>
+                                            </div>
+                                                                                    <div class="subelement argument">
+                                                <h4>$evenClass</h4>
+                                                <code>false|string</code><p><p>String with class to use when row is odd or false</p></p>
+                                            </div>
+                                                                                    <div class="subelement argument">
+                                                <h4>$oddClass</h4>
+                                                <code>false|string</code><p><p>String with class to use when row is even or false</p></p>
+                                            </div>
+                                                                            
+                                                                            <h3>Response</h3>
+                                        <code>$this</code><p></p>
+                                                                    </div>
+                            </div>
+
+                        </div>
+                                            <a id="method_appendTD"></a>
+                        <div class="element clickable method private  method_appendTD" data-toggle="collapse" data-target=".method_appendTD .collapse">
+                            <h2>Append the td object to the target and
+pass along the configuration object</h2>
+                            <pre>appendTD(\Framework\Support\Object\ConfigurationObject $target,  $configuration = false) : \Framework\Support\Object\DocumentObject</pre>
+                            <div class="labels">
+                                                                                                                                                                                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    method
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                        <p>appendTD</p>
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    access
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                        <p>private</p>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
+
+                                                                            <h3>Arguments</h3>
+                                                                                    <div class="subelement argument">
+                                                <h4>$target</h4>
+                                                <code>\Framework\Support\Object\ConfigurationObject</code><p><p>The location to append this to</p></p>
+                                            </div>
+                                                                                    <div class="subelement argument">
+                                                <h4>$configuration</h4>
+                                                <code></code><p></p>
+                                            </div>
+                                                                            
+                                                                            <h3>Response</h3>
+                                        <code>\Framework\Support\Object\DocumentObject</code><p><p>Reference to the new object in the collection</p></p>
+                                                                    </div>
+                            </div>
+
+                        </div>
+                                            <a id="method_appendText"></a>
+                        <div class="element clickable method private  method_appendText" data-toggle="collapse" data-target=".method_appendText .collapse">
+                            <h2>Append the text object to the target and
+pass along the configuration object</h2>
+                            <pre>appendText(\Framework\Support\Object\ConfigurationObject $target,  $configuration = false) : \Framework\Support\Object\DocumentObject</pre>
+                            <div class="labels">
+                                                                                                                                                                                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    method
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                        <p>appendText</p>
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    access
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                        <p>private</p>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
+
+                                                                            <h3>Arguments</h3>
+                                                                                    <div class="subelement argument">
+                                                <h4>$target</h4>
+                                                <code>\Framework\Support\Object\ConfigurationObject</code><p><p>The location to append this to</p></p>
+                                            </div>
+                                                                                    <div class="subelement argument">
+                                                <h4>$configuration</h4>
+                                                <code></code><p></p>
+                                            </div>
+                                                                            
+                                                                            <h3>Response</h3>
+                                        <code>\Framework\Support\Object\DocumentObject</code><p><p>Reference to the new object in the collection</p></p>
+                                                                    </div>
+                            </div>
+
+                        </div>
+                                            <a id="method_appendTH"></a>
+                        <div class="element clickable method private  method_appendTH" data-toggle="collapse" data-target=".method_appendTH .collapse">
+                            <h2>Append the th object to the target and
+pass along the configuration object</h2>
+                            <pre>appendTH(\Framework\Support\Object\ConfigurationObject $target,  $configuration = false) : \Framework\Support\Object\DocumentObject</pre>
+                            <div class="labels">
+                                                                                                                                                                                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    method
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                        <p>appendTH</p>
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    access
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                        <p>private</p>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
+
+                                                                            <h3>Arguments</h3>
+                                                                                    <div class="subelement argument">
+                                                <h4>$target</h4>
+                                                <code>\Framework\Support\Object\ConfigurationObject</code><p><p>The location to append this to</p></p>
+                                            </div>
+                                                                                    <div class="subelement argument">
+                                                <h4>$configuration</h4>
+                                                <code></code><p></p>
+                                            </div>
+                                                                            
+                                                                            <h3>Response</h3>
+                                        <code>\Framework\Support\Object\DocumentObject</code><p><p>Reference to the new object in the collection</p></p>
+                                                                    </div>
+                            </div>
+
+                        </div>
+                                            <a id="method_appendTR"></a>
+                        <div class="element clickable method private  method_appendTR" data-toggle="collapse" data-target=".method_appendTR .collapse">
+                            <h2>Append the tr object to the target and
+pass along the configuration object</h2>
+                            <pre>appendTR(\Framework\Support\Object\DomcumentObject $target, array $configuration = false) : \Framework\Support\Object\DocumentObject</pre>
+                            <div class="labels">
+                                                                                                                                                                                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    method
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                        <p>appendTR</p>
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    access
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                        <p>private</p>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
+
+                                                                            <h3>Arguments</h3>
+                                                                                    <div class="subelement argument">
+                                                <h4>$target</h4>
+                                                <code>\Framework\Support\Object\DomcumentObject</code><p><p>The object we are going to append to</p></p>
+                                            </div>
+                                                                                    <div class="subelement argument">
+                                                <h4>$configuration</h4>
+                                                <code>array</code><p><p>Array of DocumentObject configuration settings</p></p>
+                                            </div>
+                                                                            
+                                                                            <h3>Response</h3>
+                                        <code>\Framework\Support\Object\DocumentObject</code><p><p>Returns a reference to the location of the object in the stack</p></p>
+                                                                    </div>
+                            </div>
+
+                        </div>
+                                            <a id="method_construct"></a>
+                        <div class="element clickable method private  method_construct" data-toggle="collapse" data-target=".method_construct .collapse">
+                            <h2>Construct all the elements in the data objects</h2>
+                            <pre>construct() : boolean</pre>
+                            <div class="labels">
+                                                                                                                                                                                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    method
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                        <p>construct</p>
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    access
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                        <p>private</p>
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
+
+                                    
+                                                                            <h3>Response</h3>
+                                        <code>boolean</code><p></p>
+                                                                    </div>
+                            </div>
+
+                        </div>
+                                            <a id="method_constructSection"></a>
+                        <div class="element clickable method private  method_constructSection" data-toggle="collapse" data-target=".method_constructSection .collapse">
+                            <h2>Construct the head section of this table</h2>
+                            <pre>constructSection(\Framework\Support\Object\DocumentObject $section, string $cellName, array $data, array $trConfiguration, array $columnConfiguration, object $cellDefaultConfiguration) : boolean</pre>
+                            <div class="labels">
+                                                                                                                                                                                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    method
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                        <p>constructSection</p>
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    uses
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                        
+                                                                                                                                                                        
+                                                                                                                                                                        
+                                                                                                                                                                        
+                                                                                                                                                                        
+                                                                                                                                                                        
+                                                                                                                                                                        
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    access
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                        <p>private</p>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
+
+                                                                            <h3>Arguments</h3>
+                                                                                    <div class="subelement argument">
+                                                <h4>$section</h4>
+                                                <code>\Framework\Support\Object\DocumentObject</code><p><p>Reference to the section we are constructing</p></p>
+                                            </div>
+                                                                                    <div class="subelement argument">
+                                                <h4>$cellName</h4>
+                                                <code>string</code><p><p>String representation of the cell this section builds</p></p>
+                                            </div>
+                                                                                    <div class="subelement argument">
+                                                <h4>$data</h4>
+                                                <code>array</code><p><p>MultiDimensional array of table data</p></p>
+                                            </div>
+                                                                                    <div class="subelement argument">
+                                                <h4>$trConfiguration</h4>
+                                                <code>array</code><p><p>TableRow configuration object</p></p>
+                                            </div>
+                                                                                    <div class="subelement argument">
+                                                <h4>$columnConfiguration</h4>
+                                                <code>array</code><p><p>Array of configuration objects relating to their column</p></p>
+                                            </div>
+                                                                                    <div class="subelement argument">
+                                                <h4>$cellDefaultConfiguration</h4>
+                                                <code>object</code><p><p>Default TH Configuration Object</p></p>
+                                            </div>
+                                                                            
+                                                                            <h3>Response</h3>
+                                        <code>boolean</code><p><p>Returns true when complete</p></p>
+                                                                    </div>
+                            </div>
+
+                        </div>
+                                            <a id="method_render"></a>
+                        <div class="element clickable method public  method_render" data-toggle="collapse" data-target=".method_render .collapse">
+                            <h2>Render the page</h2>
+                            <pre>render() : \Framework\Support\Object\[type]</pre>
+                            <div class="labels">
+                                                                                                                                                                                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    method
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                        <p>render</p>
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    access
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                        <p>public</p>
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
+
+                                    
+                                                                            <h3>Response</h3>
+                                        <code>\Framework\Support\Object\[type]</code><p><p>[description]</p></p>
+                                                                    </div>
+                            </div>
+
+                        </div>
+                    
+                    
+                                                                <h3><i class="icon-custom icon-property"></i> Properties</h3>
+                                                    <a id="property_table"> </a>
+                            <div class="element clickable property  private property_table" data-toggle="collapse" data-target=".property_table .collapse">
+                                <h2>Table Object</h2>
+                                <pre>table : \Framework\Dominator\Objects\Table</pre>
+                                <div class="labels">
+                                                                                                        </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        var
+                                                    </th>
+                                                    <td>
+                                                                                                                    
+                                                                                                            </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <th>
+                                                        access
+                                                    </th>
+                                                    <td>
+                                                                                                                    <p>private</p>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+
+                                                                                    <h3>Type(s)</h3>
+                                            <code><a href="../classes/Framework.Dominator.Objects.Table.html">\Framework\Dominator\Objects\Table</a></code>
+                                                                            </div>
+                                </div>
+                            </div>
+                                                    <a id="property_thead"> </a>
+                            <div class="element clickable property  private property_thead" data-toggle="collapse" data-target=".property_thead .collapse">
+                                <h2>Thead Object</h2>
+                                <pre>thead : \Framework\Dominator\Objects\Thead</pre>
+                                <div class="labels">
+                                                                                                        </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        var
+                                                    </th>
+                                                    <td>
+                                                                                                                    
+                                                                                                            </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <th>
+                                                        access
+                                                    </th>
+                                                    <td>
+                                                                                                                    <p>private</p>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+
+                                                                                    <h3>Type(s)</h3>
+                                            <code><a href="../classes/Framework.Dominator.Objects.Thead.html">\Framework\Dominator\Objects\Thead</a></code>
+                                                                            </div>
+                                </div>
+                            </div>
+                                                    <a id="property_tbody"> </a>
+                            <div class="element clickable property  private property_tbody" data-toggle="collapse" data-target=".property_tbody .collapse">
+                                <h2>Tbody Object</h2>
+                                <pre>tbody : \Framework\Dominator\Objects\Tbody</pre>
+                                <div class="labels">
+                                                                                                        </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        var
+                                                    </th>
+                                                    <td>
+                                                                                                                    
+                                                                                                            </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <th>
+                                                        access
+                                                    </th>
+                                                    <td>
+                                                                                                                    <p>private</p>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+
+                                                                                    <h3>Type(s)</h3>
+                                            <code><a href="../classes/Framework.Dominator.Objects.Tbody.html">\Framework\Dominator\Objects\Tbody</a></code>
+                                                                            </div>
+                                </div>
+                            </div>
+                                                    <a id="property_tfoot"> </a>
+                            <div class="element clickable property  private property_tfoot" data-toggle="collapse" data-target=".property_tfoot .collapse">
+                                <h2>Tfoot Object</h2>
+                                <pre>tfoot : \Framework\Dominator\Objects\Tfoot</pre>
+                                <div class="labels">
+                                                                                                        </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        var
+                                                    </th>
+                                                    <td>
+                                                                                                                    
+                                                                                                            </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <th>
+                                                        access
+                                                    </th>
+                                                    <td>
+                                                                                                                    <p>private</p>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+
+                                                                                    <h3>Type(s)</h3>
+                                            <code>\Framework\Dominator\Objects\Tfoot</code>
+                                                                            </div>
+                                </div>
+                            </div>
+                                                    <a id="property_tableConfiguration"> </a>
+                            <div class="element clickable property  private property_tableConfiguration" data-toggle="collapse" data-target=".property_tableConfiguration .collapse">
+                                <h2>Table configuration object</h2>
+                                <pre>tableConfiguration : object</pre>
+                                <div class="labels">
+                                                                                                        </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        var
+                                                    </th>
+                                                    <td>
+                                                                                                                    
+                                                                                                            </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <th>
+                                                        access
+                                                    </th>
+                                                    <td>
+                                                                                                                    <p>private</p>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+
+                                                                                    <h3>Type(s)</h3>
+                                            <code>object</code>
+                                                                            </div>
+                                </div>
+                            </div>
+                                                    <a id="property_theadConfiguration"> </a>
+                            <div class="element clickable property  private property_theadConfiguration" data-toggle="collapse" data-target=".property_theadConfiguration .collapse">
+                                <h2>Thead configuration object</h2>
+                                <pre>theadConfiguration : object</pre>
+                                <div class="labels">
+                                                                                                        </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        var
+                                                    </th>
+                                                    <td>
+                                                                                                                    
+                                                                                                            </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <th>
+                                                        access
+                                                    </th>
+                                                    <td>
+                                                                                                                    <p>private</p>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+
+                                                                                    <h3>Type(s)</h3>
+                                            <code>object</code>
+                                                                            </div>
+                                </div>
+                            </div>
+                                                    <a id="property_tbodyConfiguration"> </a>
+                            <div class="element clickable property  private property_tbodyConfiguration" data-toggle="collapse" data-target=".property_tbodyConfiguration .collapse">
+                                <h2>Tbody configuration object</h2>
+                                <pre>tbodyConfiguration : object</pre>
+                                <div class="labels">
+                                                                                                        </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        var
+                                                    </th>
+                                                    <td>
+                                                                                                                    
+                                                                                                            </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <th>
+                                                        access
+                                                    </th>
+                                                    <td>
+                                                                                                                    <p>private</p>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+
+                                                                                    <h3>Type(s)</h3>
+                                            <code>object</code>
+                                                                            </div>
+                                </div>
+                            </div>
+                                                    <a id="property_tfootConfiguration"> </a>
+                            <div class="element clickable property  private property_tfootConfiguration" data-toggle="collapse" data-target=".property_tfootConfiguration .collapse">
+                                <h2>Tfoot configuration object</h2>
+                                <pre>tfootConfiguration : false|object</pre>
+                                <div class="labels">
+                                                                                                        </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        var
+                                                    </th>
+                                                    <td>
+                                                                                                                    
+                                                                                                            </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <th>
+                                                        access
+                                                    </th>
+                                                    <td>
+                                                                                                                    <p>private</p>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+
+                                                                                    <h3>Type(s)</h3>
+                                            <code>false|object</code>
+                                                                            </div>
+                                </div>
+                            </div>
+                                                    <a id="property_trConfiguration"> </a>
+                            <div class="element clickable property  private property_trConfiguration" data-toggle="collapse" data-target=".property_trConfiguration .collapse">
+                                <h2>Tr configuration object</h2>
+                                <pre>trConfiguration : false|object</pre>
+                                <div class="labels">
+                                                                                                        </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        var
+                                                    </th>
+                                                    <td>
+                                                                                                                    
+                                                                                                            </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <th>
+                                                        access
+                                                    </th>
+                                                    <td>
+                                                                                                                    <p>private</p>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+
+                                                                                    <h3>Type(s)</h3>
+                                            <code>false|object</code>
+                                                                            </div>
+                                </div>
+                            </div>
+                                                    <a id="property_headColumnConfiguration"> </a>
+                            <div class="element clickable property  private property_headColumnConfiguration" data-toggle="collapse" data-target=".property_headColumnConfiguration .collapse">
+                                <h2>Thead th configuration for the current column</h2>
+                                <pre>headColumnConfiguration : array</pre>
+                                <div class="labels">
+                                                                                                        </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        var
+                                                    </th>
+                                                    <td>
+                                                                                                                    
+                                                                                                            </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <th>
+                                                        access
+                                                    </th>
+                                                    <td>
+                                                                                                                    <p>private</p>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+
+                                                                                    <h3>Type(s)</h3>
+                                            <code>array</code>
+                                                                            </div>
+                                </div>
+                            </div>
+                                                    <a id="property_bodyColumnConfiguration"> </a>
+                            <div class="element clickable property  private property_bodyColumnConfiguration" data-toggle="collapse" data-target=".property_bodyColumnConfiguration .collapse">
+                                <h2>Tbody td configuration for the current column</h2>
+                                <pre>bodyColumnConfiguration : array</pre>
+                                <div class="labels">
+                                                                                                        </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        var
+                                                    </th>
+                                                    <td>
+                                                                                                                    
+                                                                                                            </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <th>
+                                                        access
+                                                    </th>
+                                                    <td>
+                                                                                                                    <p>private</p>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+
+                                                                                    <h3>Type(s)</h3>
+                                            <code>array</code>
+                                                                            </div>
+                                </div>
+                            </div>
+                                                    <a id="property_footColumnConfiguration"> </a>
+                            <div class="element clickable property  private property_footColumnConfiguration" data-toggle="collapse" data-target=".property_footColumnConfiguration .collapse">
+                                <h2>Tfoot td configuration for the current column</h2>
+                                <pre>footColumnConfiguration : array</pre>
+                                <div class="labels">
+                                                                                                        </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        var
+                                                    </th>
+                                                    <td>
+                                                                                                                    
+                                                                                                            </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <th>
+                                                        access
+                                                    </th>
+                                                    <td>
+                                                                                                                    <p>private</p>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+
+                                                                                    <h3>Type(s)</h3>
+                                            <code>array</code>
+                                                                            </div>
+                                </div>
+                            </div>
+                                                    <a id="property_evenClass"> </a>
+                            <div class="element clickable property  private property_evenClass" data-toggle="collapse" data-target=".property_evenClass .collapse">
+                                <h2>The class to use for even rows</h2>
+                                <pre>evenClass : string</pre>
+                                <div class="labels">
+                                                                                                        </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        var
+                                                    </th>
+                                                    <td>
+                                                                                                                    
+                                                                                                            </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <th>
+                                                        access
+                                                    </th>
+                                                    <td>
+                                                                                                                    <p>public</p>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+
+                                                                                    <h3>Type(s)</h3>
+                                            <code>string</code>
+                                                                            </div>
+                                </div>
+                            </div>
+                                                    <a id="property_oddClass"> </a>
+                            <div class="element clickable property  private property_oddClass" data-toggle="collapse" data-target=".property_oddClass .collapse">
+                                <h2>The class to use for odd rows</h2>
+                                <pre>oddClass : string</pre>
+                                <div class="labels">
+                                                                                                        </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        var
+                                                    </th>
+                                                    <td>
+                                                                                                                    
+                                                                                                            </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <th>
+                                                        access
+                                                    </th>
+                                                    <td>
+                                                                                                                    <p>public</p>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+
+                                                                                    <h3>Type(s)</h3>
+                                            <code>string</code>
+                                                                            </div>
+                                </div>
+                            </div>
+                                                    <a id="property_headData"> </a>
+                            <div class="element clickable property  private property_headData" data-toggle="collapse" data-target=".property_headData .collapse">
+                                <h2>data for the header</h2>
+                                <pre>headData : array</pre>
+                                <div class="labels">
+                                                                                                        </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        var
+                                                    </th>
+                                                    <td>
+                                                                                                                    
+                                                                                                            </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <th>
+                                                        access
+                                                    </th>
+                                                    <td>
+                                                                                                                    <p>private</p>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+
+                                                                                    <h3>Type(s)</h3>
+                                            <code>array</code>
+                                                                            </div>
+                                </div>
+                            </div>
+                                                    <a id="property_bodyData"> </a>
+                            <div class="element clickable property  private property_bodyData" data-toggle="collapse" data-target=".property_bodyData .collapse">
+                                <h2>Data for the body</h2>
+                                <pre>bodyData : array</pre>
+                                <div class="labels">
+                                                                                                        </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        var
+                                                    </th>
+                                                    <td>
+                                                                                                                    
+                                                                                                            </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <th>
+                                                        access
+                                                    </th>
+                                                    <td>
+                                                                                                                    <p>private</p>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+
+                                                                                    <h3>Type(s)</h3>
+                                            <code>array</code>
+                                                                            </div>
+                                </div>
+                            </div>
+                                                    <a id="property_footData"> </a>
+                            <div class="element clickable property  private property_footData" data-toggle="collapse" data-target=".property_footData .collapse">
+                                <h2>Data for the footer</h2>
+                                <pre>footData : array</pre>
+                                <div class="labels">
+                                                                                                        </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        var
+                                                    </th>
+                                                    <td>
+                                                                                                                    
+                                                                                                            </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <th>
+                                                        access
+                                                    </th>
+                                                    <td>
+                                                                                                                    <p>private</p>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+
+                                                                                    <h3>Type(s)</h3>
+                                            <code>array</code>
+                                                                            </div>
+                                </div>
+                            </div>
+                                                    <a id="property_thDefaultConfiguration"> </a>
+                            <div class="element clickable property  private property_thDefaultConfiguration" data-toggle="collapse" data-target=".property_thDefaultConfiguration .collapse">
+                                <h2>Th default configuration</h2>
+                                <pre>thDefaultConfiguration : object</pre>
+                                <div class="labels">
+                                                                                                        </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        var
+                                                    </th>
+                                                    <td>
+                                                                                                                    
+                                                                                                            </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <th>
+                                                        access
+                                                    </th>
+                                                    <td>
+                                                                                                                    <p>private</p>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+
+                                                                                    <h3>Type(s)</h3>
+                                            <code>object</code>
+                                                                            </div>
+                                </div>
+                            </div>
+                                                    <a id="property_tdDefaultConfiguration"> </a>
+                            <div class="element clickable property  private property_tdDefaultConfiguration" data-toggle="collapse" data-target=".property_tdDefaultConfiguration .collapse">
+                                <h2>Td default configuration</h2>
+                                <pre>tdDefaultConfiguration : object</pre>
+                                <div class="labels">
+                                                                                                        </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        var
+                                                    </th>
+                                                    <td>
+                                                                                                                    
+                                                                                                            </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <th>
+                                                        access
+                                                    </th>
+                                                    <td>
+                                                                                                                    <p>private</p>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+
+                                                                                    <h3>Type(s)</h3>
+                                            <code>object</code>
+                                                                            </div>
+                                </div>
+                            </div>
+                                                            </div>
+            </div>
+            <a id="\Framework\Support\Object\Table"></a>
+            <ul class="breadcrumb">
+                <li><a href="../index.html"><i class="icon-custom icon-class"></i></a></li>
+                    
+    
+    <li><span class="divider">\</span><a href="../namespaces/Framework.Support.Object.html">Object</a></li>
+
+                <li class="active"><span class="divider">\</span><a href="../classes/Framework.Support.Object.Table.html">Table</a></li>
+            </ul>
+        </div>
+    </div>
+
+    </div>
+
+        <footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by
+            <a href="http://glyphicons.com/">Glyphicons</a>.<br/>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and<br/>
+            generated on Mon, 01 Feb 2016 18:11:14 +0000.<br/>
+    </footer>
+    </body>
+</html>

@@ -1,0 +1,125 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * Admit
+ *
+ * @package Framework\Core
+ * @version 1.2.0
+ */
+namespace Framework\Core;
+
+/**
+ * Admit
+ *
+ * This is in charge of logging errors
+ */
+class Admit extends Core
+{
+  /****************************************************/
+  /*                   CONTROLLERS                    */
+  /****************************************************/
+  /** @var \Framework\Commander\ExceptionLog $_cExceptionLog **/
+  private $_cExceptionLog;
+  /****************************************************/
+  /*                   DATA MEMBERS                   */
+  /****************************************************/
+  /** @var  \Framework\Exceptional\BaseException $_dLastException */
+  private $_dLastException;
+  /** @var array $_dExceptionHistory */
+  private $_dExceptionHistory = [];
+
+  /**
+   * Construct the Admit object
+   * @method construct
+   * @return mixed
+   */
+  public static function construct()
+  {
+    /** @var Contour $instance */
+    $instance = self::getInstance();
+    /** @var \Framework\Commander\ExceptionLog $_cExceptionLog **/
+    $instance-&gt;_cExceptionLog = Receptionist::controller(&quot;ExceptionLog&quot;, true);
+    /** Return the configured Admit instance */
+    return $instance;
+  }
+
+  /**
+   * Set the last exception variable
+   * @method _setLastException
+   * @param $exception
+   * @return mixed
+   */
+  public static function _setLastException($exception)
+  {
+    $instance = self::getInstance();
+    $instance-&gt;_dLastException = $exception;
+    return $instance-&gt;_updateExceptionHistory($exception);
+  }
+
+  /**
+   * Add the most recent exception to the history
+   * @method _updateExceptionHistory
+   * @param $exception
+   * @return int
+   */
+  private function _updateExceptionHistory($exception)
+  {
+    /** Push the new exception into the exception history */
+    array_push($this-&gt;_dExceptionHistory, $exception);
+    /** Return the index of this exception in the log */
+    return (sizeof($this-&gt;_dExceptionHistory)-1);
+  }
+
+  /**
+   * Log an exception
+   * @method log
+   * @param $exception
+   * @param $host
+   */
+  public function log($exception, $host)
+  { $this-&gt;_cExceptionLog-&gt;log($exception, $host); }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

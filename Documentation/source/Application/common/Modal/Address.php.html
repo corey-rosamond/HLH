@@ -1,0 +1,121 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * User
+ *
+ * @package Framework\Modulus\Model
+ * @version 1.0.0
+ */
+namespace Framework\Modulus\Modal;
+
+/**
+ * User
+ *
+ * This is your main interface to the user table
+ */
+class Address extends \Framework\Modulus\Query
+{
+    /**
+     * @param $AddressLineOne
+     * @param $AddressLineTwo
+     * @param $City
+     * @param $State
+     * @param $Zip
+     * @return mixed
+     */
+    public function CreateAndReturn($AddressLineOne, $AddressLineTwo, $City, $State, $Zip)
+    {
+        $Query = &quot;INSERT INTO `funnel-address` ( `address-line-one`, `address-line-two`, `city`, `state`, `zip` ) VALUES
+                  ( :AddressLineOne, :AddressLineTwo, :City, :State, :Zip )&quot;;
+        $PreparedStatement = $this-&gt;Prepare($Query);
+        $PreparedStatement-&gt;bindValue(':AddressLineOne', $AddressLineOne, \PDO::PARAM_STR);
+        $PreparedStatement-&gt;bindValue(':AddressLineTwo', $AddressLineTwo, \PDO::PARAM_STR);
+        $PreparedStatement-&gt;bindValue(':City', $City, \PDO::PARAM_STR);
+        $PreparedStatement-&gt;bindValue(':State', $State, \PDO::PARAM_STR);
+        $PreparedStatement-&gt;bindValue(':Zip', $Zip, \PDO::PARAM_INT);
+        $this-&gt;Execute($PreparedStatement);
+        return $this-&gt;AddressByKey($this-&gt;LastInsertID());
+    }
+    /**
+     * @param $Key
+     * @param $AddressLineOne
+     * @param $AddressLineTwo
+     * @param $City
+     * @param $State
+     * @param $Zip
+     * @return mixed
+     */
+    public function UpdateAndReturn($Key, $AddressLineOne, $AddressLineTwo, $City, $State, $Zip)
+    {
+        $Query = &quot;Update `funnel-address` SET
+                    `address-line-one`=:AddressLineOne,
+                    `address-line-two`=:AddressLineTwo,
+                    `city`=:City,
+                    `state`=:State,
+                    `zip`=:Zip
+                    WHERE `key`=:Key&quot;;
+        $PreparedStatement = $this-&gt;Prepare($Query);
+        $PreparedStatement-&gt;bindValue(':AddressLineOne', $AddressLineOne, \PDO::PARAM_STR);
+        $PreparedStatement-&gt;bindValue(':AddressLineTwo', $AddressLineTwo, \PDO::PARAM_STR);
+        $PreparedStatement-&gt;bindValue(':City', $City, \PDO::PARAM_STR);
+        $PreparedStatement-&gt;bindValue(':State', $State, \PDO::PARAM_STR);
+        $PreparedStatement-&gt;bindValue(':Zip', $Zip, \PDO::PARAM_INT);
+        $PreparedStatement-&gt;bindValue(':Key', $Key, \PDO::PARAM_INT);
+        $this-&gt;Execute($PreparedStatement);
+        return $this-&gt;AddressByKey($Key);
+    }
+
+    public function get( $key )
+    {
+      $Query = &quot;SELECT * FROM `funnel-address` WHERE `key`=:Key&quot;;
+      $PreparedStatement = $this-&gt;Prepare($Query);
+      $PreparedStatement-&gt;bindValue(':Key', $key, \PDO::PARAM_STR);
+      $PreparedStatement = $this-&gt;Execute($PreparedStatement);
+      if ($PreparedStatement-&gt;rowCount() == 0) {return false;}
+      return $PreparedStatement-&gt;fetch(\PDO::FETCH_ASSOC);
+    }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

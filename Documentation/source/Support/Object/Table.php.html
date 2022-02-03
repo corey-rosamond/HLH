@@ -1,0 +1,432 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * Table
+ *
+ * @package Framework\Support\Object
+ * @version 1.0.0
+ */
+namespace Framework\Support\Object;
+
+/**
+ * Table
+ *
+ * This helps generate a very clean table
+ */
+class Table{
+
+  /***************************
+  *      Object Variables    *
+  /**************************/
+
+  /**
+   * Table Object
+   * @var     \Framework\Dominator\Objects\Table  $this-&gt;table
+   * @access  private
+   */
+  private $table;
+
+  /**
+   * Thead Object
+   * @var     \Framework\Dominator\Objects\Thead  $this-&gt;thead
+   * @access  private
+   */
+  private $thead;
+
+  /**
+   * Tbody Object
+   * @var     \Framework\Dominator\Objects\Tbody  $this-&gt;tbody
+   * @access  private
+   */
+  private $tbody;
+
+  /**
+   * Tfoot Object
+   * @var     \Framework\Dominator\Objects\Tfoot  $this-&gt;tfoot
+   * @access  private
+   */
+  private $tfoot;
+
+  /*********************************
+  *    DOM CONFIGURATION OBJECTS   *
+  /********************************/
+
+  /**
+   * Table configuration object
+   * @var     object  $this-&gt;tableConfiguration
+   * @access  private
+   */
+  private $tableConfiguration = [ &quot;id&quot; =&gt; false, &quot;name&quot; =&gt; false, &quot;attributes&quot; =&gt; [ &quot;cellspacing&quot; =&gt; &quot;0&quot;, &quot;cellpadding&quot; =&gt; &quot;0&quot; ], &quot;classes&quot; =&gt; [ &quot;framework-table&quot; ], &quot;styles&quot;  =&gt; false, &quot;text&quot; =&gt; false ];
+
+  /**
+   * Thead configuration object
+   * @var     object  $this-&gt;theadConfiguration
+   * @access  private
+   */
+  private $theadConfiguration = [ &quot;id&quot; =&gt; false, &quot;name&quot; =&gt; false, &quot;attributes&quot; =&gt; false, &quot;classes&quot; =&gt; [ &quot;framework-table-head&quot; ], &quot;styles&quot;  =&gt; false, &quot;text&quot; =&gt; false ];
+
+  /**
+   * Tbody configuration object
+   * @var     object  $this-&gt;tbodyConfiguration
+   * @access  private
+   */
+  private $tbodyConfiguration = [ &quot;id&quot; =&gt; false, &quot;name&quot; =&gt; false, &quot;attributes&quot; =&gt; false, &quot;classes&quot; =&gt; [ &quot;framework-table-body&quot; ], &quot;styles&quot;  =&gt; false, &quot;text&quot; =&gt; false ];
+
+  /**
+   * Tfoot configuration object
+   * @var     false|object  $this-&gt;tfootConfiguration
+   * @access  private
+   */
+  private $tfootConfiguration = [ &quot;id&quot; =&gt; false, &quot;name&quot; =&gt; false, &quot;attributes&quot; =&gt; false, &quot;classes&quot; =&gt; [ &quot;framework-table-head&quot; ], &quot;styles&quot;  =&gt; false, &quot;text&quot; =&gt; false ];
+
+  /**
+   * Tr configuration object
+   * @var     false|object  $this-&gt;trConfiguration
+   * @access  private
+   */
+  private $trConfiguration = [ &quot;id&quot; =&gt; false, &quot;name&quot; =&gt; false, &quot;attributes&quot; =&gt; false, &quot;classes&quot; =&gt; false, &quot;styles&quot;  =&gt; false, &quot;text&quot; =&gt; false ];
+
+  /**
+   * Thead th configuration for the current column
+   * @var     array         $this-&gt;hcolconfiguration
+   * @access  private
+   */
+  private $headColumnConfiguration = [];
+
+  /**
+   * Tbody td configuration for the current column
+   * @var     array         $this-&gt;bodyColumnConfiguration
+   * @access  private
+   */
+  private $bodyColumnConfiguration = [];
+
+  /**
+   * Tfoot td configuration for the current column
+   * @var     array         $this-&gt;footColumnConfiguration
+   * @access  private
+   */
+  private $footColumnConfiguration = [];
+
+  /***************************
+  *     Setting Variables    *
+  /**************************/
+
+  /**
+   * The class to use for even rows
+   * @var     string  $this-&gt;evenClass
+   * @access  public
+   */
+  private $evenClass = 'even-row';
+
+  /**
+   * The class to use for odd rows
+   * @var     string  $this-&gt;oddClass
+   * @access  public
+   */
+  private $oddClass = 'odd-row';
+
+  /***************************
+  *       DATA Variables     *
+  /**************************/
+
+  /**
+   * data for the header
+   * @var     array   $this-&gt;headData
+   * @access  private
+   */
+  private $headData = [ ['one', 'two', 'three', 'four', 'five' ] ];
+
+  /**
+   * Data for the body
+   * @var     array   $this-&gt;bodyData
+   * @access  private
+   */
+  private $bodyData = [
+    [ '1', '2', '3', '4', '5' ],
+    [ '1', '2', '3', '4', '5' ],
+    [ '1', '2', '3', '4', '5' ],
+    [ '1', '2', '3', '4', '5' ],
+    [ '1', '2', '3', '4', '5' ],
+    [ '1', '2', '3', '4', '5' ]
+  ];
+
+  /**
+   * Data for the footer
+   * @var     array   $this-&gt;footData
+   * @access  private
+   */
+  private $footData = [];
+
+
+  /*********************************
+  *   DEFAULT DOM CONFIGURATIONS   *
+  /********************************/
+
+  /**
+   * Th default configuration
+   * @var     object  $this-&gt;thDefaultConfiguration
+   * @access  private
+   */
+  private $thDefaultConfiguration =  [ &quot;id&quot; =&gt; false, &quot;name&quot; =&gt; false, &quot;attributes&quot; =&gt; false, &quot;classes&quot; =&gt; false, &quot;styles&quot;  =&gt; false, &quot;text&quot; =&gt; false ];
+
+  /**
+   * Td default configuration
+   * @var     object  $this-&gt;tdDefaultConfiguration
+   * @access  private
+   */
+  private $tdDefaultConfiguration =  [ &quot;id&quot; =&gt; false, &quot;name&quot; =&gt; false, &quot;attributes&quot; =&gt; false, &quot;classes&quot; =&gt; false, &quot;styles&quot;  =&gt; false, &quot;text&quot; =&gt; false ];
+
+  /***************************
+  *    	  BASE METhODS       *
+  /**************************/
+
+  /**
+   * This function builds out all of the options that are in the table object
+   * @method  __construct
+   * @param   array|false      $headData                  Array of data to populate into the section or false
+   * @param   array|false      $bodyData                  Array of data to populate into the section or false
+   * @param   array|false      $footData                  Array of data to populate into the section or false
+   * @param   false|object     $tableConfiguration        Dom Configuration object or false if not provided
+   * @param   false|object     $theadConfiguration        Dom Configuration object or false if not provided
+   * @param   false|object     $tbodyConfiguration        Dom Configuration object or false if not provided
+   * @param   false|object     $tfootConfiguration        Dom Configuration object or false if not provided
+   * @param   false|object     $trConfiguration           Dom Configuration object or false if not provided
+   * @param   false|array      $headColumnConfiguration   Dom Configuration object or false if not provided
+   * @param   false|array      $bodyColumnConfiguration   Dom Configuration object or false if not provided
+   * @param   false|array      $footColumnConfiguration   Dom Configuration object or false if not provided
+   * @param   false|string     $evenClass                 String with class to use when row is odd or false
+   * @param   false|string     $oddClass                  String with class to use when row is even or false
+   * @return  $this
+   * @access  public
+   */
+  public function __construct(
+    $headData = false,
+    $bodyData = false,
+    $footData = false,
+    $tableConfiguration = false,
+    $theadConfiguration = false,
+    $tbodyConfiguration = false,
+    $tfootConfiguration = false,
+    $trConfiguration = false,
+    $headColumnConfiguration = false,
+    $bodyColumnConfiguration = false,
+    $footColumnConfiguration = false,
+    $evenClass = false,
+    $oddClass = false
+  ){
+    /** If we have head data seet it */
+    if( $headData ){ $this-&gt;headData = $headData; }
+    /** If we have body data seet it */
+    if( $bodyData ){ $this-&gt;bodyData = $headData; }
+    /** If we have foot data seet it */
+    if( $footData ){ $this-&gt;footData = $headData; }
+    /** if we have tableConfiguration set it */
+    if( $tableConfiguration ){ $this-&gt;tableConfiguration = $tableConfiguration; }
+    /** if we have theadConfiguration set it */
+    if( $theadConfiguration ){ $this-&gt;theadConfiguration = $theadConfiguration; }
+    /** if we have tbodyConfiguration set it */
+    if( $tbodyConfiguration ){ $this-&gt;tbodyConfiguration = $tbodyConfiguration; }
+    /** if we have theadConfiguration set it */
+    if( $tfootConfiguration ){ $this-&gt;tfootConfiguration = $tfootConfiguration; }
+    /** if we have trConfiguration set it */
+    if( $trConfiguration ){ $this-&gt;trConfiguration = $trConfiguration; }
+    /** if we have headColumnConfiguration set it */
+    if( $headColumnConfiguration ){ $this-&gt;headColumnConfiguration = $headColumnConfiguration; }
+    /** if we have bodyColumnConfiguration set it */
+    if( $bodyColumnConfiguration ){ $this-&gt;bodyColumnConfiguration = $bodyColumnConfiguration; }
+    /** if we have footColumnConfiguration set it */
+    if( $footColumnConfiguration ){ $this-&gt;footColumnConfiguration = $footColumnConfiguration; }
+    /** if we have evenClass set it */
+    if( $evenClass ){ $this-&gt;evenClass = $evenClass; }
+    /** if we have oddClass set it */
+    if( $oddClass ){ $this-&gt;oddClass = $oddClass; }
+    /** Build the table it is the foundation */
+    $this-&gt;table = new \Framework\Dominator\Objects\Table( $this-&gt;tableConfiguration );
+    /** Append the the new thead object to the table and save the reference */
+    $this-&gt;thead = $this-&gt;table-&gt;append( ( new \Framework\Dominator\Objects\Thead( $this-&gt;theadConfiguration ) ) );
+    /** Append the the new thead object to the table and save the reference */
+    $this-&gt;tbody = $this-&gt;table-&gt;append( ( new \Framework\Dominator\Objects\Tbody( $this-&gt;tbodyConfiguration ) ) );
+    /** Append the the new thead object to the table and save the reference */
+    $this-&gt;tfoot = $this-&gt;table-&gt;append( ( new \Framework\Dominator\Objects\Tfoot( $this-&gt;tfootConfiguration ) ) );
+    /** Done return this */
+    return $this;
+  }
+
+  /*********************************
+  *   	   CONSTRUCT METHODS       *
+  /********************************/
+
+  /**
+   * Construct all the elements in the data objects
+   * @method construct
+   * @return boolean
+   * @access private
+   */
+  private function construct(){
+    /** Construct the head */
+    $this-&gt;constructSection( $this-&gt;thead, &quot;\Framework\Dominator\Objects\Th&quot;, $this-&gt;headData, $this-&gt;trConfiguration, $this-&gt;headColumnConfiguration, $this-&gt;thDefaultConfiguration );
+    /** Construct the body */
+    $this-&gt;constructSection( $this-&gt;tbody, &quot;\Framework\Dominator\Objects\Td&quot;, $this-&gt;bodyData, $this-&gt;trConfiguration, $this-&gt;bodyColumnConfiguration, $this-&gt;tdDefaultConfiguration );
+    /** Construct the foot */
+    $this-&gt;constructSection( $this-&gt;tfoot, &quot;\Framework\Dominator\Objects\Td&quot;, $this-&gt;footData, $this-&gt;trConfiguration, $this-&gt;footColumnConfiguration, $this-&gt;tdDefaultConfiguration );
+    /** Done Return */
+    return true;
+  }
+
+  /**
+   * Construct the head section of this table
+   * @method  constructSection
+   * @param   DocumentObject                      $section                    Reference to the section we are constructing
+   * @param   string                              $cellName                   String representation of the cell this section builds
+   * @param   array                               $data                       MultiDimensional array of table data
+   * @param   array                               $trConfiguration            TableRow configuration object
+   * @param   array                               $columnConfiguration        Array of configuration objects relating to their column
+   * @param   object                              $cellDefaultConfiguration   Default TH Configuration Object
+   * @return  boolean                                                         Returns true when complete
+   * @uses    \Framework\Dominator\Objects\Tr
+   * @uses    \Framework\Dominator\Objects\Td
+   * @uses    \Framework\Dominator\Objects\Th
+   * @uses    \Framework\Dominator\Objects\Text
+   * @access  private
+   */
+  private function constructSection( $section, $cellName, $data, $trConfiguration, $columnConfiguration, $cellDefaultConfiguration ){
+    /** If name was provided set it */
+    if( count( $data ) === 0 ){ return false; }
+    /** Get the first data object */
+    $row = reset( $data );
+    /** Ok we have data Get the columnQuantity */
+    $columnQuantity = count( reset( $row ) );
+    /** Get the columnConfiguration Quantity */
+    $columnConfigurationQuantity = count( $columnConfiguration );
+    /** Make our initial TR */
+    $TR = $this-&gt;appendTR( $section, $trConfiguration );
+    /** Loop through the cells in the row */
+    foreach( $row as $key =&gt; $value ){
+      /** Check if the columnConfiguration has this index */
+      if( !isset($columnConfiguration[$key])){
+        /** Configuration missing add it */
+        $columnConfiguration[$key] = $cellDefaultConfiguration;
+      }
+      /** Append new Cell to TR and return */
+      $CELL = $this-&gt;appendTD( $TR, $columnConfiguration[$key] )-&gt;setText( $value );
+    }
+    /** Loop throught the data members */
+    foreach( $data as $row ){
+      /** Make and capture a reference to the new TR */
+      $TR = $this-&gt;appendTR( $section, $trConfiguration );
+      foreach( $row as $columen =&gt; $cell ){
+        /** Loop through the columns */
+        $TD = $this-&gt;appendTD( $TR, $columnConfiguration[ $columen ] )-&gt;setText( $value );
+      }
+    }
+  }
+
+  /*********************************
+  *   	   APPEND METHODS          *
+  /********************************/
+
+  /**
+   * Append the tr object to the target and
+   * pass along the configuration object
+   * @method  appendTR
+   * @param   DomcumentObject     $target         The object we are going to append to
+   * @param   array               $configuration  Array of DocumentObject configuration settings
+   * @return  DocumentObject                      Returns a reference to the location of the object in the stack
+   * @access private
+   */
+  private function appendTR( $target, $configuration = false )
+  { return $target-&gt;append( ( new \Framework\Dominator\Objects\Tr( $configuration ) ) ); }
+
+  /**
+   * Append the td object to the target and
+   * pass along the configuration object
+   * @method appendTD
+   * @param  ConfigurationObject  $target The location to append this to
+   * @return DocumentObject               Reference to the new object in the collection
+   * @access private
+   */
+  private function appendTD( $target, $configuration = false)
+  { return $target-&gt;append( ( new \Framework\Dominator\Objects\Td( $configuration ) ) ); }
+
+  /**
+   * Append the th object to the target and
+   * pass along the configuration object
+   * @method appendTH
+   * @param  ConfigurationObject  $target The location to append this to
+   * @return DocumentObject               Reference to the new object in the collection
+   * @access private
+   */
+  private function appendTH( $target, $configuration = false )
+  { return $target-&gt;append( ( new \Framework\Dominator\Objects\Th( $configuration ) ) ); }
+
+  /**
+   * Append the text object to the target and
+   * pass along the configuration object
+   * @method appendText
+   * @param  ConfigurationObject  $target The location to append this to
+   * @return DocumentObject               Reference to the new object in the collection
+   * @access private
+   */
+  private function appendText( $target, $configuration = false)
+  { return $target-&gt;append( ( new \Framework\Dominator\Objects\Text( $configuration ) ) ); }
+
+  /*********************************
+  *   	   RENDER METHODS          *
+  /********************************/
+
+  /**
+   * Render the page
+   * @method render
+   * @return [type] [description]
+   * @access public
+   */
+  public function render(){
+    $this-&gt;construct();
+    /** Construct done render it */
+    return $this-&gt;table-&gt;render();
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

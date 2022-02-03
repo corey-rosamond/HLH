@@ -1,0 +1,173 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * Datatable
+ *
+ * @package App\Objects
+ * @version 1.0.0
+ */
+namespace Framework\Support\Object;
+
+/**
+ * Datatable
+ *
+ * As a building block for our new system we needed a faster more efficent way to create these objects. This is it
+ */
+class Datatable{
+
+	/**
+	 * We store the html for the datatable here while building it
+	 * @var    string
+	 * @access private
+	 */
+	private $html = &quot;&quot;;
+
+	/**
+	 * If an id has been set it will be stored here
+	 * @var    string
+	 * @access private
+	 */
+	private $id;
+
+	/**
+	 * An arry of the all the column definitions
+	 * @var array
+	 * @access private
+	 */
+	private $columns;
+
+  /**
+   * Construct the datatable object
+	 * @method __construct
+	 * @return this      Return this for method chaining
+	 * @access public
+	 */
+	public function __construct( $id, $columns = false )
+  {
+		$this-&gt;id = $id;
+		if($columns){ $this-&gt;columns = $columns; }
+		return $this;
+	}
+
+  /**
+   * This is called when you are done adding and setting things on the datatable and want the html
+   * @method finalize
+   * @return string   All the html needed to build the datatable
+   * @access public
+   */
+	public function finalize()
+  {
+		$return = '&lt;table class=&quot;table table-striped table-bordered table-hover dt-responsive DataTbl&quot; id=&quot;'.$this-&gt;id.'&quot; data-datatable-tools=&quot;&quot; style=&quot;margin:0px;&quot; width=&quot;100%&quot;&gt;';
+      /** Start table header */
+			$return .= '&lt;thead&gt;&lt;tr&gt;';
+				if(count($this-&gt;columns)&gt;=1){
+					foreach($this-&gt;columns as $column){
+						$return .= '&lt;th
+							style=&quot;'.((isset($column['style']))?$column['style']:&quot;&quot;).'&quot;
+							data-datatable-order=&quot;'.((isset($column['order']))?$column['order']:'').'&quot;&gt;'.$column['label'].'&lt;/th&gt;';
+					}
+				}
+			$return .= '&lt;/tr&gt;&lt;/thead&gt;';
+      /** End table header */
+			$return .= &quot;&lt;tbody&gt;{$this-&gt;html}&lt;/tbody&gt;&quot;;
+		$return .= '&lt;/table&gt;';
+		return $return;
+	}
+
+	/**
+	 * Add a row to the datatables
+	 * @method addRow
+	 * @param  array $data An array of the values to put in the row
+	 * @return this        Return this for method chaining
+	 * @access public
+	 */
+	public function addRow( $data ){
+		$columnIndex = 0;
+		$content = &quot;&quot;;
+		foreach ( $data as $cell ){
+			$content .= &quot;&lt;td style=\&quot;{$this-&gt;columnStyle( $columnIndex )}\&quot;&gt;{$cell}&lt;/td&gt;&quot;;
+			$columnIndex++;
+		}
+		$this-&gt;html .= &quot;&lt;tr&gt;{$content}&lt;/tr&gt;&quot;;
+    return $this;
+	}
+
+	private function columnStyle( $index )
+	{
+		if( !isset( $this-&gt;columns[$index]['style']) ){
+			return &quot;&quot;;
+		}
+		return $this-&gt;columns[$index]['style'];
+	}
+
+
+	/**
+	 * Set the title attribute for the datatable itself
+	 * @method setTitle
+	 * @param  string   $title The title for the datatable
+	 * @return this            Return this for method chaining
+	 * @access public
+	 */
+	public function setTitle( $title ){
+		$this-&gt;title = $title;
+		return $this;
+	}
+
+	/**
+	 * Set the Column titles and definitions
+	 * @method setColumns
+	 * @param  array     $columns  Set the column titles as well as their attributes
+	 * @return this                Return this for method chaining
+	 * @access public
+	 */
+	public function setColumns( $columns ){
+		$this-&gt;columns = $columns;
+		return $this;
+	}
+
+
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

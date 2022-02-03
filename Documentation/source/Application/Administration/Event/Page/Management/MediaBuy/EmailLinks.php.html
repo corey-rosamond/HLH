@@ -1,0 +1,97 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * EmailLinks
+ *
+ * @package App\Event\Page\Management\MediaBuy
+ * @version 1.2.0
+ */
+namespace App\Event\Page\Management\MediaBuy;
+
+/**
+ * EmailLinks
+ *
+ * Tracking links
+ */
+\Framework\_IncludeCorrect( APP_ROOT . &quot;Abstracts&quot; . DSEP . &quot;FunnelPage.php&quot; );
+class EmailLinks extends \App\Abstracts\Page
+{
+  /** @var boolean $requiresLogin */
+  public static $requiresLogin = true;
+  /** @var boolean|string $permissionGroup */
+  public static $permissionGroup = false;
+  /** @var boolean|string $permission */
+  public static $permission = false;
+  /** @var array $modal Modals you want the framework to pre-load */
+  protected $modal = [];
+  /** @var array $template Templates you want the framework to preload */
+  protected $template = [];
+  /** @var array $controller Controllers you want the framework to preload */
+  protected $controller = [];
+  /** @var array $pageHeader The header for this page */
+  protected $pageHeader = &quot;MediaBuy: &quot;;
+  /** @var string $pageSubHeader A small version of the hearder appears to the right of it */
+  protected $pageSubHeader = &quot;Links&quot;;
+
+  /**
+   * Advent calls this to build the page body
+   * @method  body
+   * @param   array   $paramaters   This is an optional array of paramtars that can be passed
+   * @return  string                The html needed to render the body for this page
+   * @access  public
+   */
+  public function Body(array $paramaters = array()){
+    /** Set the document title */
+    $this-&gt;setDocumentTitle('MediaBuy: Links');
+    /** @var \Framework\Commander\Document $_cDocument */
+    $this-&gt;_cDocument = \Framework\Core\Receptionist::controller('Document',true);
+    /** Get the tracking Master datatable */
+    $this-&gt;_datatableMediaBuyEmailLink = \Framework\Core\Receptionist::datatable('MediaBuyEmailLink');
+    /** Write the datatable to the body */
+    $this-&gt;writeBody($this-&gt;_cDocument-&gt;portlet('box','blue-sharp','fa fa-link','Tracking Links', '', $this-&gt;_datatableMediaBuyEmailLink-&gt;render(), [], []));
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,181 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * Text
+ *
+ * @package Framework\Dominator\Objects
+ * @version 1.0.0
+ */
+namespace Framework\Dominator\Objects;
+
+/**
+ * Text
+ *
+ * The text object
+ */
+class Text {
+
+  /**
+   * The text
+   * @var string $this-&gt;text
+   * @access private
+   */
+  private $text;
+
+  /**
+   * The node name for this object
+   * @var string $this-&gt;nodeName
+   * @access private
+   */
+  private $nodeName;
+
+  /**
+   * Reference to the parent node of this object or false
+   * @var     \Framework\Dominator\Support\DocumenObject|false  $this-&gt;parentNode
+   * @access  private
+   */
+  private $parentNode;
+
+  /**
+   * Construct the text element
+   * @method __construct
+   * @param  string      $text Value we are setting text to
+   * @return $this
+   * @access public
+   */
+  public function __construct( $text = null ){
+    /** Initalize text with the value passed */
+    $this-&gt;setText( $text );
+    /** Set the node name */
+    $this-&gt;nodeName = 'text';
+    /** Return this */
+    return $this;
+  }
+
+  /**
+   * Destroy the text object
+   * @method __destruct
+   * @access public
+   */
+  public function __destruct(){
+    unset( $this-&gt;text );
+    unset( $this-&gt;nodeName );
+  }
+
+  /**
+   * Return the node name
+   * @method nodeName
+   * @return string
+   * @access public
+   */
+  public function nodeName(){
+    return $this-&gt;nodeName;
+  }
+
+  /**
+   * Set the parent node refererence
+   * @method  setParentNode
+   * @param   \Framework\Dominator\Support\DocumenObject|\Framework\Dominator\Objects\Text|false
+   * @access  public
+   */
+  public function setParentNode( $node ){
+    $this-&gt;parentNode = $node;
+  }
+
+  /**
+   * Return the parentNode reference or false
+   * @method  parentNode
+   * @return  \Framework\Dominator\Support\DocumenObject|\Framework\Dominator\Objects\Text|false
+   * @access  public
+   */
+  public function parentNode(){
+    /** Check if it has been set */
+    if( !$this-&gt;parentNode ){
+      /** Not set return false */
+      return false;
+    }
+    /** parentNode was set return it */
+    return $this-&gt;parentNode;
+  }
+
+  /**
+   * Set the text attribute for the object
+   * @method setText
+   * @param  string  $text Value we are setting text to
+   * @return boolean
+   * @access public
+   */
+  public function setText( $text ){
+    /** Set text to the value passed **/
+    if( !$this-&gt;text = $text ){
+      /** if we fail return false */
+      return false;
+    }
+    /** we did it return true */
+    return true;
+  }
+
+  /**
+   * get the value of text and return it
+   * @method getText
+   * @return string  The value stored in the text attribute
+   * @access public
+   */
+  public function getText(){
+    return $this-&gt;text;
+  }
+
+  /**
+   * Render the text node
+   * @method render
+   * @return string
+   * @access public
+   */
+  public function render(){
+    return $this-&gt;getText();
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,125 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * ComplemarOrderSubmit
+ *
+ * @package Framework\Docket
+ * @version 1.0.0
+ */
+namespace Framework\Docket;
+
+/**
+ * ComplemarOrderSubmit
+ *
+ * Submit orders to complemar
+ */
+class ComplemarOrderSubmit extends \Framework\Event\Cronjob
+{
+  /**
+   * Run the CronJob
+   * @method  run
+   * @param   array $data [description]
+   * @return  array        The status array [ 'status' =&gt; boolean, 'messages' =&gt; array[ 'status' =&gt; boolean, 'message'
+   *                       =&gt; 'some text']]
+   * @access  public
+   * @static
+   */
+  public static function run($data, $cCronTab)
+  {
+    try{
+      /** @var \Framework\Docket\ComplemarOrderSubmit $instance */
+      $instance = self::getInstance();
+      /** @var \Framework\Commander\Orders $cOrders */
+      $cOrders = \Framework\Core\Receptionist::controller('Orders', true);
+      /** @var \Framework\Commander\OrderNotes $cOrderNote */
+      $cOrderNote = \Framework\Core\Receptionist::controller('OrderNotes', true);
+      /** @var array|boolean $ordersReadyForFulfillment */
+      $ordersReadyForFulfillment = $cOrders-&gt;ordersReadyForFulfillment();
+      /** Check if we have jobs */
+      if(!$ordersReadyForFulfillment){
+        /** Log nothing to do */
+        $instance-&gt;addMessage($cCronTab::typeNotice, &quot;No orders ready for Fulfillment!&quot;);
+        /** Set dockets status back to idle */
+        $cCronTab-&gt;setStatus(0,\Framework\Commander\CronTab::statusIdle);
+        /** End the cronjob and turn our report in to docket */
+        return $instance-&gt;returnReport($cCronTab, $data);
+      }
+      /** @var \Framework\Commander\Commander $Complemar */
+      $Complemar = \Framework\Core\Receptionist::controller('Complemar', true);
+      /** @var array $order Iterate over the orders */
+      foreach($ordersReadyForFulfillment as $order){
+        /** @var integer|boolean $transKey */
+        $transKey = $Complemar-&gt;createOrderInComplemar($order);
+        /** Check if it failed */
+        if($transKey===false){
+          /** Log the error to the cron log */
+          $instance-&gt;addMessage(\Framework\Commander\CronTab::typeError, &quot;Order: {$order['Order']['key']}: FAILED TO SUBMIT! Message returned {$transKey}&quot;);
+          /** Log the error in order notes */
+          $cOrderNote-&gt;addOrderNote($order['Order']['key'], 0, &quot;FAILED TO SUBMIT TO COMPLEMAR! Message returned {$transKey}&quot;);
+          /** Finish this loop out and move to the next */
+          continue;
+        }
+        /** Set the transaction key returned to us by complemar in the order */
+        $cOrders-&gt;setComplemarTransactionKey($order['Order']['key'],$transKey);
+        /** Set the order as in fulfillment */
+        $cOrders-&gt;_setOrderStatus($order['Order']['key'], \Framework\Commander\Orders::fulfillment);
+        /** Log that we have done something */
+        $instance-&gt;addMessage($cCronTab::typeNotice, &quot;Order: {$order['Order']['key']} =&gt; Transaction Key: {$transKey}&quot;);
+      }
+      /** We are done return our report to docket */
+      return $instance-&gt;returnReport($cCronTab, $data);
+    } catch ( \Framework\Exceptional\BaseException $exception ){
+      /** @var array $trace Get the stack trace so we can log it */
+      $trace = print_r($exception-&gt;getTrace(), true);
+      /** Add an error message to this cron log */
+      $instance-&gt;addMessage($cCronTab::typeError, &quot;Fatal Error: {$exception-&gt;getMessage()} StackTrack: {$trace}&quot;);
+      /** @var boolean status set our status to false we failed */
+      $instance-&gt;status = false;
+      /** Return our error report to docket */
+      return $instance-&gt;returnReport($cCronTab, $data);
+    }
+  }
+}</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,373 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+
+namespace Framework\Commander;
+
+class Document extends \Framework\Support\Abstracts\Singleton
+{
+  public static function construct()
+  { return self::getInstance(); }
+
+  public static function close()
+  {
+    $instance = self::getInstance();
+    return $instance-&gt;_fRender().$instance-&gt;_eRender().$instance-&gt;_pRender();
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /**                                             FUNCTIONS                                               */
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////
+  private $_fCollection = [];
+
+  public function addFunction( $code )
+  { array_push( $this-&gt;_eCollection, $code ); }
+
+  private function _fRender()
+  { return &quot;&lt;script language=\&quot;javascript\&quot; type=\&quot;text/javascript\&quot;&gt;\n$(document).ready(function(){\n {$this-&gt;_fFunctions()} });&lt;/script&gt;&quot;; }
+
+  private function _fFunctions()
+  {
+    $buffer = &quot;&quot;;
+    foreach( $this-&gt;_fCollection as $function ){ $buffer .= &quot;{$function}&quot;; }
+    return $buffer;
+  }
+
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /**                                             EVENTS                                                  */
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////
+  private $_eCollection = [];
+
+  public function addEvent( $target, $type, $code )
+  { array_push( $this-&gt;_eCollection, [ 'target' =&gt; $target, 'type' =&gt; $type, 'code' =&gt; $code ] ); }
+
+  private function _eRender()
+  { return &quot;&lt;script language=\&quot;javascript\&quot; type=\&quot;text/javascript\&quot;&gt;\n$(document).ready(function(){\n {$this-&gt;_eEvents()} });&lt;/script&gt;&quot;; }
+
+  private function _eEvents()
+  {
+    $buffer = &quot;&quot;;
+    foreach( $this-&gt;_eCollection as $event ){
+      $buffer .= &quot;$(\&quot;#{$event['target']}\&quot;).on(\&quot;{$event['type']}\&quot;,function(event){ {$event['code']} });\n&quot;;
+    }
+    return $buffer;
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /**                                             POPUP                                                   */
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  private $_pCollection = [];
+
+  public function makePopupForm( $triggerId, $popupId, $saveId, $saveCode, $title, $content, $icon )
+  {
+    $this-&gt;addEvent( $triggerId, 'click', &quot;$(\&quot;#{$popupId}\&quot;).modal('show').css({'top':'20%'});\n&quot; );
+    $this-&gt;addEvent( $saveId, &quot;save&quot;, $saveCode );
+    array_push(
+      $this-&gt;_pCollection,
+      &quot;&lt;div id=\&quot;{$popupId}\&quot; class=\&quot;modal fade\&quot; tabindex=\&quot;-1\&quot; data-width=\&quot;760\&quot;&gt;
+        {$this-&gt;_pHeader($title, $icon)}
+        &lt;div class=\&quot;modal-body\&quot;&gt;{$content}&lt;/div&gt;
+        &lt;div class=\&quot;modal-footer bg-grey-steel\&quot;&gt;
+          &lt;button type=\&quot;button\&quot; data-dismiss=\&quot;modal\&quot; class=\&quot;btn btn-default btn-outline dark border-blue-dark\&quot;&gt;
+            &lt;i class=\&quot;fa fa-times fa-lg\&quot; style=\&quot;margin-top:-1px;\&quot;&gt;&lt;/i&gt; Close
+          &lt;/button&gt;
+          &lt;button type=\&quot;button\&quot; id=\&quot;{$saveId}\&quot; class=\&quot;btn btn-default green bold border-blue-dark save-model\&quot;&gt;
+            &lt;i class=\&quot;fa fa-check fa-lg\&quot; style=\&quot;margin-top:-1px;\&quot;&gt;&lt;/i&gt; Save changes
+          &lt;/button&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;&quot;
+    );
+  }
+
+  private function _pHeader( $title, $icon )
+  {
+    return &quot;
+    &lt;div class=\&quot;modal-header bg-grey-steel\&quot;&gt;
+      &lt;button type=\&quot;button\&quot; class=\&quot;close\&quot; data-dismiss=\&quot;modal\&quot; aria-hidden=\&quot;true\&quot;&gt;
+        &lt;span class=\&quot;fa-stack fa-lg\&quot;&gt;
+          &lt;i class=\&quot;fa fa-square-o fa-stack-2x font-blue-ebonyclay\&quot;&gt;&lt;/i&gt;
+          &lt;i class=\&quot;fa fa-times fa-stack-1x font-blue-ebonyclay\&quot; style=\&quot;margin-top:-2px;margin-left:0px;\&quot;&gt;&lt;/i&gt;
+        &lt;/span&gt;
+      &lt;/button&gt;
+      &lt;h4 class=\&quot;modal-title font-blue-ebonyclay\&quot;&gt; &lt;i class=\&quot;fa {$icon}\&quot;&gt;&lt;/i&gt;&amp;nbsp;&amp;nbsp;{$title} &lt;/h4&gt;
+    &lt;/div&gt;
+    &quot;;
+  }
+
+  private function _pPopups()
+  {
+    $buffer = &quot;&quot;;
+    foreach( $this-&gt;_pCollection as $popupContent ){
+      $buffer .= $popupContent;
+    }
+    return $buffer;
+  }
+
+  public function _pRender()
+  { return &quot;&lt;div class=\&quot;document-popup-container\&quot;&gt;{$this-&gt;_pPopups()}&lt;/div&gt;&quot;; }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /**                                           DATATABLE                                                 */
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  public function datatable( $id, $header = array(), $body = array() )
+  {
+    return &quot;
+    &lt;table class=\&quot;table table-striped table-bordered table-hover dt-responsive\&quot; id=\&quot;{$id}\&quot; data-datatable-tools=\&quot;\&quot; width=\&quot;100%\&quot; style=\&quot;margin-bottom:0px;\&quot;&gt;
+      &lt;thead&gt;{$this-&gt;_dTableHeader($header)}&lt;/thead&gt;
+      &lt;tbody&gt;{$this-&gt;_dTableBody($body,$header)}&lt;/tbody&gt;
+  	&lt;/table&gt;&quot;;
+  }
+
+  private function _dTableHeader( array $header = array() )
+  {
+    $buffer = '';
+		foreach($header as $column){
+      $style = ((isset($column['style']))?$column['style']:&quot;&quot;);
+      $order = ((isset($column['order']))?$column['order']:'');
+			$buffer .= &quot;&lt;th style=\&quot;{$style}\&quot; data-datatable-order=\&quot;{$order}\&quot;&gt; {$column['label']} &lt;/th&gt;&quot;;
+		}
+    return $buffer;
+  }
+
+  private function _dTableBody( array $body = array(), array $header = array() ){
+    $buffer = '';
+    foreach( $body as $row ){
+      $col = 0;
+      $buffer .= &quot;&lt;tr&gt;&quot;;
+      foreach ( $row as $cell ){
+        $style = ((isset($header[$col]['style']))?$header[$col]['style']:'');
+	      $buffer .= &quot;&lt;td style=\&quot;{$style}\&quot;&gt;{$cell}&lt;/td&gt;&quot;;
+		    $col++;
+		  }
+      $buffer .= &quot;&lt;/tr&gt;&quot;;
+    }
+    return $buffer;
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /**                                       PORTLET                                                       */
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  public function portlet( $type, $color, $icon = 'fa fa-gift', $subject = 'portlet', $helper = '', $content ='Content', $tools = array(), $actions = array(), $collapse = false )
+  {
+    $style = (($collapse)?'padding:0px 0px 0px 0px;':'');
+    return &quot;
+    &lt;div class=\&quot;portlet {$type} {$color}\&quot;&gt;
+      {$this-&gt;_pTitle($icon, $subject, $helper, $tools, $actions)}
+      &lt;div class=\&quot;portlet-body\&quot; style=\&quot;{$style}\&quot;&gt;{$content}&lt;/div&gt;
+    &lt;/div&gt;&quot;;
+  }
+
+  private function _pTitle( $icon, $subject, $helper = &quot;&quot;, $tools, $actions )
+  {
+    $tools = $this-&gt;_pTools( $tools );
+    $actions = $this-&gt;_pActions( $actions );
+    return &quot;
+    &lt;div class=\&quot;portlet-title\&quot;&gt;
+      &lt;div class=\&quot;caption\&quot;&gt;
+        &lt;i class=\&quot;{$icon}\&quot;&gt;&lt;/i&gt;
+        &lt;span class=\&quot;caption-subject\&quot;&gt; {$subject}&lt;/span&gt;
+        &lt;span class=\&quot;caption-helper\&quot;&gt; {$helper}&lt;/span&gt;
+      &lt;/div&gt;
+      &lt;div class=\&quot;tools\&quot;&gt;{$tools}&lt;/div&gt;
+      &lt;div class=\&quot;actions\&quot;&gt;{$actions}&lt;/div&gt;
+    &lt;/div&gt;&quot;;
+  }
+
+  private function _pTools( array $tools = array() )
+	{
+		$b = '';
+		foreach( $tools as $tool =&gt; $data ){
+			switch( $tool ){
+				case 'collapse':    $b .= '&lt;a href=&quot;javascript:;&quot; class=&quot;collapse&quot;&gt; &lt;/a&gt;&amp;nbsp;&amp;nbsp;';      break;
+				case 'fullscreen':  $b .= '&lt;a href=&quot;javascript:;&quot; class=&quot;fullscreen&quot;&gt; &lt;/a&gt;&amp;nbsp;&amp;nbsp;';    break;
+				case 'config':
+          $b .= '&lt;a href=&quot;javascript:;&quot;
+            data-simplicity-callback-type=&quot;click&quot;
+            data-simplicity-callback-action=&quot;'.$data['data-onclick'].'&quot;
+            class=&quot;config simplicity-callback&quot;&gt; &lt;/a&gt;&amp;nbsp;&amp;nbsp;';
+
+          break;
+				case 'removed':     $b .= '&lt;a href=&quot;javascript:;&quot; class=&quot;remove&quot;&gt; &lt;/a&gt;&amp;nbsp;&amp;nbsp;';        break;
+        case 'button':
+					if( !isset( $action['text'] )){          $action['text']         = 'Button Text';      }
+					if( !isset( $action['button-class'] )){  $action['button-class'] = 'btn btn-default';  }
+					if( !isset( $action['icon'] )){          $action['icon']         = 'fa fa-pencil';     }
+					$b .= &quot;&lt;a class=\&quot;{$action['button-class']} btn-sm\&quot; href=\&quot;javascript:;\&quot;&gt;&lt;i class=\&quot;{$action['icon']}\&quot;&gt;&lt;/i&gt; {$action['text']} &lt;/a&gt;&quot;;
+				break;
+				case 'ajax':
+          $b .= &quot;&lt;a
+            href=\&quot;javascript:;\&quot;
+            class=\&quot;reload\&quot;
+            data-url=\&quot;/Request/Portlet{$data['data-url']}\&quot;
+            data-error-display=\&quot;notific8\&quot;
+            data-load=\&quot;true\&quot;&gt;
+          &lt;/a&gt;&quot;;
+				break;
+			}
+		}
+		return $b;
+	}
+
+  private function _pActions( array $actions = array() )
+	{
+    $b = '';
+		foreach( $actions as $action ){
+			switch( $action['name']){
+				case 'button':
+					if( !isset( $action['text'] )){          $action['text']         = 'Button Text';        }
+					if( !isset( $action['button-class'] )){  $action['button-class'] = 'btn btn-default';    }
+					if( !isset( $action['icon'] )){          $action['icon']         = 'fa fa-pencil';       }
+          if( !isset( $action['button-id'] )){     $action['button-id']    = 'unset';              }
+					$b .= &quot;
+            &lt;a id=\&quot;{$action['button-id']}\&quot; class=\&quot;{$action['button-class']} btn-sm\&quot; href=\&quot;javascript:;\&quot;&gt;
+              &lt;i class=\&quot;{$action['icon']}\&quot;&gt;&lt;/i&gt;
+              {$action['text']}
+            &lt;/a&gt;&quot;;
+				break;
+			}
+		}
+		return $b;
+	}
+
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /**                                       COLORS                                                        */
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////
+  private $_colors = [
+    &quot;Crusta&quot;  =&gt; &quot;yellow-crusta&quot;,
+    &quot;Hoki&quot;    =&gt; &quot;blue-hoki&quot;,
+    &quot;Meadow&quot;  =&gt; &quot;green-meadow&quot;,
+    &quot;Sunglo&quot;  =&gt; &quot;red-sunglo&quot;,
+    &quot;Cascade&quot; =&gt; &quot;grey-cascade&quot;
+  ];
+
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /**                                       FORMATTING                                                    */
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////
+  private function _fRow( $content )
+  { return &quot;&lt;div class=\&quot;row\&quot;&gt;{$content}&lt;/div&gt;&quot;; }
+
+  private function _fRowSingle( $content )
+  { return &quot;&lt;div class=\&quot;col-md-12 col-sm-12\&quot;&gt;{$content}&lt;/div&gt;&quot;; }
+
+  private function _fRowDouble( $content )
+  { return &quot;&lt;div class=\&quot;col-md-6 col-sm-12\&quot;&gt;{$content}&lt;/div&gt;&quot;; }
+
+  public function rowSingle( $content )
+  { return $this-&gt;_fRow( $this-&gt;_fRowSingle( $content ) ); }
+
+  public function rowDouble( $lContent, $rContent )
+  {
+    return $this-&gt;_fRow(
+      $this-&gt;_fRowDouble( $lContent ) .
+      $this-&gt;_fRowDouble( $rContent )
+    );
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /**                                           TAB SYSTEM                                                */
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////
+  private $_tTab = [];
+  private $_tTabSection = [];
+  private $_tActive = 0;
+  private $_tCount = 0;
+
+  public function addTab( $text, $content, $badge = false, $count = false, $active = false, $name = 'tab' )
+  {
+    if( $active ){ $this-&gt;_tActive = $this-&gt;_tCount; }
+    $this-&gt;_tTab[$this-&gt;_tCount] = ['index'=&gt;$this-&gt;_tCount,'text'=&gt;$text,'badge'=&gt;$badge,'count'=&gt;$count,'active'=&gt;$active,'name'=&gt;$name];
+    $this-&gt;_tTabSection[$this-&gt;_tCount] = ['index'=&gt;$this-&gt;_tCount,'content'=&gt;$content,'active'=&gt;$active,'name'=&gt; $name];
+    $this-&gt;_tCount++;
+  }
+
+  private function _tTab( $index, $text, $active, $badge = false, $count = false, $name = 'tab')
+  {
+    $li = &quot;&lt;li&quot;.(($active)?&quot; class=\&quot;active\&quot;&gt;&quot;:&quot;&gt;&quot;);
+    $id = &quot;{$name}_{$index}&quot;;
+    $badge = (($count === false)?&quot;&quot;:&quot;&lt;span class=\&quot;badge badge-{$badge}\&quot;&gt; {$count} &lt;/span&gt;&quot;);
+    return &quot;{$li}&lt;a href=\&quot;#{$id}\&quot; data-toggle=\&quot;{$name}\&quot;&gt; {$text} {$badge} &lt;/a&gt;&lt;/li&gt;&quot;;
+  }
+
+  protected function _tSection( $index, $content, $active,  $name = 'tab' )
+  {
+    $id = &quot;{$name}_{$index}&quot;;
+    $class = &quot;class=\&quot;tab-pane&quot;.(($active)?' active':'').&quot;\&quot;&quot;;
+    return &quot;&lt;div id=\&quot;{$id}\&quot; {$class}&gt;{$content}&lt;/div&gt;&quot;;
+  }
+
+  public function renderTabSystem()
+  {
+    return &quot;&lt;div class=\&quot;tabbable-line\&quot;&gt;
+      &lt;ul class=\&quot;nav nav-tabs nav-tabs-lg\&quot;&gt;{$this-&gt;_renderTabs()}&lt;/ul&gt;
+      &lt;div class=\&quot;tab-content\&quot;&gt;{$this-&gt;_renderSections()}&lt;/div&gt;
+    &lt;/div&gt;&quot;;
+  }
+
+  private function _renderTabs()
+  {
+    $b = &quot;&quot;;
+    foreach( $this-&gt;_tTab as $t ){
+      $active = (($t['index'] === $this-&gt;_tActive)?true:false);
+      $b .= $this-&gt;_tTab($t['index'],$t['text'],$active,$t['badge'],$t['count'],$t['name']);
+    }
+    return $b;
+  }
+
+  private function _renderSections()
+  {
+    $b = &quot;&quot;;
+    foreach($this-&gt;_tTabSection as $s){
+      $active = (($s['index'] === $this-&gt;_tActive)?true:false);
+      $b .= $this-&gt;_tSection($s['index'],$s['content'],$active,$s['name']);
+    }
+    return $b;
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

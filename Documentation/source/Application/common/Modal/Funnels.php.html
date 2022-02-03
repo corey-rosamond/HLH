@@ -1,0 +1,149 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * Funnels
+ *
+ * @package common\Model
+ * @version 1.0.0
+ */
+namespace Framework\Modulus\Modal;
+
+/**
+ * Funnels
+ *
+ * These are all the querys for the funnels
+ */
+class Funnels extends \Framework\Modulus\Query
+{
+  /** TABLE NAMES */
+  private $_pTable  = &quot;funnels&quot;;
+
+
+  /** KEYS */
+  private $_ptKey   = &quot;key&quot;;
+
+  /**
+   * Get the name for a specific funnel
+   * @method  name
+   * @param   int       $key  Funnel key we are querying against
+   * @return  mixed           PDOResource or 0
+   * @access  public
+   */
+  public function name( $key )
+  {
+    $query = &quot;SELECT `name` as `name` FROM `{$this-&gt;_pTable}` WHERE `{$this-&gt;_ptKey}`=:key&quot;;
+    $preparedStatement = $this-&gt;Prepare( $query );
+    $preparedStatement-&gt;bindValue(':key', $key, \PDO::PARAM_INT);
+    $preparedStatement = $this-&gt;Execute( $preparedStatement );
+    if($preparedStatement-&gt;rowCount() == 0){
+      return 0;
+    }
+    $resource = $preparedStatement-&gt;fetch( \PDO::FETCH_ASSOC );
+    return $resource['name'];
+  }
+
+  /**
+   * Get the address for a specific funnel
+   * @method  address
+   * @param   int       $key  Funnel key we are querying against
+   * @return  mixed           PDOResource or 0
+   * @access  public
+   */
+  public function address( $key )
+  {
+    $query = &quot;SELECT `address` as `address` FROM `{$this-&gt;_pTable}` WHERE `{$this-&gt;_ptKey}`=:key&quot;;
+    $preparedStatement = $this-&gt;Prepare( $query );
+    $preparedStatement-&gt;bindValue(':key', $key, \PDO::PARAM_INT);
+    $preparedStatement = $this-&gt;Execute( $preparedStatement );
+    if($preparedStatement-&gt;rowCount() == 0){
+      return 0;
+    }
+    $resource = $preparedStatement-&gt;fetch( \PDO::FETCH_ASSOC );
+    return $resource['address'];
+  }
+
+  /**
+   * Get all data for a specific funnel
+   * @method  data
+   * @param   int       $key  Funnel key we are querying against
+   * @return  mixed           PDOResource or 0
+   * @access  public
+   */
+  public function data( $key )
+  {
+    $query = &quot;SELECT * FROM `{$this-&gt;_pTable}` WHERE `{$this-&gt;_ptKey}`=:key&quot;;
+    $preparedStatement = $this-&gt;Prepare( $query );
+    $preparedStatement-&gt;bindValue(':key', $key, \PDO::PARAM_INT);
+    $preparedStatement = $this-&gt;Execute( $preparedStatement );
+    if($preparedStatement-&gt;rowCount() == 0){
+      return 0;
+    }
+    return $preparedStatement-&gt;fetch( \PDO::FETCH_ASSOC );
+  }
+
+
+  /**
+  public function funnelSearch( $term ){
+    $query = &quot;SELECT `key` as `id`, `name` as `text` FROM `funnels` WHERE `name` LIKE :term&quot;;
+    $preparedStatement = $this-&gt;Prepare( $query );
+    $preparedStatement-&gt;bindValue( ':term', &quot;%$term%&quot;, \PDO::PARAM_STR );
+    $preparedStatement = $this-&gt;Execute($preparedStatement);
+    if ($preparedStatement-&gt;rowCount() &lt;= 0) { return false; }
+    return $preparedStatement-&gt;fetchAll(\PDO::FETCH_ASSOC);
+  }
+
+
+  public function getFunnelName( $key ){
+    $query = &quot;SELECT `key` as `id`, `name` as `text` FROM `funnels` WHERE `key` = :key &quot;;
+    $preparedStatement = $this-&gt;Prepare($query);
+    $preparedStatement-&gt;bindValue(':key', $key, \PDO::PARAM_INT);
+    $preparedStatement = $this-&gt;Execute($preparedStatement);
+    if ($preparedStatement-&gt;rowCount() == 0) {return false;}
+    return $preparedStatement-&gt;fetch(\PDO::FETCH_ASSOC);
+  }
+  */
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

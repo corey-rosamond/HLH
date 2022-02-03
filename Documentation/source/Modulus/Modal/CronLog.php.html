@@ -1,0 +1,88 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * CronLog
+ *
+ * @package Framework\Modulus\Model
+ * @version 1.0.0
+ */
+namespace Framework\Modulus\Modal;
+
+/**
+ * CronLog
+ *
+ * This model is used for the framework cron system. It help
+ * keep track of previous cron job runs and their stats as well
+ * as what cron jobs need to be run in the future
+ */
+class CronLog extends \Framework\Modulus\Query{
+
+    public function getLog()
+    {
+        $query = &quot;SELECT
+            `log`.`key`, if(`log`.`cronjob-key`=0, 'Docket', `tab`.`simple-name`) as `simple-name`, `log`.`type`, `log`.`message`, `log`.`timestamp`
+            FROM `system-cronlog` AS `log`
+            LEFT JOIN `system-crontab` AS `tab`
+            ON `log`.`cronjob-key` = `tab`.`key`
+            ORDER BY `log`.`timestamp` DESC limit 0, 200&quot;;
+        $preparedStatement = $this-&gt;Prepare( $query );
+        $preparedStatement = $this-&gt;Execute( $preparedStatement );
+        if( $preparedStatement-&gt;rowCount() &lt;= 0 ){
+      return false;
+    }
+        return $preparedStatement-&gt;fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function log($key, $type, $message){
+        $query = &quot;INSERT INTO `system-cronlog` ( `cronjob-key`, `type`, `message` ) VALUES ( :key, :type, :message )&quot;;
+        $preparedStatement = $this-&gt;Prepare($query);
+        $preparedStatement-&gt;bindValue(':key', 		$key, 		\PDO::PARAM_INT);
+        $preparedStatement-&gt;bindValue(':type', 		$type, 		\PDO::PARAM_INT);
+        $preparedStatement-&gt;bindValue(':message', $message, \PDO::PARAM_STR);
+        return $this-&gt;Execute($preparedStatement);
+    }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

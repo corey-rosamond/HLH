@@ -1,0 +1,185 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * Dashboard
+ *
+ * @package App\Event\Page\Main
+ * @version 1.0.0
+ */
+namespace App\Event\Page\CustomerRelations\Orders;
+
+/**
+ * Main Dashboard
+ *
+ * The main dashboard is the v1 dashboard that everyone will
+ * get to see more dashboards will come after that
+ */
+\Framework\_IncludeCorrect( FRAMEWORK_APPLICATION . &quot;Administration&quot;. DSEP . &quot;Objects&quot; . DSEP . &quot;Navigation.php&quot; );
+\Framework\_IncludeCorrect( FRAMEWORK_ROOT . &quot;Support&quot; . DSEP . &quot;Object&quot; . DSEP .&quot;Portlet.php&quot; );
+\Framework\_IncludeCorrect( APP_ROOT . &quot;Abstracts&quot; . DSEP . &quot;FunnelPage.php&quot; );
+class Dashboard extends \App\Abstracts\Page
+{
+
+  /**
+   * Does this page require that the user be logged in
+   * @var     boolean     $requireLogin
+   * @access  protected
+   */
+  public static $requiresLogin = true;
+
+  /**
+   * Permission group required to view this page or false if none
+   * @var     mixed     $permissionGroup  FALSE if none
+   * @access  protected
+   */
+  public static $permissionGroup = false;
+
+  /**
+   * Permission required in the group defined above required to view this page
+   * @var     mixed     $permission   FALSE if none
+   * @access  protected
+   */
+  public static $permission = false;
+
+  /**
+   * These are the modals this page will use. Nothing needs to be done
+   * Beyond this to get them the framework will just do it for you
+   * @var     array       $modal
+   * @access  protected
+   */
+  protected $modal = [ 'Orders.Holylandhealth' =&gt; null ];
+
+  /**f
+   * Templates are a snipet oh html that we break into parts then
+   * we transpose the data on top of the html and give it back
+   * @var     array       $modal
+   * @access  protected
+   */
+  protected $template = [];
+
+  /**
+   * Controllers are more function intensive they are in charge of controlling
+   * groups of methods that logicly belong together
+   * @var     array      $controller
+   * @access  protected
+   */
+  protected $controller = [];
+
+  /**
+   * Page Header
+   * @var     string      $pageHeader
+   * @access  protected
+   */
+  protected $pageHeader = &quot;Dashboard: &quot;;
+
+  /**
+   * Page Sub Header
+   * @var     string      $pageSubHeader
+   * @access  protected
+   */
+  protected $pageSubHeader = &quot;Orders&quot;;
+
+  /**
+   * This will build the body of the docment out the rest of the sections of the
+   * page will be handled by the Application\Page abstract or by the
+   * Advent\Page Abstract
+   * @method  body
+   * @param   array   $paramaters   This is an optional array of paramtars that can be passed
+   * @return  string                The html needed to render the body for this page
+   * @access  public
+   */
+  public function Body( array $paramaters = array() ){
+    /** Include the Dashboard Support object */
+    /** @var DashboardSupport  This object has one purpose provide usefull objects and methods for building dashboars */
+    $this-&gt;DashboardSupport = new \App\Objects\DashboardSupport();
+    /** Set the Document title for this Page Event */
+    $this-&gt;setDocumentTitle( 'Dashboard: Orders' );
+    /** Build the ordersByStatusBox */
+    $this-&gt;ordersByStatusBox();
+  }
+
+  private function ordersByStatusBox( $days = 30 ){
+    /** @var array This is the portlet configuration for this section */
+    $orderStatusConfig = [
+      'title'           =&gt; 'Order Status Count &lt;sup&gt;( '.$days.' days )&lt;/sup&gt;',
+      'icon'            =&gt; 'icon-share',
+      'fontColor'       =&gt; 'font-blue uppercase',
+      'backgroundColor' =&gt; &quot;white&quot;,
+      'type'            =&gt; 'light bordered',
+      'portletStyles'   =&gt; &quot;width:45%;&quot;,
+      'bodyStyles'      =&gt; &quot;padding:20px;&quot;
+    ];
+    /** @var array Temporary array of colors and icons for this section */
+    $decorations = [
+      [ 'color' =&gt; 'blue',    'icon' =&gt; 'fa fa-comments'      ],
+      [ 'color' =&gt; 'red',     'icon' =&gt; 'fa fa-bar-chart-o'   ],
+      [ 'color' =&gt; 'green',   'icon' =&gt; 'fa fa-shopping-cart' ],
+      [ 'color' =&gt; 'purple',  'icon' =&gt; 'fa fa-globe'         ],
+      [ 'color' =&gt; 'blue',    'icon' =&gt; 'fa fa-comments'      ],
+      [ 'color' =&gt; 'red',     'icon' =&gt; 'fa fa-bar-chart-o'   ],
+      [ 'color' =&gt; 'green',   'icon' =&gt; 'fa fa-shopping-cart' ],
+      [ 'color' =&gt; 'purple',  'icon' =&gt; 'fa fa-globe'         ]
+    ];
+    /** @var \Framework\Support\Object\Portlet Make a portleet for the section */
+    $Portlet = new \Framework\Support\Object\Portlet( $orderStatusConfig );
+    /** @var array This is an array that contains a status name and the count of orders for the last 7 days */
+    $statsCounts = $this-&gt;modal['Orders.Holylandhealth']-&gt;getCountPerStatusInterval( $days );
+    /** @var array An array with a color and an icon to use on the first loop */
+    $deco = current( $decorations );
+    /** Loop through our status counts */
+    foreach( $statsCounts as $stat ){
+      /** Write the data into a StatBox then dump the stat box into the portlet */
+      $Portlet-&gt;buffer( $this-&gt;DashboardSupport-&gt;StatBox( $deco['color'], $deco['icon'], $stat['count'], $stat['status'] ) );
+      /** Grab our next set of decorations for the stat box */
+      $deco = next( $decorations );
+    }
+    /** Write the portlet render to the body buffer */
+    $this-&gt;writeBody( $Portlet-&gt;render() );
+    /** Return true to end this method a micro second earlyer */
+    return true;
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

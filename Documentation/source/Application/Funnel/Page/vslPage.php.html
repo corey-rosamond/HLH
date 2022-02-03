@@ -1,0 +1,171 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * VSL Page
+ *
+ * @package App\Page
+ * @version 1.2.0
+ */
+namespace App\Page;
+
+/**
+ * VSLPage
+ *
+ * The VSL Page object
+ */
+class VslPage extends \App\Abstracts\FunnelPage
+{
+  /** @var int Include the pageType */
+  protected $_pageType = self::vsl;
+
+  /**
+   * LandingPage constructor
+   * @method __construct
+   * @param $system
+   * @return \App\Page\VslPage
+   */
+  public function __construct($system)
+  { return parent::__construct($system); }
+
+  /**
+   * Render the content for this page
+   * @method _content
+   * @param $tokens
+   */
+  protected function _content($tokens)
+  {
+    /** @var array $tokens */
+    $tokens = json_decode($this-&gt;_cFunnel-&gt;content(), true);
+    /** Write the content to the buffer */
+    $this-&gt;_write(&quot;&lt;div id=\&quot;funnel-content\&quot;&gt;{$this-&gt;_vsl()}{$this-&gt;_tsl($tokens['tsl'])}&lt;/div&gt;&quot;);
+
+    if(isset($tokens['xtra-one-title'])&amp;&amp;$tokens['xtra-one-title']!==false){
+      $this-&gt;_write(&quot;
+
+      &lt;div id=\&quot;funnel-container\&quot;&gt;
+        &lt;div id=\&quot;funnel-content\&quot;&gt;
+           &lt;h1 class=\&quot;title\&quot;&gt;{$tokens['xtra-one-title']}&lt;/h1&gt;
+           {$tokens['xtra-one-content']}
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &quot;);
+    }
+  }
+
+  /**
+   * Return the _vsl html
+   * @method _vsl
+   * @param $title
+   * @param $text
+   * @return string
+   */
+  private function _vsl($title, $text)
+  {
+    return &quot;&lt;div id=\&quot;vsl-container\&quot;&gt;&quot;.
+      $this-&gt;_vslTitle($title).
+      $this-&gt;_videoTag($tokens).
+      $this-&gt;_vslButton($text).
+    &quot;&lt;/div&gt;&quot;;
+  }
+
+  /**
+   * Return the VSL title html
+   * @method _vslTitle
+   * @param $title
+   * @return string
+   */
+  private function _vslTitle($title)
+  { return &quot;&lt;h1 class=\&quot;title\&quot; id=\&quot;title\&quot;&gt;{$title}&lt;/h1&gt;&quot;; }
+
+  /**
+   * Return the VSL button html
+   * @method _vslButton
+   * @param $text
+   * @return string
+   */
+  private function _vslButton($text)
+  { return &quot;&lt;a href=\&quot;{destination-success}\&quot; id=\&quot;vsl-buy-button\&quot; class=\&quot;button\&quot;&gt;{$text}&lt;/a&gt;&quot;; }
+
+  /**
+   * Return the tsl html
+   * @method _tsl
+   * @param $tsl
+   * @return string
+   */
+  private function _tsl($tsl)
+  { return &quot;&lt;div id=\&quot;tsl-container\&quot;&gt;{$tsl}&lt;/div&gt;&quot;; }
+
+  /**
+   * Output a video tag
+   * @method _videoTag
+   * @param $tokens
+   * @return string
+   */
+  private function _videoTag($tokens)
+  {
+    $videoTag = &quot;&lt;video autoplay id=\&quot;vsl-player\&quot; class=\&quot;framework-funnel-video-player\&quot;&gt;&quot;;
+    if(!isset($tokens['videos'])){
+      return &quot;{$videoTag}{$this-&gt;_sourceTag($tokens)}&lt;/video&gt;&quot;;
+    }
+  }
+
+  /**
+   * Build the source tags for the video tag
+   * @method _sourceTag
+   * @param      $src
+   * @param      $type
+   * @param null $query
+   * @return string
+   */
+  private function _sourceTag($src, $type, $query=null)
+  {
+    if(!is_null($query)){
+     $query = &quot; media=\&quot;{$query}\&quot;&quot;;
+    }
+    return &quot;&lt;source src=\&quot;{$src}\&quot; type=\&quot;{$type}\&quot;{$query}&gt;&quot;;
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

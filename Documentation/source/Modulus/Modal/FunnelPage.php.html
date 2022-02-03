@@ -1,0 +1,88 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * FunnelPage
+ *
+ * @package Framework\Modulus\Modal
+ * @version 1.0.0
+ */
+namespace Framework\Modulus\Modal;
+
+/**
+ * FunnelPage
+ *
+ */
+class FunnelPage extends \Framework\Modulus\Query
+{
+
+  public function getPageByType( $funnelKey, $type )
+  {
+    $query = &quot;SELECT * FROM `funnel-pages` WHERE `funnel-key`=:funnelKey AND `page-type-key`=:type&quot;;
+    $preparedStatement = $this-&gt;Prepare($query);
+    $preparedStatement-&gt;bindValue(':funnelKey', $funnelKey, \PDO::PARAM_INT);
+    $preparedStatement-&gt;bindValue(':type', $type, \PDO::PARAM_INT);
+    $preparedStatement = $this-&gt;Execute($preparedStatement);
+    if($preparedStatement-&gt;rowCount() &lt;= 0){
+      return false;
+    }
+    return $preparedStatement-&gt;fetch(\PDO::FETCH_ASSOC);
+  }
+
+  public function getByName( $name, $funnelKey )
+  {
+    $query = &quot;SELECT * FROM `funnel-pages` WHERE `funnel-key`=:funnelKey AND `name`=:name&quot;;
+    $preparedStatement = $this-&gt;Prepare($query);
+    $preparedStatement-&gt;bindValue(':name', $name, \PDO::PARAM_STR);
+    $preparedStatement-&gt;bindValue(':funnelKey', $funnelKey, \PDO::PARAM_STR);
+    $preparedStatement = $this-&gt;Execute($preparedStatement);
+    if($preparedStatement-&gt;rowCount() &lt;= 0){
+      return false;
+    }
+    return $preparedStatement-&gt;fetch(\PDO::FETCH_ASSOC);
+  }
+
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

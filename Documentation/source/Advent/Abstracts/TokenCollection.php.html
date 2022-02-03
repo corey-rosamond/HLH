@@ -1,0 +1,227 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * TokenCollection
+ *
+ * @package Framework\Advent\Abstracts
+ * @version 1.0.0
+ */
+namespace Framework\Advent\Abstracts;
+
+/**
+ * TokenCollection
+ *
+ * PHP Object to generage style sheets
+ */
+\Framework\_IncludeCorrect( FRAMEWORK_ROOT.&quot;Advent&quot;.DSEP.&quot;Interfaces&quot;.DSEP.&quot;TokenCollection.php&quot; );
+class TokenCollection implements \Framework\Advent\Interfaces\TokenCollection
+{
+
+  /**
+   * The collection container
+   * @var []  $_elements
+   * @access  private
+   */
+  private $_elements;
+
+  /**
+   * Initializes a new sheet collection
+   * @method  __construct
+   * @param   array $elements
+   * @return  StyleSheet
+   * @access  public
+   */
+  public function __construct( array $elements = array())
+  {
+    $this-&gt;_elements = $elements;
+    return $this;
+  }
+
+  /**
+   * __destruct
+   * @method  __destruct
+   * @access  public
+   */
+  public function __destruct(){
+    unset($this-&gt;_elements);
+  }
+
+  /**
+   * Generate all of the Style sheets and add them to the document
+   * @method  generate
+   * @param   string   $page
+   * @return  void
+   * @access  public
+   */
+  public function processTokens($page){
+    $buffer = $page-&gt;getBuffer();
+    array_map(function($token, $value) use (&amp;$buffer){
+      $bufer = str_replace(&quot;%{$token}%&quot;, $value, $buffer);
+    }, array_keys($this-&gt;_elements), $this-&gt;_elements);
+    $page-&gt;setBuffer( $buffer );
+  }
+
+  /**
+   * Adds/sets an element in the collection at the index / with the specified key.
+   * When the collection is a Map this is like put(key,value)/add(key,value).
+   * When the collection is a List this is like add(position,value).
+   * @method  set
+   * @param   mixed   $key
+   * @param   mixed   $value
+   * @access  public
+   * @uses    add()
+   */
+  public function set($token, $value)
+  { $this-&gt;_elements[$key] = $value; }
+
+  /**
+   * Adds an element to the collection.
+   * @method  add
+   * @param   mixed   $value
+   * @return  boolean         Always TRUE.
+   * @access  public
+   */
+  public function add($token, $value)
+  { $this-&gt;_elements[$token] = $value; }
+
+  /**
+   * Checks for the existance of a style sheet returns the key or false
+   * @method  exists
+   * @param   string $script  The sheet we are looking for
+   * @return  mixed           FALSE or the key if it exists
+   * @access  public
+   */
+  public function exists($token)
+  { return ((!isset($this-&gt;_elements[$token]))?false:$token); }
+
+  /**
+  * Gets the element with the given key/index.
+  * @method   get
+  * @param    mixed   $key  The key.
+  * @return   mixed         The element or NULL, if no element exists for the given key.
+  * @access   public
+  */
+  public function get($token)
+  { return ((!isset($this-&gt;_elements[$token]))?false:$this-&gt;_elements[$token]); }
+
+  /**
+   * ArrayAccess implementation of offsetExists()
+   * @method  offsetExists
+   * @param   mixed         $offset
+   * @return  boolean
+   * @access  public
+   * @uses    containsKey()
+   */
+  public function offsetExists($offset)
+  { return $this-&gt;containsKey($offset); }
+
+  /**
+   * Gets all keys/indexes of the collection elements.
+   * @method  getKeys
+   * @return  array
+   * @access  public
+   */
+  public function getKeys()
+  { return array_keys($this-&gt;_elements); }
+
+  /**
+   * ArrayAccess implementation of offsetGet()
+   * @method  offsetGet
+   * @param   mixed         $offset
+   * @access  public
+   * @uses    get()
+   */
+  public function offsetGet($offset)
+  { return $this-&gt;get($offset); }
+
+  /**
+   * ArrayAccess implementation of offsetGet()
+   * @method  offsetSet
+   * @param   mixed   $key
+   * @param   mixed   $value
+   * @return  array
+   * @access  public
+   * @uses    add()
+   * @uses    set()
+   */
+  public function offsetSet($offset, $value)
+  {
+    if (!isset($offset)){
+      return $this-&gt;add($value);
+    }
+    return $this-&gt;set($offset, $value);
+  }
+
+  /**
+   * ArrayAccess implementation of offsetUnset()
+   * @method  offsetUnset
+   * @param   mixed   $offset
+   * @return  boolean
+   * @access  public
+   * @uses    remove()
+   */
+  public function offsetUnset($offset)
+  { return $this-&gt;remove($offset); }
+  
+  /**
+   * Returns the number of elements in the collection. Implementation of the Countable interface.
+   * @method  count
+   * @return  integer   The number of elements in the collection.
+   * @access  public
+   */
+  public function count()
+  { return count($this-&gt;_elements); }
+
+  /**
+  * Gets an iterator for iterating over the elements in the collection.
+  * @method   getIterator
+  * @return   ArrayIterator
+  * @access   public
+  */
+  public function getIterator()
+  { return new ArrayIterator($this-&gt;_elements); }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

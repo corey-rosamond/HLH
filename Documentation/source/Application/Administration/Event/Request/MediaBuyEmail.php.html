@@ -1,0 +1,119 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * MediaBuyEmail
+ *
+ * @package App\Event\Request
+ * @version 1.0.0
+ */
+namespace App\Event\Request;
+
+/**
+ * MediaBuyEmail
+ *
+ * This file is in charge of getting mini portlets
+ */
+class MediaBuyEmail extends \Framework\Event\Base
+{
+    /**
+     * @var mixed
+     */
+    public $requiresLogin = false;
+    /**
+     * @return mixed
+     */
+    public function __construct()
+    {return $this;}
+    public function run()
+    {
+        $userKey = $userKey = \Framework\Core\Patron::getUserKey();
+        /** @var get the user id */
+        if(\Framework\Core\Patron::hasPermission('super-user')){ $userKey = 0; }
+        /** @var get access to the database */
+    	$MediaBuyEmailModel = \Framework\Core\Modulus::get('MediaBuyEmail','Holylandhealth');
+        try {
+            switch ($_POST['action']) {
+                case 'saveLink':
+                    try{
+                    $MediaBuyEmailModel-&gt;updateEmailLink(
+                        $_POST['name'],
+                        $_POST['promoter-key'],
+                        $_POST['funnel-key'],
+                        $_POST['cost'],
+                        $_POST['expected-return'],
+                        $_POST['start-date'],
+                        $_POST['end-date'],
+                        $_POST['key']
+                    );
+                    echo json_encode(array('result'=&gt;true));
+                } catch (\Framework\Exceptional\BaseException $e ){
+                    echo json_encode(array('result'=&gt;false,'An error has occured while trying to process your request'));
+                }
+                break;
+                case 'getEditData':
+                /** @var get all the data at once for an edit */
+                    $linkData = $MediaBuyEmailModel-&gt;getLinkData($_POST['key']);
+                    $promoterData = $MediaBuyEmailModel-&gt;getPromoters($userKey);
+                    $funnelData = $MediaBuyEmailModel-&gt;getFunnels();
+                    /** encode the data and return it  */
+                    echo json_encode(array( 'result' =&gt; true,'link-data' =&gt; $linkData, 'promoter-data' =&gt; $promoterData,'funnel-data' =&gt; $funnelData ));
+                break;
+                case 'getLinkData':
+                    $data = $MediaBuyEmailModel-&gt;getLinkData($_POST['key']);
+                    echo json_encode(array('result'=&gt;true,'data'=&gt;$data));
+                    break;
+                case 'getFunnels':
+                    $data = $MediaBuyEmailModel-&gt;getFunnels();
+                    echo json_encode(array('result'=&gt;true,'data'=&gt;$data));
+                    break;
+            }
+        } catch (\Framwork\Core\Exceptional\BaseException $exception) {
+            $exception-&gt;log();
+            echo json_encode(array(&quot;result&quot; =&gt; false, &quot;message&quot; =&gt; &quot;Not implemented!&quot;));
+        }
+    }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

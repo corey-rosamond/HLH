@@ -1,0 +1,244 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * Commander
+ *
+ * @package Framework\Commander
+ * @version 1.2.0
+ */
+namespace Framework\Commander;
+
+/**
+ * Commander
+ *
+ * SYSTEM OR APPLICATION TYPE TO LOAD
+ * sTypeAdministration  = 0
+ * sTypeFunnel          = 1
+ * sTypeSite            = 2
+ * sTypeCron            = 3
+ *
+ * @todo remove old administration constant references from the command objects
+ */
+class Commander
+{
+  /****************************************************/
+  /*                  SYSTEM TYPE                     */
+  /****************************************************/
+  /** @const integer administration */
+  const sTypeAdministration = 0;
+  /** @const integer funnel */
+  const sTypeFunnel = 1;
+  /** @const integer site  */
+  const sTypeSite = 2;
+  /** @const integer cron */
+  const sTypeCron = 3;
+  /** @const integer administration */
+  const administration = 0;
+  /** @const integer funnel */
+  const funnel = 1;
+  /** @const integer site  */
+  const site = 2;
+  /** @const integer cron  */
+  const cron = 3;
+  /** @var string _prefix */
+  protected $_sPrefix;
+  /** @var array _instances */
+  private static $_instances = array();
+  /** @var boolean|string $_dEventAction */
+  protected $_dEventAction;
+  /** @var array $_dEventData */
+  protected $_dEventData;
+
+  /**
+   * Set the construct to private and empty so it cant be used
+   * @method __construct
+   */
+  private function __construct()
+  {}
+
+  /**
+   * Set the __clone method to final and private so it can not be used
+   * @method __clone
+   */
+  private final function __clone()
+  {}
+
+  /**
+   * Set the __wakeup method to final and private so it can not be used
+   * @method __wakeup
+   **/
+  private final function __wakeup()
+  {}
+
+  /**
+   * Capture calls to undefined standard methods and throw them as exceptions
+   * @method __call
+   * @param $method
+   * @param $arguments
+   * @return bool
+   * @throws \Framework\Exceptional\UndefinedMethodException
+   */
+  public function __call( $method, $arguments )
+  {
+    $class = get_called_class();
+    $backtrace = debug_backtrace()[0];
+    $filename = $backtrace['file'];
+    $line = $backtrace['line'];
+    $message = &quot;Call to Undefined method $class::$method&quot;;
+    throw new \Framework\Exceptional\UndefinedMethodException( $message, 0, 1, $filename, $line, null);
+    return true;
+  }
+
+  /**
+   * Capture calls to undefined static methods and throw them as exceptions
+   * @method __callStatic
+   * @param $method
+   * @param $arguments
+   * @throws \Framework\Exceptional\UndefinedStaticMethodException
+   */
+  public static function __callStatic( $method, $arguments )
+  {
+    $class = get_called_class();
+    $backtrace = debug_backtrace()[0];
+    $filename = $backtrace['file'];
+    $line = $backtrace['line'];
+    $message  = &quot;Call to Undefined static method $class::$method&quot;;
+    throw new \Framework\Exceptional\UndefinedStaticMethodException( $message, 0, 1, $filename, $line, null);
+  }
+
+  /**
+   * Return an already created instance or make one and return it
+   * @method getInstance
+   * @return mixed
+   */
+  public static function getInstance()
+  {
+    $class = get_called_class();
+    if(!isset(self::$_instances[$class])){
+      self::$_instances[$class] = new static;
+      self::$_instances[$class]-&gt;_sPrefix = &quot;[{$class}]&quot;;
+      self::$_instances[$class]-&gt;construct();
+    }
+    return self::$_instances[$class];
+  }
+
+  /**
+   * Log the given information in some way
+   * @method _log
+   * @param $paramaters
+   * @return mixed
+   */
+  protected function _log($paramaters)
+  {
+    $admit = \Framework\Core\Admit::getInstance();
+    return $admit-&gt;_log($paramaters);
+  }
+
+  /**
+   * Return a formatted time stamp
+   * @method _timestamp
+   * @return string
+   */
+  protected function _timestamp()
+  {
+    $time = time();
+    return &quot;[{$time}]&quot;;
+  }
+
+  /**
+   * Send the event response for command objects
+   * @method _eRequest
+   * @param $result
+   * @param $message
+   */
+  protected function _eResponse($result, $message)
+  {
+    /** Make sure message is an array */
+    if(!is_array($message)){
+      /** @var array $message Wrap the string in an array */
+      $message = [$message];
+    }
+    /** Return the response to the requester */
+    echo json_encode([&quot;result&quot;=&gt;$result,&quot;message&quot;=&gt;$this-&gt;_eResponseCleaner($message)]);
+    /** Exit to avoid anything happening after this point */
+    exit();
+  }
+
+  /**
+   * Configure the vent if it is valid
+   * @method _eConfigure
+   */
+  protected function _eConfigure()
+  {
+    /** Check that action was passed */
+    if(!isset($_POST['action'])){
+      /** Envoke _eResponse to send the error back and exit */
+      $this-&gt;_eResponse(false, 'Error');
+    }
+    /** @var string $_dEventAction */
+    $this-&gt;_dEventAction = $_POST['action'];
+    /** @var array $_dEventData */
+    $this-&gt;_dEventData = $_POST;
+    /** Unset the event action in the data to avoid confusion */
+    unset($this-&gt;_dEventData[$this-&gt;_dEventAction]);
+  }
+
+  /**
+   * Clean the response array
+   * @method _eResponseCleaner
+   * @param $array
+   * @return mixed
+   */
+  protected function _eResponseCleaner($array)
+  {
+    array_walk_recursive($array, function(&amp;$item, $key){
+      if(!mb_detect_encoding($item, 'utf-8', true)){
+        $item = utf8_encode($item);
+      }
+    });
+    return $array;
+  }
+}</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

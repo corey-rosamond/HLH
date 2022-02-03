@@ -1,0 +1,137 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * Login
+ *
+ * @package App\Event\Main
+ * @version 1.0.0
+ */
+namespace App\Event\Page\Main\User;
+
+/**
+ * Login
+ *
+ * This is the user login page
+ */
+class Login extends \App\Abstracts\Page
+{
+  /****************************************************/
+  /*                  PAGE SETTINGS                   */
+  /****************************************************/
+  /** @var boolean $buildui Tell the main page object that we don't want the ui */
+  protected $_dBuildUserInterface = false;
+  /** @var boolean $requiresLogin */
+  public static $requiresLogin = false;
+  /** @var array $scripts Array of script files we need framework to include */
+  protected $_pageScripts = [[&quot;Main.User.login.js&quot;, self::application]];
+
+
+  /**
+   * This will build the body of the docment out the rest of the sections of the
+   * page will be handled by the Application\Page abstract or by the
+   * Advent\Page Abstract
+   * @method  body
+   * @param   array   $paramaters   This is an optional array of paramtars that can be passed
+   * @return  string                The html needed to render the body for this page
+   * @access  public
+   */
+  public function body( array $paramaters = array() ){
+    $this-&gt;addStyle( &quot;login.css&quot;, self::application );
+    $this-&gt;setDocumentTitle( 'HolylandHealth: Login' );
+    $this-&gt;setBodyClass( &quot;login&quot; );
+    $this-&gt;writeBody( $this-&gt;loginForm( $this-&gt;tokens ) );
+  }
+
+  /**
+   * Build the login form
+   * @method loginForm
+   * @param  array $token 
+   * @return string
+   * @access private
+   */
+  private function loginForm( $token){
+    return &quot;
+      &lt;div class='menu-toggler sidebar-toggler'&gt;&lt;/div&gt;
+      &lt;div class='logo'&gt;&lt;img src='{$token['image-directory']}hlhlogo.png' alt='' /&gt;&lt;/div&gt;
+        &lt;div class='content'&gt;
+          &lt;form class='login-form' action='' method='post' autocomplete='off' &gt;
+            &lt;h3 class='form-title font-green'&gt;Sign In&lt;/h3&gt;
+            &lt;div class='alert alert-danger display-hide'&gt;
+              &lt;button class='close' data-close='alert'&gt;&lt;/button&gt;
+              &lt;span&gt; Enter any username and password. &lt;/span&gt;
+            &lt;/div&gt;
+            &lt;div class='form-group'&gt;
+              &lt;label class='control-label visible-ie8 visible-ie9'&gt;Username&lt;/label&gt;
+              &lt;input class='form-control form-control-solid placeholder-no-fix' type='text' autocomplete='off' placeholder='Username' name='username' /&gt; &lt;/div&gt;
+            &lt;div class='form-group'&gt;
+              &lt;label class='control-label visible-ie8 visible-ie9'&gt;Password&lt;/label&gt;
+              &lt;input class='form-control form-control-solid placeholder-no-fix' type='password' autocomplete='off' placeholder='Password' name='password' /&gt; &lt;/div&gt;
+            &lt;div class='form-actions'&gt;
+              &lt;button type='submit' class='btn green uppercase'&gt;Login&lt;/button&gt;
+              &lt;label class='rememberme check'&gt;
+                &lt;input type='checkbox' name='remember' value='1' /&gt;Remember &lt;/label&gt;
+              &lt;a href='javascript:;' id='forget-password' class='forget-password'&gt;Forgot Password?&lt;/a&gt;
+            &lt;/div&gt;
+          &lt;/form&gt;
+          &lt;form class='forget-form' action='index.html' method='post'&gt;
+            &lt;h3 class='font-green'&gt;Forget Password ?&lt;/h3&gt;
+            &lt;p&gt; Enter your e-mail address below to reset your password. &lt;/p&gt;
+            &lt;div class='form-group'&gt;
+              &lt;input class='form-control placeholder-no-fix' type='text' autocomplete='off' placeholder='Email' name='email' /&gt;
+            &lt;/div&gt;
+            &lt;div class='form-actions'&gt;
+              &lt;button type='button' id='back-btn' class='btn btn-default'&gt;Back&lt;/button&gt;
+              &lt;button type='submit' class='btn btn-success uppercase pull-right'&gt;Submit&lt;/button&gt;
+            &lt;/div&gt;
+          &lt;/form&gt;
+        &lt;/div&gt;
+      &lt;footer class='copyright'&gt; 2015 &amp;copy; HolylandHealth LLC. &lt;/footer&gt;
+      &lt;input type='hidden' id='resources' name='resources' value='' /&gt;
+    &quot;;
+  }
+}
+
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

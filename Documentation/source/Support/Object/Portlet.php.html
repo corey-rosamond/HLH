@@ -1,0 +1,281 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * Portlet
+ *
+ * @package Framework\Support\Object
+ * @version 1.0.0
+ */
+namespace Framework\Support\Object;
+
+/**
+ * Portlet
+ *
+ * Portelts are small page containers very portable and highly configurable
+ * They are here to make creating a nice looking page simple
+ */
+
+\Framework\_IncludeCorrect(FRAMEWORK_ROOT.&quot;Support&quot;.DSEP.&quot;Abstracts&quot;.DSEP.&quot;ExceptionSafe.php&quot;);
+class Portlet extends \Framework\Support\Abstracts\ExceptionSafe
+{
+	private $buffer = null;
+
+	private $title;
+
+	private $icon;
+
+	private $fontColor;
+
+  private $backgroundColor;
+
+	private $actions = [];
+
+  private $tools = [];
+
+  private $type;
+
+
+	public function __construct( array $paramaters = array() )
+  {
+    $this-&gt;configure( $paramaters );
+		return $this;
+	}
+
+  private function configure( $paramaters )
+  {
+    $defaults = [
+      &quot;title&quot;          	=&gt;  &quot;protlet title&quot;,
+      &quot;icon&quot;           	=&gt;  &quot;fa fa-users&quot;,
+      &quot;fontColor&quot;      	=&gt;  &quot;blue-steel&quot;,
+      &quot;backgroundColor&quot;	=&gt;  &quot;blue-steel&quot;,
+      &quot;type&quot;           	=&gt;  false,
+      &quot;portletStyles&quot;  	=&gt;  false,
+      &quot;bodyStyles&quot;     	=&gt;  false
+    ];
+    foreach( $defaults as $key =&gt; $value ){
+      if( isset( $paramaters[$key] ) ){
+        $this-&gt;{$key} = $paramaters[$key];
+        continue;
+      }
+      $this-&gt;{$key} = $value;
+    }
+  }
+
+	public function render()
+  {
+		return &quot;{$this-&gt;start()} {$this-&gt;header()} {$this-&gt;body()} {$this-&gt;content()} {$this-&gt;end()}&quot;;
+	}
+
+	private function start()
+	{
+    return  &quot;&lt;div class='portlet {$this-&gt;type} {$this-&gt;fontColor}' style='{$this-&gt;portletStyles}'&gt;&quot;;
+	}
+
+	private function header()
+	{
+		return &quot;
+		&lt;div class='portlet-title'&gt;
+		  &lt;div class='caption'&gt;
+			 &lt;i class='{$this-&gt;icon} {$this-&gt;fontColor}'&gt;&amp;nbsp&lt;/i&gt;
+			 &lt;span class='caption-subject {$this-&gt;fontColor}' style='font-weight:normal;font-size:16px;line-height:37px;'&gt;{$this-&gt;title}&lt;/span&gt;
+		  &lt;/div&gt;{$this-&gt;tool()}{$this-&gt;action()}
+		&lt;/div&gt;&quot;;
+	}
+
+	private function body()
+	{
+		return &quot;&lt;div class=\&quot;portlet-body\&quot; style='{$this-&gt;bodyStyles}'&gt;&quot;;
+	}
+
+	private function content()
+  {
+		return $this-&gt;buffer;
+	}
+
+	private function end()
+	{
+		return &quot;&lt;/div&gt;&lt;/div&gt;&quot;;
+	}
+
+	private function tool()
+	{
+		if( !$this-&gt;tools ){
+      return '';
+    }
+		$html = '&lt;div class=&quot;tools&quot;&gt;';
+		foreach( $this-&gt;tools as $tool =&gt; $data ){
+			switch( $tool ){
+				case 'collapse':
+					$html .= '&lt;a href=&quot;javascript:;&quot; class=&quot;collapse&quot;&gt; &lt;/a&gt;&amp;nbsp;&amp;nbsp;';
+				break;
+				case 'fullscreen':
+					$html .= '&lt;a href=&quot;javascript:;&quot; class=&quot;fullscreen&quot;&gt; &lt;/a&gt;&amp;nbsp;&amp;nbsp;';
+				break;
+				case 'config':
+					$html .= '&lt;a href=&quot;javascript:;&quot; class=&quot;config&quot;&gt; &lt;/a&gt;&amp;nbsp;&amp;nbsp;';
+				break;
+				case 'removed':
+					$html .= '&lt;a href=&quot;javascript:;&quot; class=&quot;remove&quot;&gt; &lt;/a&gt;&amp;nbsp;&amp;nbsp;';
+				break;
+				case 'button':
+					if( !isset( $data['text'] )){
+            $data['text'] = 'Button Text';
+          }
+					if( !isset( $data['button-class'] )){
+            $data['button-class'] = 'btn btn-default';
+          }
+					if( !isset( $data['icon'] )){
+            $data['icon'] = 'fa fa-pencil';
+          }
+					$html .= '&lt;a class=&quot;'.$data['button-class'].' btn-sm&quot; href=&quot;javascript:;&quot;&gt;&lt;i class=&quot;'.$data['icon'].'&quot;&gt;&lt;/i&gt; '.$data['text'].' &lt;/a&gt;';
+				break;
+				case 'ajax':
+					$html .= '&lt;a href=&quot;javascript:;&quot; class=&quot;reload&quot; data-url=&quot;/Request/Portlet'.$data['data-url'].'&quot; data-error-display=&quot;notific8&quot; data-load=&quot;true&quot; &gt; &lt;/a&gt;';
+				break;
+			}
+		}
+		return &quot;$html&lt;/div&gt;&quot;;
+	}
+
+	private function action()
+	{
+		if( !$this-&gt;actions ){
+      return null;
+    }
+		$html = '&lt;div class=&quot;actions&quot;&gt;';
+		foreach( $this-&gt;actions as $action ){
+			switch( $action['name'] ){
+				case 'button':
+					if( !isset( $action['text'] )){
+            $action['text'] = 'Button Text';
+          }
+					if( !isset( $action['button-class'] )){
+            $action['button-class'] = 'btn btn-default';
+          }
+					if( !isset( $action['icon'] )){
+            $action['icon'] = 'fa fa-pencil';
+          }
+					$html .= '&lt;a class=&quot;'.$action['button-class'].' btn-sm&quot; href=&quot;javascript:;&quot;&gt;&lt;i class=&quot;'.$action['icon'].'&quot;&gt;&lt;/i&gt; '.$action['text'].' &lt;/a&gt;';
+				break;
+			}
+		}
+		return $html.'&lt;/div&gt;';
+	}
+
+
+	public function actions( $actions = false )
+	{
+    if( !$actions ){
+      return $this-&gt;actions;
+    }
+		$this-&gt;actions = $actions;
+		return $this;
+	}
+
+	public function tools( $tools = false )
+	{
+    if( !$tools ){
+      return $this-&gt;tools;
+    }
+		$this-&gt;tools = $tools;
+		return $this;
+	}
+
+  public function backgroundColor( $color = false )
+  {
+    if( !$color ){
+      return $this-&gt;backgroundColor;
+    }
+    $this-&gt;backgroundColor = $color;
+    return $this;
+  }
+
+  public function fontColor( $color = false )
+  {
+    if( !$color ){
+      return $this-&gt;fontColor;
+    }
+    $this-&gt;fontColor = $color;
+    return $this;
+  }
+
+  public function icon( $icon = false )
+  {
+    if( !$icon ){
+      return $this-&gt;icon;
+    }
+    $this-&gt;icon = $icon;
+    return $this;
+  }
+
+  public function type( $type = false )
+  {
+    if( !$type ){
+      return $this-&gt;type;
+    }
+    $this-&gt;type = $type;
+    return $this;
+  }
+
+  public function buffer( $content = false )
+  {
+    if( !$content ){
+      return $this-&gt;buffer;
+    }
+    $this-&gt;buffer .= $content;
+    return $this;
+  }
+
+	public function title( $content = false )
+	{
+		if( !$content ){
+			return $this-&gt;title;
+		}
+		return $this-&gt;title = $content;
+
+	}
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,113 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * Event
+ *
+ * @package App\Abstracts
+ * @version 1.2.0
+ */
+namespace App\Abstracts;
+
+/**
+ * Event
+ *
+ * This is the event base
+ */
+class Event extends \App\Abstracts\Navigator
+{
+  /** @var \App\System $_system */
+  protected $_system;
+  /** @var string $_sPrefix */
+  protected $_sPrefix;
+  /** @var \Framework\Commander\Funnel */
+  protected $_cFunnel;
+  /** @var array $_errors */
+  protected $_errors;
+  /** @var array $_products */
+  protected $_products;
+
+  /**
+   * Construct the base page object and setup the environment for other pages
+   * @method _construct
+   * @param $system
+   */
+  public function __construct($system)
+  {
+    /** @var \App\System $_system */
+    $this-&gt;_system  = $system;
+    /** @var string $_sPrefix */
+    $this-&gt;_sPrefix = $system-&gt;_dFunnelHost;
+    /** @var \Framework\Commander\Funnel _cFunnel */
+    $this-&gt;_cFunnel = $system-&gt;_cFunnel;
+    /** @var array _products */
+    if(isset($_POST['products'])){
+      $this-&gt;_products = $_POST['products'];
+    }
+    /** Return the parent elements construct */
+    return parent::__construct($system);
+  }
+
+  /**
+   * Try and find a product in a list of order items
+   * @method _inOrderItems
+   * @param $orderItems
+   * @param $product
+   * @return array|bool
+   */
+  protected function _inOrderItems($orderItems, $product)
+  {
+    /** @var array $item loop through the products */
+    foreach($orderItems as &amp;$item){
+      /** Check if the product key matches the on referenced product */
+      if($item['product-key']==$product){
+        /** return the item */
+        return $item;
+      }
+    }
+    /** return false. We dident find it */
+    return false;
+  }
+}</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

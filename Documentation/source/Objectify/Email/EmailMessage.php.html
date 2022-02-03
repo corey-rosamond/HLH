@@ -1,0 +1,131 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+
+namespace Framework\Objectify;
+
+
+class EmailMessage
+{
+  private $_transport;
+  private $_mailer;
+  private $_message;
+
+  public function __construct( $transport, $mailer, $message )
+  {
+    $this-&gt;_transport = $transport;
+    $this-&gt;_mailer    = $mailer;
+    $this-&gt;_message   = $message;
+    return $this;
+  }
+
+  public function subject( $subject = &quot;subject&quot;, $tokens = null )
+  {
+    if(!is_null($tokens)){
+      array_map(function($token, $value) use (&amp;$subject){
+        $subject = str_replace($token,$value,$subject);
+      }, array_keys($tokens), $tokens);
+    }
+    return $this-&gt;_message-&gt;setSubject( $subject );
+  }
+
+  public function body( $body = &quot;body&quot;, $tokens = null )
+  {
+    if(!is_null($tokens)){
+      array_map(function($token, $value) use (&amp;$body){
+        $body = str_replace($token,$value,$body);
+      }, array_keys($tokens), $tokens);
+    }
+    return $this-&gt;_message-&gt;setBody( $body, &quot;text/html&quot; );
+  }
+
+  public function to( $to )
+  {
+    if(!is_array($to)){
+      return $this-&gt;_message-&gt;setTo( array($to) );
+    }
+    return $this-&gt;_message-&gt;setTo( $to );
+  }
+
+  public function from( $from )
+  {
+    if(!is_array($from)){
+      return $this-&gt;_message-&gt;setFrom( array($from=&gt;&quot;Undefined&quot;) );
+    }
+    return $this-&gt;_message-&gt;setFrom( $from );
+  }
+
+  public function cc( array $cc = array() )
+  { return $this-&gt;_message-&gt;setCc( $cc ); }
+
+  public function bcc( array $bcc = array() )
+  { return $this-&gt;_message-&gt;setBcc( $from ); }
+
+  public function getTo()
+  { return $this-&gt;_message-&gt;getTo(); }
+
+  public function getFrom()
+  { return $this-&gt;_message-&gt;getFrom(); }
+
+  public function getSubject()
+  { return $this-&gt;_message-&gt;getSubject(); }
+
+  public function getBody()
+  { return $this-&gt;_message-&gt;getBody(); }
+
+
+  public function send()
+  {
+
+    $this-&gt;_mailer-&gt;send( $this-&gt;_message );
+  }
+
+  public function __destruct(){
+    unset( $this-&gt;_transport );
+    unset( $this-&gt;_transport );
+    unset( $this-&gt;_transport );
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,86 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * ContentArea
+ *
+ * @package App\Objects
+ * @version 1.0.0
+ */
+namespace App\Objects;
+
+/**
+ * ContentArea
+ *
+ * Handles the quick sidebar
+ */
+class ContentArea
+{
+
+  private $_dTokens;
+
+  public function __construct($tokens)
+  {
+    $this-&gt;_dTokens = $tokens;
+    return $this;
+  }
+
+  public function build()
+  {
+    return &quot;
+    &lt;div class='page-content-wrapper'&gt;
+      &lt;div class='page-content'&gt;
+        &lt;div class='page-bar'&gt;
+          &lt;ul class='page-breadcrumb'&gt;
+              &lt;li&gt;&lt;a href=''&gt;Home&lt;/a&gt;&lt;i class=''&gt;&lt;/i&gt;&lt;/li&gt;
+          &lt;/ul&gt;
+          &lt;div class='page-toolbar'&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;h3 class='page-title'&gt;
+          {$this-&gt;_dTokens['header']}
+          &lt;small&gt;{$this-&gt;_dTokens['sub-header']}&lt;/small&gt;
+        &lt;/h3&gt;&quot;;
+  }
+}</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

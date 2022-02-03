@@ -1,0 +1,145 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * UserRequest
+ *
+ * @package App\Event\Main
+ * @version 1.0.0
+ */
+namespace App\Event\Request;
+
+/**
+ * UserRequest
+ *
+ * This is used for ajax user related functions
+ */
+\Framework\_IncludeCorrect( FRAMEWORK_ROOT.&quot;Advent&quot;.DSEP.&quot;Request.php&quot; );
+class UserRequest extends \Framework\Advent\Request
+{
+  
+  /**
+   * Does this page require that the user be logged in
+   * @var     boolean     $requireLogin
+   * @access  protected
+   * @static
+   */
+  public static $requiresLogin = false;
+
+  /**
+   * Permission group required to view this page or false if none
+   * @var     mixed     $permissionGroup  FALSE if none
+   * @access  protected
+   * @static
+   */
+  public static $permissionGroup = false;
+  
+  /**
+   * Permission required in the group defined above required to view this page
+   * @var     mixed     $permission   FALSE if none
+   * @access  protected
+   * @static
+   */
+  public static $permission = false;
+
+  /**
+   * The events for this Request object
+   * @method events
+   * @param  string       $event the event we were asked to run
+   * @return void
+   * @access protected
+   */
+  protected function events( $event ){
+    /** set result to true since we are here */
+    $this-&gt;result = true;
+    switch( $event ){
+      /** will handle forgot passwords */
+      case 'forgot':
+        $this-&gt;result   = false;
+        $this-&gt;data     = &quot;Not yet Implemented&quot;;
+      break;
+      /** handle attempted logins */
+      case &quot;login&quot;:
+          $outcome = \Framework\Core\Patron::login( 
+            $_POST['username'], 
+            $_POST['password'], 
+            $_POST['remember'] 
+          );
+          $this-&gt;result = $outcome['result'];
+          $this-&gt;data   = $outcome['message'];
+      break;
+      /** log the user out */
+      case 'logout':
+          $outcome      = \Framework\Core\Patron::logout();
+          $this-&gt;result = $outcome['result'];
+          $this-&gt;data   = $outcome['message'];
+      break;
+      /** This is to enable other ajax requests to verify that the user is permitted to do what they requested */
+      case 'has-permission':
+        if(!\Framework\Core\Patron::isLoggedIn()){
+          $this-&gt;result = false;
+          $this-&gt;data   = &quot;Not Logged In!&quot;;
+          return false;
+        }
+        if( !\Framework\Core\Patron::hasPermission( 
+          $_POST['group'], 
+          $_POST['permission'] 
+        ) ){
+          $this-&gt;result = false;
+          $this-&gt;data   = &quot;Inadequate Permissions!&quot;;
+          return false;
+        }
+        $this-&gt;result = true;
+        $this-&gt;data   = &quot;Requirements Meet!&quot;;
+      break;
+      /** if we hit the default it is because a valid event was not specified */
+      default:
+        $this-&gt;result = false;
+        $this-&gt;data   = &quot;$event Undefined!&quot;;
+      break;
+    }
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

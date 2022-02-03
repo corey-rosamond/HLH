@@ -1,0 +1,226 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * Order View
+ *
+ * @package App\Event\Page\Main
+ * @version 1.0.0
+ */
+namespace App\Event\Page\CustomerRelations\Orders;
+
+/**
+ * Order View
+ *
+ * The main dashboard is the v1 dashboard that everyone will
+ * get to see more dashboards will come after that
+ */
+\Framework\_IncludeCorrect( APP_ROOT.&quot;Abstracts&quot;.DSEP.&quot;FunnelPage.php&quot; );
+class OrderView extends \App\Abstracts\Page
+{
+  /**
+   * Does this page require that the user be logged in
+   * @var     boolean     $requireLogin
+   * @access  protected
+   */
+  public static $requiresLogin = true;
+
+  /**
+   * Permission group required to view this page or false if none
+   * @var     mixed     $permissionGroup  FALSE if none
+   * @access  protected
+   */
+  public static $permissionGroup = false;
+
+  /**
+   * Permission required in the group defined above required to view this page
+   * @var     mixed     $permission   FALSE if none
+   * @access  protected
+   */
+  public static $permission = false;
+
+  /**
+   * These are the modals this page will use. Nothing needs to be done
+   * Beyond this to get them the framework will just do it for you
+   * @var     array       $modal
+   * @access  protected
+   */
+  protected $modal = [ 'Orders.Holylandhealth' =&gt; null ];
+
+  /**f
+   * Templates are a snipet oh html that we break into parts then
+   * we transpose the data on top of the html and give it back
+   * @var     array       $modal
+   * @access  protected
+   */
+  protected $template = [];
+
+  /**
+   * Controllers are more function intensive they are in charge of controlling
+   * groups of methods that logicly belong together
+   * @var     array      $controller
+   * @access  protected
+   */
+  protected $controller = [];
+
+  /**
+   * Page Header
+   * @var     string      $pageHeader
+   * @access  protected
+   */
+  protected $pageHeader = &quot;Orders: &quot;;
+
+  /**
+   * Page Sub Header
+   * @var     string      $pageSubHeader
+   * @access  protected
+   */
+  protected $pageSubHeader = &quot;View&quot;;
+
+  protected $_pPortletConfig = [
+    'title'           =&gt; 'Order: ',
+    'icon'            =&gt; 'icon-settings font-dark',
+    'fontColor'       =&gt; 'font-dark',
+    'backgroundColor' =&gt; &quot;white&quot;,
+    'type'            =&gt; 'portlet light portlet-fit portlet-datatable bordered',
+    'portletStyles'   =&gt; &quot;&quot;,
+    'bodyStyles'      =&gt; &quot;&quot;
+  ];
+
+  /**
+   * This will build the body of the docment out the rest of the sections of the
+   * page will be handled by the Application\Page abstract or by the
+   * Advent\Page Abstract
+   * @method  body
+   * @param   array   $paramaters   This is an optional array of paramtars that can be passed
+   * @return  string                The html needed to render the body for this page
+   * @access  public
+   */
+  public function Body( array $paramaters = array() )
+  {
+    $document     = \Framework\Core\Receptionist::controller( 'Document', true );
+    $oController  = \Framework\Core\Receptionist::controller( &quot;Order&quot;, false );
+    $oController-&gt;load( $_GET['customer'] );
+    $this-&gt;setDocumentTitle( &quot;Order View: {$oController-&gt;orderNumber()}&quot; );
+    $pPortlet = $this-&gt;portlet( $this-&gt;_pPortletConfig );
+    $pPortlet-&gt;title( 'Order: '. $oController-&gt;orderNumber(). &quot; | &quot;. $oController-&gt;orderDate() );
+    $document-&gt;addTab( 'Details',   $this-&gt;Details( $oController, $document ), false, false, true );
+    $document-&gt;addTab( 'Messages',  $this-&gt;Messages( $oController ),  'primary',  $oController-&gt;messageCount(), false );
+    $document-&gt;addTab( 'Emails',            'tab content',                                'primary',  $oController-&gt;count('email'),       false );
+    $document-&gt;addTab( 'Order Items',       'tab content',                                'primary',  $oController-&gt;count('items'),       false );
+    $document-&gt;addTab( 'Payment Processor', $this-&gt;PaymentProcessor( $oController ),      'primary',  $oController-&gt;processorCount(),   false );
+    $document-&gt;addTab( 'Fulfillment',       'tab content',                                'primary',  $oController-&gt;count('fulfillment'), false );
+    $document-&gt;addTab( 'Site Visit',        $this-&gt;SiteVisit( $oController, $document ),  'primary',  $oController-&gt;count('tracking'),    false );
+    $pPortlet-&gt;buffer( $document-&gt;renderTabSystem() );
+    $this-&gt;writeBody( $pPortlet-&gt;render() );
+    //print_r($oController);
+    return true;
+  }
+
+
+
+  private function Details( $oController, $document )
+  {
+    return $document-&gt;rowDouble(
+      $document-&gt;portlet(&quot;box&quot;, &quot;yellow-crusta&quot;, 'icon-info', 'Order Details', '',
+        $document-&gt;datatable( 'order-details', array(), array(
+          [&quot;Order #&quot;,$oController-&gt;orderNumber()],['Order Date &amp; Time',$oController-&gt;orderDate()],
+          ['Order Status', $oController-&gt;orderStatus()],['Grand Total', ''],
+          ['Payment Information','Network Merchants (NMI)']
+        )),array(), array(), true
+      ),
+      $document-&gt;portlet(&quot;box&quot;, &quot;blue-hoki&quot;, 'icon-user', 'Customer Information', '',
+        $document-&gt;datatable( 'customer-information', array(), array())
+      )
+    ).$document-&gt;rowDouble(
+      $oController-&gt;billingPortlet(), $oController-&gt;shippingPortlet()
+    );
+  }
+
+
+  private function OrderItems( $oController )
+  {
+
+  }
+
+  private function Messages( $oController )
+  { return $oController-&gt;messageLog(); }
+
+  private function PaymentProcessor( $oController )
+  { return $oController-&gt;processorLog(); }
+
+  private function Fulfillment( $oController )
+  {
+
+  }
+
+  /** envelope */
+  private function EmailsSent( $oController )
+  {
+
+  }
+
+  /** Site Visit Information Datatable Site visit: page views */
+  private function SiteVisit( $oController, $document )
+  {
+    return $document-&gt;rowDouble(
+      $document-&gt;portlet(&quot;box&quot;, &quot;green-meadow&quot;, 'icon-info', 'Visit Information', '',
+        $document-&gt;datatable( 'visit-information', array(), $oController-&gt;siteVisit()),
+        array(), array(), true
+      ),
+      $document-&gt;portlet(&quot;box&quot;, &quot;blue-hoki&quot;, 'icon-user', 'Page Views', '',
+        $document-&gt;datatable( 'page-views',
+          [
+            ['label'=&gt;'Date &amp;amp; Time of Visit', 'style'=&gt;'text-align:left;'],
+            ['label'=&gt;'Page', 'style'=&gt;'text-align:center;'],
+            ['label'=&gt;'Duration', 'style'=&gt;'text-align:center;']
+          ],
+          $oController-&gt;pageViews()
+        ), array(), array(), true
+      )
+    );
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

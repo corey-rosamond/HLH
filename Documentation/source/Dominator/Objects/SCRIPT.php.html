@@ -1,0 +1,104 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * SCRIPT
+ *
+ * @package Framework\Dominator\Objects
+ * @version 1.0.0
+ */
+namespace Framework\Dominator\Objects;
+
+/**
+ * SCRIPT
+ *
+ * This is the framework script tag object it is used to normalize the creation of script tags
+ */
+class SCRIPT{
+
+  /**
+   * The tagname
+   * @var     string
+   * @access  private
+   */
+  private $tag = 'script';
+
+  /**
+   * The src attribute
+   * @var     string
+   * @access  private
+   */
+  private $src;
+
+  /**
+   * The type attribute
+   * @var     string
+   * @access  private
+   */
+  private $type = 'text/javascript';
+
+  /**
+   * Construct the tag
+   * @method  __construct
+   * @param   string      $src  The src for this script tag
+   * @return  this              Return this to enable method chaining
+   * @access  public
+   */
+  public function __construct( $src ){
+    $this-&gt;src = $src;
+    return $this;
+  }
+
+  /**
+   * Return the html for this tag
+   * @method  html
+   * @return  string  Return the html needed to render this tag
+   * @access public
+   */
+  public function html(){
+    return &quot;&lt;{$this-&gt;tag} src='{$this-&gt;src}' type='{$this-&gt;type}'&gt;&lt;/{$this-&gt;tag}&gt;&quot;;
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

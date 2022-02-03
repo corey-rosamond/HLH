@@ -1,0 +1,610 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * Datatable
+ *
+ * @package Framework\Modulus
+ * @version 1.0.0
+ */
+namespace Framework\Modulus;
+
+/**
+ * Datatable
+ *
+ * The main query object. Every model must extend this
+ */
+class Datatable
+{
+  /** @const integer searchFilter */
+  const searchFilter = 0;
+  /****************************************************/
+  /*                DATABASE DATA MEMBERS             */
+  /****************************************************/
+  /** @var string $_databaseName */
+  private $_databaseName;
+  /** @var \Framework\Modulus\PDOdatabases $_pdoDatabses */
+  private $_pdoDatabses;
+  /** @var mixed handle $_database */
+  private $_database;
+  /****************************************************/
+  /*                 DATATABLE SETTINGS               */
+  /****************************************************/
+  /** @var string $_dsTools */
+  protected $_dsTools = 'print, pdf, excel, csv';
+  /** @var int $_dsResultLimit The limit for queries */
+  protected $_dsResultLimit = 50;
+  /** @var boolean $_dsSortable */
+  protected $_dsSortable = true;
+  /** @var boolean $_dsFilterable */
+  protected $_dsFilterable = true;
+  /** @var boolean $_dsPagination */
+  protected $_dsPagination = true;
+  /** @var boolean $_dsShowInfo */
+  protected $_dsShowInfo = true;
+  /** @var string $_dsPaginationType */
+  protected $_dsPaginationType = &quot;full_numbers&quot;;
+  /** @var string $_dsMenuLength Menu length for the datatable */
+  protected $_dsMenuLength = [[25,50,75,100],[25,50,75,100]];
+  /** @var string $_dsAriaSortAscending */
+  protected $_dsAriaSortAscending = &quot;activate to sort column ascending&quot;;
+  /** @var string $_dsAriaSortDescending */
+  protected $_dsAriaSortDescending = &quot;activate to sort column descending&quot;;
+  /** @var string $_dsEmptyTableMessage */
+  protected $_dsEmptyTableMessage = &quot;No data available in table&quot;;
+  /** @var string $_dsInfoMessage */
+  protected $_dsInfoMessage = &quot;Showing _START_ to _END_ of _TOTAL_ entries&quot;;
+  /** @var string $_dsInfoEmptyMessage */
+  protected $_dsInfoEmptyMessage = &quot;No entries found&quot;;
+  /** @var string $_dsInfoFilteredMessage */
+  protected $_dsInfoFilteredMessage =&quot;(filtered from _MAX_ total entries)&quot;;
+  /** @var string $_dsLengthMenuMessage */
+  protected $_dsLengthMenuMessage =&quot;_MENU_ &amp;nbsp;&amp;nbsp;entries&quot;;
+  /** @var string $_dsSearchMessage */
+  protected $_dsSearchMessage = &quot;Search:&amp;nbsp;&amp;nbsp;&quot;;
+  /** @var string $_dsZeroRecordsMessage */
+  protected $_dsZeroRecordsMessage = &quot;No matching records found&quot;;
+  /****************************************************/
+  /*                 GENERATOR SETTINGS               */
+  /****************************************************/
+  /** @var string $_gsTableID */
+  protected $_gsTableID;
+  /** @var array $_gsDefaultFilterValues The default filter values */
+  protected $_gsDefaultFilterValues = [];
+  /** @var array $_gsColumnFilters This is an array of defined filters for this datatable */
+  protected $_gsColumnFilters = [];
+  /** @var array $_gsColumnDefinitions */
+  protected $_gsColumnDefinitions = [];
+  /** @var string $_gsTableStart The start of the html datatable */
+  protected $_gsTableClass = &quot;table table-striped table-bordered table-hover dt-responsive framework-datatable&quot;;
+  /** @var string $_gsTableEnd The end of the html datatable */
+  protected $_gsTableEnd = &quot;&lt;/table&gt;&quot;;
+  /****************************************************/
+  /*             EVENT REQUEST DATA MEMBERS           */
+  /****************************************************/
+  /** @var array $_erData */
+  protected $_erData;
+  /** @var array $_erColumns */
+  protected $_erColumns;
+  /** @var integer $_erRecordStart */
+  protected $_erRecordStart;
+  /** @var integer $_erRecordEnd */
+  protected $_erRecordEnd;
+  /** @var integer $_erOrderColumn */
+  protected $_erOrderColumnIndex;
+  /** @var string $_erOrderDirection */
+  protected $_erOrderDirection;
+  /** @var integer $_erDrawCount */
+  protected $_erDrawCount;
+  /** @var  integer $_erLength */
+  protected $_erLength;
+  /** @var string|boolean $_erSearchRegex */
+  protected $_erSearchRegex;
+  /** @var string $_erSearchValue */
+  protected $_erSearchValue;
+
+  /**
+   * Datatable constructor.
+   * @method __construct
+   * @param                             $dbname
+   * @param \Framework\Modulus\DBConfig $config
+   */
+  public function __construct($dbname, DBConfig $config)
+  {
+    /** @var \Framework\Modulus\PDOdatabases $_pdoDatabses */
+    $this-&gt;_pdoDatabses = PDOdatabases::create_instance();
+    /** @var string $_databaseName */
+    $this-&gt;_databaseName = $dbname;
+    /** Connect to the database */
+    $this-&gt;_connect($dbname, $config);
+    /** @var string $_tableID */
+    $this-&gt;_gsTableID = substr(get_called_class(),(strrpos(get_called_class(),&quot;\\&quot;)+1));
+  }
+  /****************************************************/
+  /*                  HTML GENERATORS                 */
+  /****************************************************/
+
+  /**
+   * Render the datatable
+   * @method render
+   * @return string
+   */
+  public function render()
+  {
+    /** Return the datatable */
+    return &quot;{$this-&gt;_dtTableStart()}{$this-&gt;_dtHead()}{$this-&gt;_dtBody()}{$this-&gt;_gsTableEnd}&quot;;
+  }
+
+  /**
+   * Generate the table start with data attributes for the datatable
+   * @method _dtTableStart
+   * @return string
+   */
+  protected function _dtTableStart()
+  {
+    $menuLength = json_encode($this-&gt;_dsMenuLength);
+    return &quot;&lt;table
+      class=\&quot;{$this-&gt;_gsTableClass}\&quot;
+      id=\&quot;{$this-&gt;_gsTableID}\&quot;
+      data-datatable-tools=\&quot;{$this-&gt;_dsTools}\&quot;
+      data-datatable-filterable=\&quot;{$this-&gt;_dsFilterable}\&quot;
+      data-datatable-sortable=\&quot;{$this-&gt;_dsSortable}\&quot;
+      data-datatable-pagination=\&quot;{$this-&gt;_dsPagination}\&quot;
+      data-datatable-show-info=\&quot;{$this-&gt;_dsShowInfo}\&quot;
+      data-datatable-page-length=\&quot;{$this-&gt;_dsResultLimit}\&quot;
+      data-datatable-aria-sort-ascending-message=\&quot;{$this-&gt;_dsAriaSortAscending}\&quot;
+      data-datatable-aria-sort-decending-message=\&quot;{$this-&gt;_dsAriaSortDescending}\&quot;
+      data-datatable-empty-table-message=\&quot;{$this-&gt;_dsEmptyTableMessage}\&quot;
+      data-datatable-info-message=\&quot;{$this-&gt;_dsInfoMessage}\&quot;
+      data-datatable-info-empty-message=\&quot;{$this-&gt;_dsInfoEmptyMessage}\&quot;
+      data-datatable-info-filtered-message=\&quot;{$this-&gt;_dsInfoFilteredMessage}\&quot;
+      data-datatable-length-menu-message=\&quot;{$this-&gt;_dsLengthMenuMessage}\&quot;
+      data-datatable-search-message=\&quot;{$this-&gt;_dsSearchMessage}\&quot;
+      data-datatable-zero-records-message=\&quot;{$this-&gt;_dsZeroRecordsMessage}\&quot;
+      data-datatable-menu-length=\&quot;{$menuLength}\&quot;
+      data-datatable-custom-request-variables=\&quot;{$this-&gt;_dtCustomRequestVariables()}\&quot;&gt;&quot;;
+  }
+
+  /**
+   * Construct the datatable head element
+   * @method _dtHead
+   * @return string
+   */
+  protected function _dtHead()
+  {
+    /** @var string $content build the head element into the content variable */
+    $content = &quot;&lt;thead&gt;&quot;;
+      /** Start th table for the labels */
+      $content .= &quot;&lt;tr role=\&quot;row\&quot; class=\&quot;heading\&quot;&gt;&quot;;
+      /** @var array $column Loop over the column definitions */
+      foreach($this-&gt;_gsColumnDefinitions as $column){
+        /** @var string $style Determine if there are styles to add */
+        $style = ((isset($column['style']))?&quot; style=\&quot;{$column['style']}\&quot;&quot;:&quot;&quot;);
+        /** @var string $orderAble Determine the orderAble value */
+        $orderAble = ((isset($column['order']))?'true':'false');
+        /** Append the th element to the head content */
+        $content .= &quot;&lt;th{$style} data-datatable-order=\&quot;{$orderAble}\&quot;&gt;{$column['label']}&lt;/th&gt;&quot;;
+      }
+      /** End the table row */
+      $content .= &quot;&lt;/tr&gt;&quot;;
+      /** Check if we have filters to add */
+      if(sizeof($this-&gt;_gsColumnFilters)!==0){
+        /** Add the return from _dtFilters to the header content */
+        $content .= $this-&gt;_dtFilters();
+      }
+    /** Return the thead content */
+    return &quot;{$content}&lt;/thead&gt;&quot;;
+  }
+
+  protected function _dtCustomRequestVariables()
+  {
+    $customRequestVariables = &quot;&quot;;
+    foreach($this-&gt;_gsColumnFilters as $key =&gt; $data){
+      $customRequestVariables .= &quot;{$key}, &quot;;
+    }
+    $customRequestVariables = substr($customRequestVariables,0,-2);
+    return &quot;{$customRequestVariables}&quot;;
+  }
+
+  /**
+   * Make all of the filters for the active datatable
+   * @mthod _dtFilters
+   * @return string
+   */
+  protected function _dtFilters()
+  {
+    return null;
+    if(!$this-&gt;_gsColumnFilters){
+      return null;
+    }
+    /** @var string $content This is where we will store the filter row while we make it */
+    $content = &quot;&lt;tr role=\&quot;row\&quot; class=\&quot;filter\&quot;&gt;&quot;;
+    /** @var array|boolean $filter Iterate over all of the possible filters */
+    foreach($this-&gt;_gsColumnFilters as $filter){
+      /** Check if this filter is set to false */
+      if($filter===false){
+        /** Return an empty content area */
+        $content .= &quot;&lt;td&gt;&lt;/td&gt;&quot;;
+        /** End this iteration */
+        continue;
+      }
+      $content .= $this-&gt;_dtMakeFilter($filter);
+    }
+    /** Return the filter row */
+    return &quot;{$content}&lt;/tr&gt;&quot;;
+  }
+
+  /**
+   * Figure out what kind of filter needs to be made and call its custom make function
+   * @method _dtMakeFilter
+   * @param $filter
+   * @return string
+   */
+  protected function _dtMakeFilter($filter)
+  {
+    switch($filter['type']){
+      /** Search String Filter */
+      case self::searchFilter: return $this-&gt;_dtSearchStringFilter($filter); break;
+      /** Handle being passed an invalid filter type */
+      default: return &quot;&lt;td&gt;&lt;center&gt;Invalid Filter&lt;/center&gt;&lt;/td&gt;&quot;; break;
+    }
+  }
+
+  /**
+   * Make the search filter cell
+   * @method _dtSearchStringFilter
+   * @param $filter
+   * @return string
+   */
+  protected function _dtSearchStringFilter($filter)
+  {
+    /** @var null|string $id default the value to null */
+    $id=null;
+    /** @var null|string $name default the value to null */
+    $name=null;
+    /** @var null|string $placeholder default the value to null */
+    $placeholder=null;
+    /** @var null|string $class default the value to null */
+    $class=null;
+    /** @var null|string $filterName default the value to null */
+    $filterName=null;
+    /** @var integer $filterType Set the filter to the searchFilter key */
+    $filterType=&quot;data-datatable-filter-type=\&quot;{self::searchFilter}\&quot;&quot;;
+    /** Check if we have an id */
+    if(isset($filter['id'])&amp;&amp;is_string($filter['id'])){
+      /** @var string $id update the value */
+      $id=&quot; id=\&quot;{$filter['id']}\&quot;&quot;;
+    }
+    /** Check if we have an name */
+    if(isset($filter['name'])&amp;&amp;is_string($filter['name'])){
+      /** @var string $name update the value */
+      $name=&quot; name=\&quot;{$filter['name']}\&quot;&quot;;
+    }
+    /** Check if we have an placeholder */
+    if(isset($filter['placeholder'])&amp;&amp;is_string($filter['placeholder'])){
+      /** @var string $placeholder update the value */
+      $placeholder=&quot; placeholder=\&quot;{$filter['placeholder']}\&quot;&quot;;
+    }
+    /** Check if we have an class */
+    if(isset($filter['class'])&amp;&amp;is_string($filter['class'])){
+      /** @var string $class update the value */
+      $class=&quot; class=\&quot;{$filter['class']}\&quot;&quot;;
+    }
+    /** @var string $content Store the content for the filter here while we build it */
+    $content = &quot;&lt;td&gt;&quot;;
+      $content .= &quot;&lt;input type=\&quot;text\&quot;{$id}{$name}{$placeholder}{$class}{$filterName}{$filterType} /&gt;&quot;;
+    return &quot;{$content}&lt;/td&gt;&quot;;
+  }
+
+  /**
+   * Make the body of the datatable
+   * @method _dtBody
+   * @return string
+   */
+  protected function _dtBody()
+  {
+    /** @var array $rows */
+    $rows = $this-&gt;_initialQuery();
+    /** @var string $content */
+    $content = &quot;&lt;tbody&gt;&quot;;
+    /** @var array $row Loop through the rows*/
+    if($rows) {
+      foreach ($rows as $row) {
+        /** @var array $row Overwrite the row with the formatted data */
+        $row = $this-&gt;_rowFormatter ($row);
+        /** Use makeRow to get the row content and append it to content */
+        $content .= $this-&gt;_makeRow ($row);
+      }
+    }
+    /** return the body */
+    return &quot;{$content}&lt;/tbody&gt;&quot;;
+  }
+
+  /**
+   * Make a single row in the active datatable
+   * @method _makeRow
+   * @param $row
+   * @return string
+   */
+  protected function _makeRow($row)
+  {
+    /** @var integer $index current index */
+    $index = 0;
+    /** @var string $content */
+    $content = &quot;&lt;tr&gt;&quot;;
+    /** @var string $cell loop over the cells */
+    foreach($row as $cell){
+      /** @var string $style Get the styles from the column definitions */
+      $style = ((isset($this-&gt;_gsColumnDefinitions[$index]['style']))?&quot; style=\&quot;{$this-&gt;_gsColumnDefinitions[$index]['style']}\&quot;&quot;:&quot;&quot;);
+      /** Append the cell to the content */
+      $content .= &quot;&lt;td{$style}&gt;{$cell}&lt;/td&gt;&quot;;
+
+      /** Move forward to the next index */
+      $index++;
+    }
+    return &quot;{$content}&lt;/tr&gt;&quot;;
+  }
+  /****************************************************/
+  /*                  DATABASE METHODS                */
+  /****************************************************/
+
+  /**
+   * Make the limit string for the query
+   * @method _limit
+   * @param null $start
+   * @param null $end
+   * @return string
+   */
+  protected function _limit($start = null, $end = null )
+  {
+    /** Check if null was passed */
+    if(is_null($start)){
+      /** @var integer $start default it to 0 */
+      $start = 0;
+    }
+    /** Check if null was passed */
+    if(is_null($end)){
+      /** @var integer $end Default it to the result limit */
+      $end = $this-&gt;_dsResultLimit;
+    }
+    /** Return the limit string */
+    return &quot; LIMIT {$start}, {$end}&quot;;
+  }
+  /****************************************************/
+  /*                  DATABASE METHODS                */
+  /****************************************************/
+
+  /**
+   * Connect to the database
+   * @method _connect
+   * @param                             $dbname
+   * @param \Framework\Modulus\DBConfig $config
+   * @throws \Framework\Exceptional\PDOdatabasesException
+   */
+  protected function _connect($dbname, DBConfig $config)
+  { $this-&gt;_database = $this-&gt;_pdoDatabses-&gt;connect($dbname, $config); }
+
+  /**
+   * Reset our database connection
+   * @method _reConnect
+   * @throws \Framework\Exceptional\PDOdatabasesException
+   */
+  protected function _reConnect()
+  {
+    /** Reset our database connection */
+    $this-&gt;_pdoDatabses-&gt;resetconnection($this-&gt;_databaseName);
+    /** @var mixed handle _database reconnect */
+    $this-&gt;_database = $this-&gt;_pdoDatabses-&gt;connect($this-&gt;_databaseName);
+  }
+
+  /**
+   * Prepare a query
+   * @method _prepare
+   * @param $query
+   * @return mixed
+   * @throws \Framework\Exceptional\PDOdatabasesException
+   */
+  protected function _prepare($query)
+  {
+    /** Wrap up for safty */
+    try{
+      /** Return the prepared query */
+      return $this-&gt;_database-&gt;prepare($query);
+    } catch (\PDOException $exception) {
+      /** Rethrow the error correctly */
+      throw new \Framework\Exceptional\PDOdatabasesException(
+        $exception-&gt;getMessage(),
+        $exception-&gt;getCode(),
+        1,
+        $exception-&gt;getFile(),
+        $exception-&gt;getLine(),
+        $exception
+      );
+    }
+  }
+
+  /**
+   * Start a database transaction
+   * @method _startTransaction
+   */
+  protected function _startTransaction()
+  { $this-&gt;_database-&gt;beginTransaction(); }
+
+  /**
+   * Roll the transaction back
+   * @method _rollbackTransaction
+   */
+  protected function _rollbackTransaction()
+  { $this-&gt;_database-&gt;rollBack(); }
+
+  /**
+   * Commit the active transaction
+   * @method _commitTransaction
+   */
+  protected function _commitTransaction()
+  { $this-&gt;_database-&gt;commit(); }
+
+  /**
+   * Execute a prepared statment
+   * @method _execute
+   * @param \PDOStatement $preparedStatement
+   * @return \PDOStatement
+   * @throws \Framework\Exceptional\PDOdatabasesException
+   */
+  protected function _execute(\PDOStatement $preparedStatement)
+  {
+    try{
+      /** Try and just execute the statement */
+      $preparedStatement-&gt;execute();
+    } catch (\PDOException $exception) {
+      /** CHeck if this is a bad connection exception */
+      if($exception-&gt;getCode() != 2006){
+        /** This is not a bad connection rethrow it */
+        throw new \Framework\Exceptional\PDOdatabasesException(
+          $exception-&gt;getMessage(),
+          $exception-&gt;getCode(),
+          1,
+          $exception-&gt;getFile(),
+          $exception-&gt;getLine(),
+          $exception
+        );
+      }
+      /** Bad connection lets reconnect and try again */
+      $this-&gt;_reConnect();
+      /** Rerun the execute */
+      $this-&gt;_execute($preparedStatement);
+    }
+    /** return the statment */
+    return $preparedStatement;
+  }
+  /****************************************************/
+  /*                  REQUEST METHODS                 */
+  /****************************************************/
+
+
+  protected function _eRequestParse()
+  {
+    /** @var array $_erData */
+    $this-&gt;_erData = $_POST;
+    /** @var array $_erColumns */
+    $this-&gt;_erColumns = $this-&gt;_erData['columns'];
+    /** @var integer $_erRecordStart */
+    $this-&gt;_erRecordStart = intval($this-&gt;_erData['start']);
+    /** @var integer $_erRecordEnd */
+    $this-&gt;_erRecordEnd = intval($this-&gt;_erData['length']);
+    if($this-&gt;_dsSortable) {
+      /** @var integer $_erOrderColumnIndex */
+      $this-&gt;_erOrderColumnIndex = intval ($this-&gt;_erData['order'][0]['column']);
+      /** @var string $_erOrderDirection */
+      $this-&gt;_erOrderDirection = $this-&gt;_erData['order'][0]['dir'];
+    }
+    /** @var integer $_erDrawCount */
+    $this-&gt;_erDrawCount = intval($this-&gt;_erData['draw']);
+    /** @var integer $_erLength */
+    $this-&gt;_erLength = intval($this-&gt;_erData['length']);
+    /** @var boolean $_erSearchRegex */
+    $this-&gt;_erSearchRegex = boolval($this-&gt;_erData['search']['regex']);
+    /** @var string $_erSearchValue */
+    $this-&gt;_erSearchValue = $this-&gt;_erData['search']['value'];
+  }
+
+  /**
+   * Handle the response for all datatalbe requests
+   * @method _eResponse
+   * @param $records
+   * @param $draw
+   * @param $recordsTotal
+   * @param $recordsFiltered
+   */
+  protected function _eResponse($records, $draw, $recordsTotal, $recordsFiltered)
+  {
+    /** @var array $records make our records array */
+    $result = [];
+    /** Add the data part to the records so we can run them in */
+    $result[&quot;data&quot;] = [];
+    /** Add the draw property to the records array */
+    $result['draw'] = $draw;
+    /** Add the record count to the result */
+    $result['recordsTotal'] = $recordsTotal;
+    /** Add the total records filtered to the data array */
+    $result['recordsFiltered'] = $recordsFiltered;
+    /** Make sure we have records */
+    if($records){
+      foreach( $records as &amp;$resultRow){
+        /** @var array $row predefine our row */
+        $row = [];
+        /** @var array $resultRow format the row */
+        $resultRow = $this-&gt;_rowFormatter($resultRow);
+        /** @var string $cell iterate over the cells */
+        foreach($resultRow as &amp;$cell){
+          /** Push each cell into the row */
+          array_push($row,$cell);
+        }
+        /** Push the row into the result data */
+        array_push($result['data'],$row);
+      }
+    }
+    /** Return the response to the requester */
+    echo json_encode($this-&gt;_eResponseCleaner($result));
+    /** Exit to avoid anything happening after this point */
+    exit();
+  }
+
+  /**
+   * Clean the response array
+   * @method _eResponseCleaner
+   * @param $array
+   * @return mixed
+   */
+  protected function _eResponseCleaner($array)
+  {
+    array_walk_recursive($array, function(&amp;$item, $key){
+      if(!mb_detect_encoding($item, 'utf-8', true)){
+        $item = utf8_encode($item);
+      }
+    });
+    return $array;
+  }
+}</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

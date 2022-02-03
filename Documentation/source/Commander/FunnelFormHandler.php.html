@@ -1,0 +1,382 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+
+namespace Framework\Commander;
+
+class FunnelFormHandler extends \Framework\Support\Abstracts\Singleton
+{
+
+  const emailAddress  = 0;
+  const phoneNumber   = 1;
+  const firstName     = 2;
+  const lastName      = 3;
+  const addressOne    = 4;
+  const addressTwo    = 5;
+  const city          = 6;
+  const state         = 7;
+  const zip           = 8;
+  const ccNumber      = 9;
+  const ccCVV         = 10;
+  const ccExpire      = 11;
+
+  private $_sPrefix;
+  private $_configurationGroups;
+  private $_buffer;
+
+  private $_groupID;
+  private $_elementID;
+  private $_unique;
+  private $_groupMap;
+  private $_elementMap;
+
+  public static function construct()
+  {
+    $instance = self::getInstance();
+    $instance-&gt;_unique = time();
+    return $instance;
+  }
+
+  public function setPrefix( $prefix )
+  { return $this-&gt;_sPrefix = $prefix; }
+
+  public function form($configuration,$products)
+  {
+    $product = '';
+    foreach($products as $key =&gt; $value){
+      $product .= &quot;&lt;input type=\&quot;hidden\&quot; value=\&quot;{$key}\&quot; name=\&quot;products[]\&quot;&gt;&quot;;
+    }
+    $groups = $this-&gt;_configuration($configuration);
+    foreach( $groups as $group =&gt; &amp;$members ){
+      $groupID = $this-&gt;_groupID();
+      $this-&gt;_groupMap[$groupID] = $members;
+      if(!is_array($members)){
+        //$this-&gt;_write(&quot;{$group}&lt;br /&gt;not array&lt;br /&gt;&quot;);
+        continue;
+      }
+      switch ($group){
+        case 'billing': $this-&gt;_write($this-&gt;_group($members)); break;
+        case 'billing-same-as-shipping':
+          $checked = (($members['checked'])?' checked=&quot;checked&quot;':'');
+          if(isset($_SESSION[$this-&gt;_sPrefix]['order-data']['billing-is-shipping'])){
+            $checked = '';
+            if($_SESSION[$this-&gt;_sPrefix]['order-data']['billing-is-shipping']=='on'){
+              $checked = ' checked=&quot;checked&quot;';
+            }
+          }
+          $this-&gt;_write(&quot;&lt;div id=\&quot;$groupID\&quot; class=\&quot;funnel-input-row\&quot;&gt;\n&quot;);
+            $this-&gt;_write(&quot;&lt;input
+              type=\&quot;checkbox\&quot;
+              id=\&quot;billing-is-shipping\&quot;
+              name=\&quot;billing-is-shipping\&quot;
+              class=\&quot;\&quot;{$checked} /&gt;&amp;nbsp;&amp;nbsp;&quot;);
+            $this-&gt;_write($members['label']);
+          $this-&gt;_write(&quot;&lt;/div&gt;&quot;);
+        break;
+        case 'shipping':
+          $hidden = &quot;style=\&quot;display:block;\&quot; &quot;;
+          if($members['hidden']){
+            $hidden = &quot;style=\&quot;display:none;\&quot; &quot;;
+          }
+          if(isset($_SESSION[$this-&gt;_sPrefix]['order-data']['billing-is-shipping'])){
+            $hidden = &quot;style=\&quot;display:block;\&quot; &quot;;
+            if($_SESSION[$this-&gt;_sPrefix]['order-data']['billing-is-shipping']=='on'){
+              $hidden = &quot;style=\&quot;display:none;\&quot; &quot;;
+            }
+          }
+          $this-&gt;_write(&quot;&lt;div id=\&quot;shipping-address\&quot; {$hidden}&gt;&quot;);
+            $this-&gt;_write(&quot;&lt;h3 class=\&quot;funnel-form-title\&quot;&gt;{$members['title']}&lt;/h3&gt;\n&quot;);
+            $this-&gt;_write($this-&gt;_group($members));
+          $this-&gt;_write(&quot;&lt;/div&gt;&quot;);
+        break;
+        case 'credit-card': $this-&gt;_creditCard($members); break;
+      }
+    }
+    return &quot;{$this-&gt;_form($groups)}{$this-&gt;_buffer}{$this-&gt;_submitButton($groups)}{$product}&lt;/form&gt;\n&quot;;
+  }
+
+  private function _group($group)
+  {
+    foreach($group as $id =&gt; &amp;$configuration){
+      if(!is_array($configuration)){
+        if($id=='clear'){
+          $this-&gt;_write(&quot;&lt;div style=\&quot;clear:{$configuration};\&quot;&gt;&lt;/div&gt;&quot;);
+        }
+        continue;
+      }
+      $elementID = $this-&gt;_elementID();
+      $this-&gt;_elementMap[$id] = $configuration;
+      $value = ((isset($_SESSION[$this-&gt;_sPrefix]['order-data'][$id]))?$_SESSION[$this-&gt;_sPrefix]['order-data'][$id]:'');
+      $this-&gt;_write(&quot;&lt;div class=\&quot;{$id} funnel-input-row\&quot;&gt;\n&quot;);
+        if(isset($configuration['label'])){
+          $this-&gt;_write(&quot;&lt;label class=\&quot;funnel-input-label\&quot; for=\&quot;{$id}\&quot;&gt;{$configuration['label']}&lt;/label&gt;\n&quot;);
+        }
+        switch($id){
+          case 'shipping-state':
+          case 'billing-state':
+          $this-&gt;_write(&quot;&lt;select id=\&quot;{$id}\&quot; name=\&quot;{$id}\&quot;&gt;&quot;);
+          foreach($this-&gt;_states as $key=&gt;$val){
+            if($key==$value){
+              $this-&gt;_write(&quot;&lt;option value=\&quot;{$key}\&quot; SELECTED=\&quot;SELECTED\&quot;&gt;{$val}&lt;/option&gt;&quot;);
+            } else {
+              $this-&gt;_write(&quot;&lt;option value=\&quot;{$key}\&quot;&gt;{$val}&lt;/option&gt;&quot;);
+            }
+          }
+          $this-&gt;_write(&quot;&lt;/select&gt;&quot;);
+          break;
+          default:
+            $this-&gt;_write(&quot;&lt;input id=\&quot;{$id}\&quot; name=\&quot;{$id}\&quot; type=\&quot;text\&quot; value=\&quot;$value\&quot; /&gt;\n&quot;);
+          break;
+        }
+        $this-&gt;_write(&quot;&lt;span class=\&quot;funnel-input-description\&quot;&gt;\n&quot;);
+          $this-&gt;_write(&quot;&lt;span class=\&quot;funnel-input-error\&quot;&gt;&lt;/span&gt;\n&quot;);
+          if(isset($configuration['helper'])&amp;&amp;$configuration['helper']!==false){
+            $this-&gt;_write($this-&gt;_helperBox($id, $configuration['helper']));
+          }
+        $this-&gt;_write(&quot;&lt;/span&gt;\n&quot;);
+      $this-&gt;_write(&quot;&lt;/div&gt;\n&quot;);
+    }
+  }
+
+  private function _creditCard($members)
+  {
+    $this-&gt;_write(&quot;&lt;h3 class=\&quot;funnel-form-title\&quot;&gt;{$members['title']}&lt;/h3&gt;\n&quot;);
+    foreach($members as $id =&gt; &amp;$configuration){
+      if(!is_array($configuration)){
+        if($id=='clear'){
+          $this-&gt;_write(&quot;&lt;div style=\&quot;clear:{$configuration};\&quot;&gt;&lt;/div&gt;&quot;);
+        }
+        continue;
+      }
+      $elementID = $this-&gt;_elementID();
+      $this-&gt;_elementMap[$id] = $configuration;
+      $this-&gt;_write(&quot;&lt;div class=\&quot;funnel-input-row {$id}\&quot;&gt;\n&quot;);
+        if(isset($configuration['label'])){
+          $this-&gt;_write(&quot;&lt;label class=\&quot;funnel-input-label\&quot; for=\&quot;{$id}\&quot;&gt;{$configuration['label']}&lt;/label&gt;\n&quot;);
+        }
+        switch($id){
+          case 'expiration-year':
+            $this-&gt;_ccExpireYear($elementID,$id);
+          break;
+          case 'expiration-month':
+            $this-&gt;_ccExpireMonth($elementID,$id);
+          break;
+          default: $this-&gt;_write(&quot;&lt;input id=\&quot;{$id}\&quot; name=\&quot;{$id}\&quot; type=\&quot;text\&quot; value=\&quot;\&quot; /&gt;\n&quot;); break;
+        }
+        $this-&gt;_write(&quot;&lt;span class=\&quot;funnel-input-description\&quot;&gt;\n&quot;);
+          $this-&gt;_write(&quot;&lt;span class=\&quot;funnel-input-error\&quot;&gt;&lt;/span&gt;\n&quot;);
+          if(isset($configuration['helper'])&amp;&amp;$configuration['helper']!==false){
+            $this-&gt;_write($this-&gt;_helperBox($id, $configuration['helper']));
+          }
+        $this-&gt;_write(&quot;&lt;/span&gt;\n&quot;);
+      $this-&gt;_write(&quot;&lt;/div&gt;\n&quot;);
+    }
+  }
+
+  private function _ccExpireMonth($elementID,$id)
+  {
+    $this-&gt;_write(&quot;&lt;select id=\&quot;{$id}\&quot; name=\&quot;{$id}\&quot; &gt;\n&quot;);
+    $months = array(&quot;&quot;, &quot;January&quot;, &quot;February&quot;, &quot;March&quot;, &quot;April&quot;, &quot;May&quot;, &quot;June&quot;, &quot;July&quot;, &quot;August&quot;, &quot;September&quot;, &quot;October&quot;, &quot;November&quot;, &quot;December&quot;);
+    for($month = 1; $month &lt;= 12; $month++){
+      $this-&gt;_write(&quot;&lt;option value=\&quot;{$month}\&quot;&gt;{$months[$month]}&lt;/option&gt;&quot;);
+    }
+    $this-&gt;_write(&quot;&lt;/select&gt;\n&quot;);
+  }
+
+  private function _ccExpireYear($elementID,$id)
+  {
+    $start = (date(&quot;Y&quot;)-10);
+    $end  = (date(&quot;Y&quot;)+10);
+    $this-&gt;_write(&quot;&lt;select id=\&quot;{$id}\&quot; name=\&quot;{$id}\&quot;&gt;&quot;);
+    for($year=$start;$year&lt;=$end;$year++){
+      $shortYear = substr($year, -2);
+      $this-&gt;_write(&quot;&lt;option value=\&quot;{$shortYear}\&quot;&gt;{$year}&lt;/option&gt;&quot;);
+    }
+    $this-&gt;_write(&quot;&lt;/select&gt;&quot;);
+  }
+
+  private function _helperBox($elementID, $helper)
+  {
+    return &quot;
+    &lt;span class=\&quot;checkout-help\&quot;&gt;\n
+      &lt;i class=\&quot;fa fa-question-circle fa-2x\&quot;&gt;&lt;/i&gt;\n
+    &lt;/span&gt;\n
+    &lt;span class=\&quot;funnel-input-helper\&quot;&gt;\n
+      &lt;span class=\&quot;header\&quot;&gt;\n
+        &lt;span class=\&quot;title\&quot;&gt;\n&lt;i class=\&quot;{$helper['icon']}\&quot;&gt;&lt;/i&gt;\n{$helper['title']}&lt;/span&gt;\n
+        &lt;span class=\&quot;close\&quot;&gt;\n
+          &lt;span class=\&quot;fa-stack\&quot;&gt;\n
+            &lt;i class=\&quot;fa fa-square fa-stack-2x\&quot;&gt;&lt;/i&gt;\n
+            &lt;i style=\&quot;margin: -1px 0px 0px -1px;\&quot; class=\&quot;fa fa fa-times fa-stack-1x fa-inverse\&quot;&gt;&lt;/i&gt;\n
+          &lt;/span&gt;\n
+        &lt;/span&gt;\n
+      &lt;/span&gt;\n
+      &lt;span class=\&quot;content\&quot;&gt;\n{$helper['message']}\n&lt;/span&gt;\n
+    &lt;/span&gt;\n&quot;;
+  }
+
+
+  public function validation()
+  {
+    if(is_null($this-&gt;_configurationGroups)){
+      return &quot;You need to generage a form before making validation!&quot;;
+    }
+    return &quot;ValidationData = &quot;.json_encode($this-&gt;_elementMap).&quot;;&quot;;
+  }
+
+  private function _groupID()
+  {
+    if(is_null($this-&gt;_groupID)){
+      $this-&gt;_groupID = 0;
+      return &quot;{$this-&gt;_unique}:{$this-&gt;_groupID}&quot;;
+    }
+    $this-&gt;_groupID++;
+    return &quot;G:{$this-&gt;_unique}:{$this-&gt;_groupID}&quot;;
+  }
+
+  private function _elementID()
+  {
+    if(is_null($this-&gt;_elementID)){
+      $this-&gt;_elementID = 0;
+      return &quot;{$this-&gt;_unique}:{$this-&gt;_elementID}&quot;;
+    }
+    $this-&gt;_elementID++;
+    return &quot;{$this-&gt;_unique}:{$this-&gt;_elementID}&quot;;
+  }
+
+  private function _form($configuration)
+  {
+    return &quot;&lt;form
+      method=\&quot;post\&quot;
+      id=\&quot;checkout-form\&quot;
+      name=\&quot;checkout-form\&quot;
+      action=\&quot;{destination-success}\&quot;&gt;\n&quot;;
+  }
+
+  private function _submitButton($configuration)
+  {
+    return &quot;&lt;input
+      class=\&quot;button\&quot;
+      type=\&quot;submit\&quot;
+      value=\&quot;{$configuration['submit-button-text']}\&quot;&gt;\n&quot;;
+  }
+
+  private function _configuration($configuration)
+  {
+    $this-&gt;_setBuffer();
+    $this-&gt;_groupMap    = [];
+    $this-&gt;_elementMap  = [];
+    return $this-&gt;_configurationGroups = $configuration;
+  }
+
+  private function _write( $content )
+  { $this-&gt;_buffer .= $content; }
+
+  private function _setBuffer()
+  { $this-&gt;_buffer = &quot;&quot;; }
+
+  private $_states = array(
+    &quot;AL&quot; =&gt; &quot;Alabama&quot;,
+    &quot;AK&quot; =&gt; &quot;Alaska&quot;,
+    &quot;AZ&quot; =&gt; &quot;Arizona&quot;,
+    &quot;AR&quot; =&gt; &quot;Arkansas&quot;,
+    &quot;CA&quot; =&gt; &quot;California&quot;,
+    &quot;CO&quot; =&gt; &quot;Colorado&quot;,
+    &quot;CT&quot; =&gt; &quot;Connecticut&quot;,
+    &quot;DE&quot; =&gt; &quot;Delaware&quot;,
+    &quot;FL&quot; =&gt; &quot;Florida&quot;,
+    &quot;GA&quot; =&gt; &quot;Georgia&quot;,
+    &quot;HI&quot; =&gt; &quot;Hawaii&quot;,
+    &quot;ID&quot; =&gt; &quot;Idaho&quot;,
+    &quot;IL&quot; =&gt; &quot;Illinois&quot;,
+    &quot;IN&quot; =&gt; &quot;Indiana&quot;,
+    &quot;IA&quot; =&gt; &quot;Iowa&quot;,
+    &quot;KS&quot; =&gt; &quot;Kansas&quot;,
+    &quot;KY&quot; =&gt; &quot;Kentucky&quot;,
+    &quot;LA&quot; =&gt; &quot;Louisiana&quot;,
+    &quot;ME&quot; =&gt; &quot;Maine&quot;,
+    &quot;MD&quot; =&gt; &quot;Maryland&quot;,
+    &quot;MA&quot; =&gt; &quot;Massachusetts&quot;,
+    &quot;MI&quot; =&gt; &quot;Michigan&quot;,
+    &quot;MN&quot; =&gt; &quot;Minnesota&quot;,
+    &quot;MS&quot; =&gt; &quot;Mississippi&quot;,
+    &quot;MO&quot; =&gt; &quot;Missouri&quot;,
+    &quot;MT&quot; =&gt; &quot;Montana&quot;,
+    &quot;NE&quot; =&gt; &quot;Nebraska&quot;,
+    &quot;NV&quot; =&gt; &quot;Nevada&quot;,
+    &quot;NH&quot; =&gt; &quot;New Hampshire&quot;,
+    &quot;NJ&quot; =&gt; &quot;New Jersey&quot;,
+    &quot;NM&quot; =&gt; &quot;New Mexico&quot;,
+    &quot;NY&quot; =&gt; &quot;New York&quot;,
+    &quot;NC&quot; =&gt; &quot;North Carolina&quot;,
+    &quot;ND&quot; =&gt; &quot;North Dakota&quot;,
+    &quot;OH&quot; =&gt; &quot;Ohio State&quot;,
+    &quot;OK&quot; =&gt; &quot;Oklahoma&quot;,
+    &quot;OR&quot; =&gt; &quot;Oregon&quot;,
+    &quot;PA&quot; =&gt; &quot;Pennsylvania&quot;,
+    &quot;RI&quot; =&gt; &quot;Rhode Island&quot;,
+    &quot;SC&quot; =&gt; &quot;South Carolina&quot;,
+    &quot;SD&quot; =&gt; &quot;South Dakota&quot;,
+    &quot;TN&quot; =&gt; &quot;Tennessee&quot;,
+    &quot;TX&quot; =&gt; &quot;Texas&quot;,
+    &quot;UT&quot; =&gt; &quot;Utah&quot;,
+    &quot;VT&quot; =&gt; &quot;Vermont&quot;,
+    &quot;VA&quot; =&gt; &quot;Virginia&quot;,
+    &quot;WA&quot; =&gt; &quot;Washington&quot;,
+    &quot;WV&quot; =&gt; &quot;West Virginia&quot;,
+    &quot;WI&quot; =&gt; &quot;Wisconsin&quot;,
+    &quot;WY&quot; =&gt; &quot;Wyoming&quot;
+  );
+}
+
+/*
+if(isset($members['title'])){
+  if($group=='credit-card'){
+    $members['title'] .= &quot;
+    \n&quot;;
+  }
+  $this-&gt;_write(&quot;&lt;h3 class=\&quot;funnel-form-title\&quot;&gt;{$members['title']}&lt;/h3&gt;\n&quot;);
+ */
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,321 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * The Base page for administration
+ *
+ * @package App\Event
+ * @version 1.0.0
+ */
+namespace App\Abstracts;
+
+/**
+ * Page
+ *
+ * This is the base for all admin pages
+ * INFORMATION
+ *
+ * Object Types
+ * oTypeController    = 0
+ * oTypeCronjob       = 1
+ * oTypeModal         = 3
+ * oTypeDatatable     = 4
+ *
+ * @todo Remove framework v1 vars
+ */
+class Page extends \Framework\Advent\Page
+{
+  /****************************************************/
+  /*                RECEPTIONIST TYPES                */
+  /****************************************************/
+  /** @const integer oTypeController */
+  const oTypeController = 0;
+  /** @const integer oTypeCronjob */
+  const oTypeCronjob = 1;
+  /** @const integer oTypeModal */
+  const oTypeModal = 2;
+  /** @const integer oTypeDatatable */
+  const oTypeDatatable = 3;
+  /****************************************************/
+  /*                FRAMEWORK V1 VARS                 */
+  /****************************************************/
+  protected $modal = [];
+  /** @var array $template Templates you want the framework to preload */
+  protected $template = [];
+  /** @var array $controller Controllers you want the framework to preload */
+  protected $controller = [];
+  /****************************************************/
+  /*                  COMMAND OBJECTS                 */
+  /****************************************************/
+  /** @var \Framework\Commander\Document $_cDocument */
+  protected $_cDocument;
+  /****************************************************/
+  /*       PAGE PERMISSION REQUIREMENT DEFAULTS       */
+  /****************************************************/
+  /** @var boolean $requiresLogin */
+  public static $requiresLogin = true;
+  /** @var boolean|string $permissionGroup */
+  public static $permissionGroup = false;
+  /** @var boolean|string $permission */
+  public static $permission = false;
+  /****************************************************/
+  /*                  PAGE SETTINGS                   */
+  /****************************************************/
+  /** @var array $scripts Array of script files we need framework to include */
+  protected $_pageScripts = [];
+  /** @var string $pageSubHeader A small version of the header appears to the right of it */
+  protected $pageSubHeader = null;
+  /****************************************************/
+  /*                  DATA MEMBERS                    */
+  /****************************************************/
+  /** @var string $_dBodyClass */
+  protected $_dBodyClass = &quot;page-header-fixed page-sidebar-closed-hide-logo page-container-bg-solid page-content-white&quot;;
+  /** @var boolean $buildui Are we building the UI */
+  protected $_dBuildUserInterface = true;
+  /** @var array $_portletConfiguration Default portlet values */
+  protected $_dPortletConfiguration = [
+    &quot;type&quot; =&gt; 'box',
+    &quot;color&quot; =&gt; &quot;green&quot;,
+    &quot;icon&quot; =&gt; &quot;fa fa-server&quot;,
+    &quot;title&quot; =&gt; &quot;Title&quot;,
+    &quot;sub-title&quot; =&gt; &quot;&quot;,
+    &quot;content&quot; =&gt; &quot;&quot;,
+    &quot;tools&quot; =&gt; [],
+    &quot;actions&quot; =&gt; [],
+    &quot;collapse&quot; =&gt; false
+  ];
+  /** @var array $_dAdministrationTokens */
+  private $_dAdministrationTokens = [
+    'company-website'       =&gt; 'shophlh.com',
+    'company-website-full'  =&gt; 'http://www.shophlh.com/',
+    'company-name'          =&gt; 'HolylandHealth',
+    'copyright-year'        =&gt; '2015'
+  ];
+  /** @var array $_dAdministrationStyles */
+  private $_dAdministrationStyles = [
+    [&quot;//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css&quot;,self::absolute],
+    [&quot;//fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,600,400italic,600italic,700,700italic,800,800italic&quot;,self::absolute],
+    [&quot;simple-line-icons.css&quot;,                     self::application],
+    [&quot;jquery.notific8.min.css&quot;,                   self::application],
+    [&quot;datatables.css&quot;,                            self::application],
+    [&quot;bootstrap3.css&quot;,                            self::application],
+    [&quot;bootstrap-modal-bs3patch.css&quot;,              self::application],
+    [&quot;aReset.css&quot;,                                self::application],
+    [&quot;aLayout.css&quot;,                               self::application],
+    [&quot;aHeader.css&quot;,                               self::application]
+  ];
+  /** @var array $_dAdministrationScripts */
+  private $_dAdministrationScripts = [
+    [&quot;//code.jquery.com/jquery-2.2.0.min.js&quot;,     self::absolute],
+    [&quot;bootstrap3.js&quot;,                             self::application],
+    [&quot;datatables.js&quot;,                             self::application],
+    [&quot;datatable.min.js&quot;,                          self::application],
+    [&quot;jquery.uniform.min.js&quot;,                     self::application],
+    [&quot;jquery.notific8.js&quot;,                        self::application],
+    [&quot;bootstrap-datatables.js&quot;,                   self::application],
+    [&quot;jquery.validate.min.js&quot;,                    self::application],
+    [&quot;bootstrap-modalmanager.js&quot;,                 self::application],
+    [&quot;bootstrap-hover-dropdown.min.js&quot;,           self::application],
+    [&quot;bootstrap-switch.min.js&quot;,                   self::application],
+    [&quot;Framework.js&quot;,                              self::framework],
+    [&quot;UserController.js&quot;,                         self::application],
+    [&quot;SearchController.js&quot;,                       self::application],
+    [&quot;QuickSidebarController.js&quot;,                 self::application]
+  ];
+
+  /**
+   * @param array $parameters
+   */
+  public function run(array $parameters = array()){
+    /** @var \Framework\Commander\Document $_cDocument */
+    $this-&gt;_cDocument = $this-&gt;receptionist(self::oTypeController,&quot;Document&quot;);
+    /** Add Page scripts if they exist */
+    $this-&gt;_addPageScripts();
+    /** Register Administration styles */
+    $this-&gt;addStyles( $this-&gt;_dAdministrationStyles );
+    /** Register Administration Scripts */
+    $this-&gt;addScripts( $this-&gt;_dAdministrationScripts );
+    /** Register Administration Tokens */
+    $this-&gt;addTokens( $this-&gt;_dAdministrationTokens );
+    /** Check if we were told to build with user interface */
+    if($this-&gt;_dBuildUserInterface){
+      return $this-&gt;_buildWithUserInterface();
+    }
+    return $this-&gt;_buildWithoutUserInterface();
+  }
+
+  /****************************************************/
+  /*                 BUILD METHODS                    */
+  /****************************************************/
+
+  /**
+   * Build the page with a user interface
+   * @method _buildWithUserInterface
+   * @param array $parameters
+   */
+  private function _buildWithUserInterface(array $parameters = array())
+  {
+    /****************************************************/
+    /*               BUILD LAYOUT OBJECTS               */
+    /****************************************************/
+    /** @var \App\Objects\Navigation $navigation */
+    $navigation = new \App\Objects\Navigation();
+    /** @var \App\Objects\Header $header */
+    $header = new \App\Objects\Header($navigation, $this-&gt;tokens);
+    /** @var \App\Objects\QuickSidebar $quickSidebar */
+    $quickSidebar = new \App\Objects\QuickSidebar($this-&gt;tokens);
+    /** @var \App\Objects\ContentArea $contentArea */
+    $contentArea = new \App\Objects\ContentArea($this-&gt;tokens);
+    /** @var \App\Objects\Footer $footer */
+    $footer = new \App\Objects\Footer($this-&gt;tokens);
+    /****************************************************/
+    /*               SET PAGE DATA MEMBERS              */
+    /****************************************************/
+    /** Set the Page Header */
+    $this-&gt;setPageHeader($this-&gt;pageHeader);
+    /** Set the page Sub Header */
+    $this-&gt;setPageSubHeader($this-&gt;pageSubHeader);
+    /** Set the body class */
+    $this-&gt;setBodyClass($this-&gt;_dBodyClass);
+    /****************************************************/
+    /*                  BUILD THE PAGE                  */
+    /****************************************************/
+    /** Write the content to the buffer */
+    $this-&gt;writeBody(&quot;
+      {$header-&gt;build()}
+        &lt;div class='clearfix'&gt;&lt;/div&gt;
+        &lt;div class='page-container'&gt;
+          {$navigation-&gt;SideNavigation()}
+          {$contentArea-&gt;build()}
+          {$this-&gt;Body($parameters)}
+          {$quickSidebar-&gt;build()}
+        &lt;/div&gt;
+      &lt;/div&gt;
+      {$footer-&gt;build()}
+    &quot;);
+    /** Render the page */
+    $this-&gt;render();
+  }
+
+  private function _buildWithoutUserInterface(array $parameters = array())
+  {
+    $this-&gt;writeBody($this-&gt;body($parameters));
+    $this-&gt;render();
+  }
+
+  /****************************************************/
+  /*                  SHORT CUTS                      */
+  /****************************************************/
+
+  /**
+   * Shortcut for generating portlets
+   * @method portlet
+   * @return string
+   */
+  protected function portlet()
+  {
+    return $this-&gt;_cDocument-&gt;portlet(
+      $this-&gt;_dPortletConfiguration['type'],
+      $this-&gt;_dPortletConfiguration['color'],
+      $this-&gt;_dPortletConfiguration['icon'],
+      $this-&gt;_dPortletConfiguration['title'],
+      $this-&gt;_dPortletConfiguration['sub-title'],
+      $this-&gt;_dPortletConfiguration['content'],
+      $this-&gt;_dPortletConfiguration['tools'],
+      $this-&gt;_dPortletConfiguration['actions'],
+      $this-&gt;_dPortletConfiguration['collapse']
+    );
+  }
+
+  /**
+   * Shortcut for the receptionist framework getter
+   * @method receptionist
+   * @param      $objectType
+   * @param      $objectName
+   * @param bool $isFramework
+   * @return bool
+   */
+  protected function receptionist($objectType, $objectName, $isFramework=true)
+  {
+    /** Use the object type to determine which of the receptionist methods to use */
+    switch($objectType){
+      /** Command Object */
+      case self::oTypeController: return \Framework\Core\Receptionist::controller($objectName,$isFramework); break;
+      /** CronJob Object */
+      case self::oTypeCronjob: return \Framework\Core\Receptionist::cronjob($objectName,$isFramework); break;
+      /** Modal Object */
+      case self::oTypeModal: return \Framework\Core\Receptionist::modal($objectName,$isFramework); break;
+      /** Datatable Object */
+      case self::oTypeDatatable: return \Framework\Core\Receptionist::datatable($objectName,$isFramework); break;
+    }
+  }
+
+  /**
+   * Add a page script to the script files for this page
+   * @method _addPageScripts
+   * @return bool
+   */
+  private function _addPageScripts()
+  {
+    /** Check if scripts were added */
+    if(sizeof($this-&gt;_pageScripts)===0){
+      /** No scripts to add return to escape the method */
+      return true;
+    }
+    /** @var array $pageScript Iterate over the script files */
+    foreach($this-&gt;_pageScripts as &amp;$pageScript){
+      /** Check if this is a application script */
+      if($pageScript[1]===self::application){
+        /** Append Page/ To the path */
+        $pageScript[0] = &quot;Page/{$pageScript[0]}&quot;;
+      }
+      /** Push this Script reference into the administrationScripts array */
+      array_push($this-&gt;_dAdministrationScripts, $pageScript);
+    }
+    /** Return true we are done */
+    return true;
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

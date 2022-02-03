@@ -1,0 +1,111 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * LINK
+ *
+ * @package Framework\Dominator\Objects
+ * @version 1.0.0
+ */
+namespace Framework\Dominator\Objects;
+
+/**
+ * LINK
+ *
+ * This is the framework STYLE tag object it is used to normalize the creation of style tags
+ */
+class LINK{
+
+  /**
+   * The tagname
+   * @var     string
+   * @access  private
+   */
+  private $tag  = 'link';
+
+  /**
+   * The rel attribute
+   * @var     string
+   * @access  private
+   */
+  private $rel  = 'stylesheet';
+
+  /**
+   * The type attribute
+   * @var     string
+   * @access  private
+   */
+  private $type   = 'text/css';
+
+  /**
+   * The href attribute
+   * @var     string
+   * @access  private
+   */
+  private $href;
+
+  /**
+   * Construct the tag
+   * @method  __construct
+   * @param   string      $src  The src for this script tag
+   * @return  this              Return this to enable method chaining
+   * @access  public
+   */
+  public function __construct( $href ){
+    $this-&gt;href = $href;
+    return $this;
+  }
+
+  /**
+   * Return the html for this tag
+   * @method  html
+   * @return  string  Return the html needed to render this tag
+   * @access  public
+   */
+  public function html(){
+    return &quot;&lt;{$this-&gt;tag} rel='{$this-&gt;rel}' type='{$this-&gt;type}' href='{$this-&gt;href}'/&gt;&quot;;
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

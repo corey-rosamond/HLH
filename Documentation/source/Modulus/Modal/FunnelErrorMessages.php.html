@@ -1,0 +1,73 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * Navigator
+ *
+ * @package App\Abstracts
+ * @version 1.2.0
+ */
+namespace Framework\Modulus\Modal;
+
+/**
+ * FunnelErrorMessages
+ *
+ * This is the base for the whole system. It converts exceptions from being bad things to being
+ * amazingly useful
+ */
+class FunnelErrorMessages extends \Framework\Modulus\Query
+{
+
+  public function write($class, $message, $sessionKey)
+  {
+    $query = &quot;INSERT INTO `funnel-error-messages`
+      (`class`,`message`,`session-key`) VALUES (:class, :message, :sessionKey)&quot;;
+    $preparedStatement = $this-&gt;Prepare($query);
+    $preparedStatement-&gt;bindValue(':class', $class, \PDO::PARAM_STR);
+    $preparedStatement-&gt;bindValue(':message', $message, \PDO::PARAM_STR);
+    $preparedStatement-&gt;bindValue(':sessionKey', $sessionKey, \PDO::PARAM_INT);
+    return $this-&gt;Execute($preparedStatement);
+  }
+}</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

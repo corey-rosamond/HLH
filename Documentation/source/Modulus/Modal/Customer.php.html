@@ -1,0 +1,100 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+
+namespace Framework\Modulus\Modal;
+
+
+class Customer extends \Framework\Modulus\Query
+{
+  public function emailLookup($email)
+  {
+    $query = &quot;SELECT `key`,`email-address`,`value-before-cost`,`value-after-cost`,`origin-date`,`origin-funnel` FROM `funnel-customers` WHERE `email-address`=:email&quot;;
+    $preparedStatement = $this-&gt;Prepare($query);
+    $preparedStatement-&gt;bindValue(':email', $email, \PDO::PARAM_STR);
+    $preparedStatement = $this-&gt;Execute( $preparedStatement );
+		if( $preparedStatement-&gt;rowCount() &lt;= 0 ){
+      return false;
+    }
+    return $preparedStatement-&gt;fetch(\PDO::FETCH_ASSOC);
+  }
+
+  public function createCustomer($email,$funnel,$valueBefore,$valueAfter)
+  {
+    $query = &quot;INSERT INTO `funnel-customers`
+      (`email-address`,`value-before-cost`,`value-after-cost`,`origin-funnel`) VALUES
+      (:email,:valueBefore,:valueAfter,:funnel)&quot;;
+    $preparedStatement = $this-&gt;Prepare($query);
+    $preparedStatement-&gt;bindValue(':email', $email, \PDO::PARAM_STR);
+    $preparedStatement-&gt;bindValue(':valueBefore', $valueBefore, \PDO::PARAM_STR);
+    $preparedStatement-&gt;bindValue(':valueAfter', $valueAfter, \PDO::PARAM_STR);
+    $preparedStatement-&gt;bindValue(':funnel', $funnel, \PDO::PARAM_INT);
+    $this-&gt;Execute( $preparedStatement );
+		return $this-&gt;get($this-&gt;LastInsertID());
+  }
+
+  public function get($key)
+  {
+    $query = &quot;SELECT `key`,`email-address`,`value-before-cost`,`value-after-cost`,`origin-date`,`origin-funnel` FROM `funnel-customers` WHERE `key`=:key&quot;;
+    $preparedStatement = $this-&gt;Prepare($query);
+    $preparedStatement-&gt;bindValue(':key', $key, \PDO::PARAM_INT);
+    $preparedStatement = $this-&gt;Execute( $preparedStatement );
+		if( $preparedStatement-&gt;rowCount() &lt;= 0 ){
+      return false;
+    }
+    return $preparedStatement-&gt;fetch(\PDO::FETCH_ASSOC);
+  }
+
+  public function updateCustomerValue($key, $before, $after)
+  {
+    $query = &quot;UPDATE `funnel-customers` SET `value-before-cost`=:before,`value-after-cost`=:after WHERE `key` = :key&quot;;
+    $preparedStatement = $this-&gt;Prepare($query);
+    $preparedStatement-&gt;bindValue(':key',     $key,     \PDO::PARAM_INT);
+    $preparedStatement-&gt;bindValue(':before',  $before,  \PDO::PARAM_STR);
+    $preparedStatement-&gt;bindValue(':after',   $after,   \PDO::PARAM_STR);
+    return $this-&gt;Execute( $preparedStatement );
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

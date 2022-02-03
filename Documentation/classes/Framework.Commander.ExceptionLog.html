@@ -1,0 +1,1837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta charset="utf-8"/>
+    <title>    HLH Framework &raquo; \Framework\Commander\ExceptionLog
+</title>
+    <meta name="author" content=""/>
+    <meta name="description" content=""/>
+
+            <link href="../css/template.css" rel="stylesheet" media="all"/>
+    
+            <!--[if lt IE 9]>
+        <script src="https://html5shim.googlecode.com/svn/trunk/html5.js" type="text/javascript"></script>
+        <![endif]-->
+        <script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script>
+        <script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script>
+        <script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script>
+        <script src="../js/bootstrap.js" type="text/javascript"></script>
+        <script src="../js/template.js" type="text/javascript"></script>
+        <script src="../js/prettify/prettify.min.js" type="text/javascript"></script>
+    
+            <link rel="shortcut icon" href="../img/favicon.ico"/>
+        <link rel="apple-touch-icon" href="../img/apple-touch-icon.png"/>
+        <link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png"/>
+        <link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png"/>
+    </head>
+<body>
+
+        <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                    <span class="icon-bar"></span> <span class="icon-bar"></span>
+                    <span class="icon-bar"></span> </a>
+                <a class="brand" href="../index.html">HLH Framework</a>
+
+                <div class="nav-collapse">
+                    <ul class="nav">
+                        <li class="dropdown">
+                            <a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                API Documentation <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                                                    <li><a>Namespaces</a></li>
+                                                                        <li><a href="../namespaces/Framework.html">Framework</a></li>
+                                                                        <li><a href="../namespaces/App.html">App</a></li>
+                                                                        <li><a href="../namespaces/Handler.html">Handler</a></li>
+                                                                                                                                </ul>
+                        </li>
+                        <li class="dropdown" id="charts-menu">
+                            <a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                Charts <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="../graph_class.html">
+                                        <i class="icon-list-alt"></i>&#160;Class hierarchy diagram
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown" id="reports-menu">
+                            <a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                Reports <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="../errors.html">
+                                        <i class="icon-list-alt"></i>&#160;Errors
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="../markers.html">
+                                        <i class="icon-list-alt"></i>&#160;Markers
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="../deprecated.html">
+                                        <i class="icon-list-alt"></i>&#160;Deprecated
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="go_to_top">
+            <a href="#___" style="color: inherit">Back to top&#160;&#160;<i class="icon-upload icon-white"></i></a>
+        </div>
+    </div>
+    
+    <div id="___" class="container">
+        <noscript>
+            <div class="alert alert-warning">
+                Javascript is disabled; several features are only available if Javascript is enabled.
+            </div>
+        </noscript>
+
+        
+            <style>
+        .deprecated h2 {
+            text-decoration: line-through;
+        }
+    </style>
+    <div class="row">
+        <div class="span4">
+                    <div class="btn-group view pull-right" data-toggle="buttons-radio">
+        <button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button>
+        <button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+    </div>
+    <div class="btn-group visibility" data-toggle="buttons-checkbox">
+        <button class="btn public active" title="Show public elements">Public</button>
+        <button class="btn protected" title="Show protected elements">Protected</button>
+        <button class="btn private" title="Show private elements">Private</button>
+        <button class="btn inherited active" title="Show inherited elements">Inherited</button>
+    </div>
+
+        <ul class="side-nav nav nav-list">
+        <li class="nav-header">
+            <i class="icon-custom icon-method"></i> Methods
+            <ul>
+                                                                                                    <li class="method public inherited">
+        <a href="#method___call" title="__call :: Capture calls to undefined standard methods and throw them as exceptions">
+            <span class="description">Capture calls to undefined standard methods and throw them as exceptions</span><pre>__call</pre>
+        </a>
+    </li>
+
+                                                                                                        <li class="method public inherited">
+        <a href="#method___callStatic" title="__callStatic :: Capture calls to undefined static methods and throw them as exceptions">
+            <span class="description">Capture calls to undefined static methods and throw them as exceptions</span><pre>__callStatic</pre>
+        </a>
+    </li>
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <li class="method public">
+        <a href="#method_construct" title="construct :: Runs all the setup for the ExceptionLogger object">
+            <span class="description">Runs all the setup for the ExceptionLogger object</span><pre>construct</pre>
+        </a>
+    </li>
+
+                                                                                                        <li class="method public inherited">
+        <a href="#method_getInstance" title="getInstance :: Return an already created instance or make one and return it">
+            <span class="description">Return an already created instance or make one and return it</span><pre>getInstance</pre>
+        </a>
+    </li>
+
+                                                                                                        <li class="method public">
+        <a href="#method_log" title="log :: Log the exception">
+            <span class="description">Log the exception</span><pre>log</pre>
+        </a>
+    </li>
+
+                                                </ul>
+        </li>
+        <li class="nav-header protected">» Protected
+            <ul>
+                                                                                                                                                                                                                                                                                                    <li class="method protected inherited">
+                            <a href="#method__eConfigure" title="_eConfigure :: Configure the vent if it is valid">
+                                <span class="description">Configure the vent if it is valid</span><pre>_eConfigure</pre>
+                            </a>
+                        </li>
+                                                                                <li class="method protected inherited">
+                            <a href="#method__eResponse" title="_eResponse :: Send the event response for command objects">
+                                <span class="description">Send the event response for command objects</span><pre>_eResponse</pre>
+                            </a>
+                        </li>
+                                                                                <li class="method protected inherited">
+                            <a href="#method__eResponseCleaner" title="_eResponseCleaner :: Clean the response array">
+                                <span class="description">Clean the response array</span><pre>_eResponseCleaner</pre>
+                            </a>
+                        </li>
+                                                                                                                                                                                                                                                                                                                                            <li class="method protected inherited">
+                            <a href="#method__log" title="_log :: Log the given information in some way">
+                                <span class="description">Log the given information in some way</span><pre>_log</pre>
+                            </a>
+                        </li>
+                                                                                                                                                        <li class="method protected inherited">
+                            <a href="#method__timestamp" title="_timestamp :: Return a formatted time stamp">
+                                <span class="description">Return a formatted time stamp</span><pre>_timestamp</pre>
+                            </a>
+                        </li>
+                                                                                                                                                                                                                                    </ul>
+        </li>
+        <li class="nav-header private">» Private
+            <ul>
+                                                                                                                                                    <li class="method private inherited">
+                            <a href="#method___clone" title="__clone :: Set the __clone method to final and private so it can not be used">
+                                <span class="description">Set the __clone method to final and private so it can not be used</span><pre>__clone</pre>
+                            </a>
+                        </li>
+                                                                                <li class="method private inherited">
+                            <a href="#method___construct" title="__construct :: Set the construct to private and empty so it cant be used">
+                                <span class="description">Set the construct to private and empty so it cant be used</span><pre>__construct</pre>
+                            </a>
+                        </li>
+                                                                                <li class="method private inherited">
+                            <a href="#method___wakeup" title="__wakeup :: Set the __wakeup method to final and private so it can not be used">
+                                <span class="description">Set the __wakeup method to final and private so it can not be used</span><pre>__wakeup</pre>
+                            </a>
+                        </li>
+                                                                                <li class="method private">
+                            <a href="#method__administrationToDatabase" title="_administrationToDatabase :: ">
+                                <span class="description"></span><pre>_administrationToDatabase</pre>
+                            </a>
+                        </li>
+                                                                                                                                                                                            <li class="method private">
+                            <a href="#method__funnelToDatabase" title="_funnelToDatabase :: Log funnel exception to the database">
+                                <span class="description">Log funnel exception to the database</span><pre>_funnelToDatabase</pre>
+                            </a>
+                        </li>
+                                                                                <li class="method private">
+                            <a href="#method__getCode" title="_getCode :: Get Exception Code">
+                                <span class="description">Get Exception Code</span><pre>_getCode</pre>
+                            </a>
+                        </li>
+                                                                                <li class="method private">
+                            <a href="#method__getFile" title="_getFile :: Get Exception File">
+                                <span class="description">Get Exception File</span><pre>_getFile</pre>
+                            </a>
+                        </li>
+                                                                                <li class="method private">
+                            <a href="#method__getLine" title="_getLine :: Get Exception Line">
+                                <span class="description">Get Exception Line</span><pre>_getLine</pre>
+                            </a>
+                        </li>
+                                                                                <li class="method private">
+                            <a href="#method__getMessage" title="_getMessage :: Get Exception message">
+                                <span class="description">Get Exception message</span><pre>_getMessage</pre>
+                            </a>
+                        </li>
+                                                                                <li class="method private">
+                            <a href="#method__getName" title="_getName :: Get Exception name">
+                                <span class="description">Get Exception name</span><pre>_getName</pre>
+                            </a>
+                        </li>
+                                                                                <li class="method private">
+                            <a href="#method__getPrevious" title="_getPrevious :: Get the previous exception safely">
+                                <span class="description">Get the previous exception safely</span><pre>_getPrevious</pre>
+                            </a>
+                        </li>
+                                                                                                                    <li class="method private">
+                            <a href="#method__modal" title="_modal :: Return the modal name">
+                                <span class="description">Return the modal name</span><pre>_modal</pre>
+                            </a>
+                        </li>
+                                                                                <li class="method private">
+                            <a href="#method__serialize" title="_serialize :: Compact the error into a simple form">
+                                <span class="description">Compact the error into a simple form</span><pre>_serialize</pre>
+                            </a>
+                        </li>
+                                                                                                                    <li class="method private">
+                            <a href="#method__toDatabase" title="_toDatabase :: Log the exception to the database">
+                                <span class="description">Log the exception to the database</span><pre>_toDatabase</pre>
+                            </a>
+                        </li>
+                                                                                <li class="method private">
+                            <a href="#method__toFile" title="_toFile :: Log the exception to a flat file">
+                                <span class="description">Log the exception to a flat file</span><pre>_toFile</pre>
+                            </a>
+                        </li>
+                                                                                                                                                            </ul>
+        </li>
+        <li class="nav-header">
+            <i class="icon-custom icon-constant"></i> Constants
+            <ul>
+                                <li class="constant ">
+                    <a href="#constant_administration" title="administration :: ">
+                        <span class="description"></span><pre>administration</pre>
+                    </a>
+                </li>
+                                <li class="constant ">
+                    <a href="#constant_cron" title="cron :: ">
+                        <span class="description"></span><pre>cron</pre>
+                    </a>
+                </li>
+                                <li class="constant ">
+                    <a href="#constant_funnel" title="funnel :: ">
+                        <span class="description"></span><pre>funnel</pre>
+                    </a>
+                </li>
+                                <li class="constant ">
+                    <a href="#constant_site" title="site :: ">
+                        <span class="description"></span><pre>site</pre>
+                    </a>
+                </li>
+                                <li class="constant ">
+                    <a href="#constant_sTypeAdministration" title="sTypeAdministration :: ">
+                        <span class="description"></span><pre>sTypeAdministration</pre>
+                    </a>
+                </li>
+                                <li class="constant ">
+                    <a href="#constant_sTypeCron" title="sTypeCron :: ">
+                        <span class="description"></span><pre>sTypeCron</pre>
+                    </a>
+                </li>
+                                <li class="constant ">
+                    <a href="#constant_sTypeFunnel" title="sTypeFunnel :: ">
+                        <span class="description"></span><pre>sTypeFunnel</pre>
+                    </a>
+                </li>
+                                <li class="constant ">
+                    <a href="#constant_sTypeSite" title="sTypeSite :: ">
+                        <span class="description"></span><pre>sTypeSite</pre>
+                    </a>
+                </li>
+                            </ul>
+        </li>
+    </ul>
+
+
+        </div>
+
+        <div class="span8">
+            <div class="element class">
+                <h1>ExceptionLog</h1>
+                <small style="display: block; text-align: right">
+                                            Extends <a href="../classes/Framework.Commander.Commander.html">\Framework\Commander\Commander</a>
+                                                        </small>
+                <p class="short_description">Commander</p>
+                <div class="details">
+                    <div class="long_description">
+                        <p>SYSTEM OR APPLICATION TYPE TO LOAD
+sTypeAdministration  = 0
+sTypeFunnel          = 1
+sTypeSite            = 2
+sTypeCron            = 3</p>
+                    </div>
+                    <table class="table table-bordered">
+                                                                                    <tr>
+                                    <th>
+                                        package
+                                                                            </th>
+                                    <td>
+                                                                                    
+                                                                                <p>Framework\Commander</p>
+                                    </td>
+                                </tr>
+                                                                                                                                                                                </table>
+
+                    <h3><i class="icon-custom icon-method"></i> Methods</h3>
+                                                                <a id="method___call"></a>
+                        <div class="element clickable method public  method___call inherited" data-toggle="collapse" data-target=".method___call .collapse">
+                            <h2>Capture calls to undefined standard methods and throw them as exceptions</h2>
+                            <pre>__call( $method,  $arguments) : boolean</pre>
+                            <div class="labels">
+                                <span class="label">inherited</span>                                                                                                                                                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    method
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                        <p>__call</p>
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    throws
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                        
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
+
+                                                                            <h3>Arguments</h3>
+                                                                                    <div class="subelement argument">
+                                                <h4>$method</h4>
+                                                <code></code><p></p>
+                                            </div>
+                                                                                    <div class="subelement argument">
+                                                <h4>$arguments</h4>
+                                                <code></code><p></p>
+                                            </div>
+                                                                            
+                                                                            <h3>Response</h3>
+                                        <code>boolean</code><p></p>
+                                                                    </div>
+                            </div>
+
+                        </div>
+                                            <a id="method___callStatic"></a>
+                        <div class="element clickable method public  method___callStatic inherited" data-toggle="collapse" data-target=".method___callStatic .collapse">
+                            <h2>Capture calls to undefined static methods and throw them as exceptions</h2>
+                            <pre>__callStatic( $method,  $arguments) </pre>
+                            <div class="labels">
+                                <span class="label">inherited</span>                                <span class="label">static</span>                                                                                                                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    method
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                        <p>__callStatic</p>
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    throws
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                        
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
+
+                                                                            <h3>Arguments</h3>
+                                                                                    <div class="subelement argument">
+                                                <h4>$method</h4>
+                                                <code></code><p></p>
+                                            </div>
+                                                                                    <div class="subelement argument">
+                                                <h4>$arguments</h4>
+                                                <code></code><p></p>
+                                            </div>
+                                                                            
+                                                                    </div>
+                            </div>
+
+                        </div>
+                                            <a id="method___clone"></a>
+                        <div class="element clickable method private  method___clone inherited" data-toggle="collapse" data-target=".method___clone .collapse">
+                            <h2>Set the __clone method to final and private so it can not be used</h2>
+                            <pre>__clone() </pre>
+                            <div class="labels">
+                                <span class="label">inherited</span>                                                                <span class="label">final</span>                                                                                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    method
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                        <p>__clone</p>
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
+
+                                    
+                                                                    </div>
+                            </div>
+
+                        </div>
+                                            <a id="method___construct"></a>
+                        <div class="element clickable method private  method___construct inherited" data-toggle="collapse" data-target=".method___construct .collapse">
+                            <h2>Set the construct to private and empty so it cant be used</h2>
+                            <pre>__construct() </pre>
+                            <div class="labels">
+                                <span class="label">inherited</span>                                                                                                                                                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    method
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                        <p>__construct</p>
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
+
+                                    
+                                                                    </div>
+                            </div>
+
+                        </div>
+                                            <a id="method___wakeup"></a>
+                        <div class="element clickable method private  method___wakeup inherited" data-toggle="collapse" data-target=".method___wakeup .collapse">
+                            <h2>Set the __wakeup method to final and private so it can not be used</h2>
+                            <pre>__wakeup() </pre>
+                            <div class="labels">
+                                <span class="label">inherited</span>                                                                <span class="label">final</span>                                                                                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    method
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                        <p>__wakeup</p>
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
+
+                                    
+                                                                    </div>
+                            </div>
+
+                        </div>
+                                            <a id="method__administrationToDatabase"></a>
+                        <div class="element clickable method private  method__administrationToDatabase" data-toggle="collapse" data-target=".method__administrationToDatabase .collapse">
+                            <h2>_administrationToDatabase</h2>
+                            <pre>_administrationToDatabase( $exception,  $host) </pre>
+                            <div class="labels">
+                                                                                                                                                                                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
+
+                                                                            <h3>Arguments</h3>
+                                                                                    <div class="subelement argument">
+                                                <h4>$exception</h4>
+                                                <code></code><p></p>
+                                            </div>
+                                                                                    <div class="subelement argument">
+                                                <h4>$host</h4>
+                                                <code></code><p></p>
+                                            </div>
+                                                                            
+                                                                    </div>
+                            </div>
+
+                        </div>
+                                            <a id="method__eConfigure"></a>
+                        <div class="element clickable method protected  method__eConfigure inherited" data-toggle="collapse" data-target=".method__eConfigure .collapse">
+                            <h2>Configure the vent if it is valid</h2>
+                            <pre>_eConfigure() </pre>
+                            <div class="labels">
+                                <span class="label">inherited</span>                                                                                                                                                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    method
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                        <p>_eConfigure</p>
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
+
+                                    
+                                                                    </div>
+                            </div>
+
+                        </div>
+                                            <a id="method__eResponse"></a>
+                        <div class="element clickable method protected  method__eResponse inherited" data-toggle="collapse" data-target=".method__eResponse .collapse">
+                            <h2>Send the event response for command objects</h2>
+                            <pre>_eResponse( $result,  $message) </pre>
+                            <div class="labels">
+                                <span class="label">inherited</span>                                                                                                                                                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    method
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                        <p>_eRequest</p>
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
+
+                                                                            <h3>Arguments</h3>
+                                                                                    <div class="subelement argument">
+                                                <h4>$result</h4>
+                                                <code></code><p></p>
+                                            </div>
+                                                                                    <div class="subelement argument">
+                                                <h4>$message</h4>
+                                                <code></code><p></p>
+                                            </div>
+                                                                            
+                                                                    </div>
+                            </div>
+
+                        </div>
+                                            <a id="method__eResponseCleaner"></a>
+                        <div class="element clickable method protected  method__eResponseCleaner inherited" data-toggle="collapse" data-target=".method__eResponseCleaner .collapse">
+                            <h2>Clean the response array</h2>
+                            <pre>_eResponseCleaner( $array) : mixed</pre>
+                            <div class="labels">
+                                <span class="label">inherited</span>                                                                                                                                                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    method
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                        <p>_eResponseCleaner</p>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
+
+                                                                            <h3>Arguments</h3>
+                                                                                    <div class="subelement argument">
+                                                <h4>$array</h4>
+                                                <code></code><p></p>
+                                            </div>
+                                                                            
+                                                                            <h3>Response</h3>
+                                        <code>mixed</code><p></p>
+                                                                    </div>
+                            </div>
+
+                        </div>
+                                            <a id="method__funnelToDatabase"></a>
+                        <div class="element clickable method private  method__funnelToDatabase" data-toggle="collapse" data-target=".method__funnelToDatabase .collapse">
+                            <h2>Log funnel exception to the database</h2>
+                            <pre>_funnelToDatabase( $exception,  $host) </pre>
+                            <div class="labels">
+                                                                                                                                                                                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    method
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                        <p>_funnelToDatabase</p>
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
+
+                                                                            <h3>Arguments</h3>
+                                                                                    <div class="subelement argument">
+                                                <h4>$exception</h4>
+                                                <code></code><p></p>
+                                            </div>
+                                                                                    <div class="subelement argument">
+                                                <h4>$host</h4>
+                                                <code></code><p></p>
+                                            </div>
+                                                                            
+                                                                    </div>
+                            </div>
+
+                        </div>
+                                            <a id="method__getCode"></a>
+                        <div class="element clickable method private  method__getCode" data-toggle="collapse" data-target=".method__getCode .collapse">
+                            <h2>Get Exception Code</h2>
+                            <pre>_getCode( $exception) : integer</pre>
+                            <div class="labels">
+                                                                                                                                                                                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    method
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                        <p>_getCode</p>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
+
+                                                                            <h3>Arguments</h3>
+                                                                                    <div class="subelement argument">
+                                                <h4>$exception</h4>
+                                                <code></code><p></p>
+                                            </div>
+                                                                            
+                                                                            <h3>Response</h3>
+                                        <code>integer</code><p></p>
+                                                                    </div>
+                            </div>
+
+                        </div>
+                                            <a id="method__getFile"></a>
+                        <div class="element clickable method private  method__getFile" data-toggle="collapse" data-target=".method__getFile .collapse">
+                            <h2>Get Exception File</h2>
+                            <pre>_getFile( $exception) : string</pre>
+                            <div class="labels">
+                                                                                                                                                                                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    method
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                        <p>_getFile</p>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
+
+                                                                            <h3>Arguments</h3>
+                                                                                    <div class="subelement argument">
+                                                <h4>$exception</h4>
+                                                <code></code><p></p>
+                                            </div>
+                                                                            
+                                                                            <h3>Response</h3>
+                                        <code>string</code><p></p>
+                                                                    </div>
+                            </div>
+
+                        </div>
+                                            <a id="method__getLine"></a>
+                        <div class="element clickable method private  method__getLine" data-toggle="collapse" data-target=".method__getLine .collapse">
+                            <h2>Get Exception Line</h2>
+                            <pre>_getLine( $exception) : integer</pre>
+                            <div class="labels">
+                                                                                                                                                                                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    method
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                        <p>_getLine</p>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
+
+                                                                            <h3>Arguments</h3>
+                                                                                    <div class="subelement argument">
+                                                <h4>$exception</h4>
+                                                <code></code><p></p>
+                                            </div>
+                                                                            
+                                                                            <h3>Response</h3>
+                                        <code>integer</code><p></p>
+                                                                    </div>
+                            </div>
+
+                        </div>
+                                            <a id="method__getMessage"></a>
+                        <div class="element clickable method private  method__getMessage" data-toggle="collapse" data-target=".method__getMessage .collapse">
+                            <h2>Get Exception message</h2>
+                            <pre>_getMessage( $exception) : string</pre>
+                            <div class="labels">
+                                                                                                                                                                                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    method
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                        <p>_getMessage</p>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
+
+                                                                            <h3>Arguments</h3>
+                                                                                    <div class="subelement argument">
+                                                <h4>$exception</h4>
+                                                <code></code><p></p>
+                                            </div>
+                                                                            
+                                                                            <h3>Response</h3>
+                                        <code>string</code><p></p>
+                                                                    </div>
+                            </div>
+
+                        </div>
+                                            <a id="method__getName"></a>
+                        <div class="element clickable method private  method__getName" data-toggle="collapse" data-target=".method__getName .collapse">
+                            <h2>Get Exception name</h2>
+                            <pre>_getName( $exception) : string</pre>
+                            <div class="labels">
+                                                                                                                                                                                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    method
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                        <p>_getName</p>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
+
+                                                                            <h3>Arguments</h3>
+                                                                                    <div class="subelement argument">
+                                                <h4>$exception</h4>
+                                                <code></code><p></p>
+                                            </div>
+                                                                            
+                                                                            <h3>Response</h3>
+                                        <code>string</code><p></p>
+                                                                    </div>
+                            </div>
+
+                        </div>
+                                            <a id="method__getPrevious"></a>
+                        <div class="element clickable method private  method__getPrevious" data-toggle="collapse" data-target=".method__getPrevious .collapse">
+                            <h2>Get the previous exception safely</h2>
+                            <pre>_getPrevious( $exception) : mixed|null</pre>
+                            <div class="labels">
+                                                                                                                                                                                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    method
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                        <p>_getPrevious</p>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
+
+                                                                            <h3>Arguments</h3>
+                                                                                    <div class="subelement argument">
+                                                <h4>$exception</h4>
+                                                <code></code><p></p>
+                                            </div>
+                                                                            
+                                                                            <h3>Response</h3>
+                                        <code>mixed|null</code><p></p>
+                                                                    </div>
+                            </div>
+
+                        </div>
+                                            <a id="method__log"></a>
+                        <div class="element clickable method protected  method__log inherited" data-toggle="collapse" data-target=".method__log .collapse">
+                            <h2>Log the given information in some way</h2>
+                            <pre>_log( $paramaters) : mixed</pre>
+                            <div class="labels">
+                                <span class="label">inherited</span>                                                                                                                                                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    method
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                        <p>_log</p>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
+
+                                                                            <h3>Arguments</h3>
+                                                                                    <div class="subelement argument">
+                                                <h4>$paramaters</h4>
+                                                <code></code><p></p>
+                                            </div>
+                                                                            
+                                                                            <h3>Response</h3>
+                                        <code>mixed</code><p></p>
+                                                                    </div>
+                            </div>
+
+                        </div>
+                                            <a id="method__modal"></a>
+                        <div class="element clickable method private  method__modal" data-toggle="collapse" data-target=".method__modal .collapse">
+                            <h2>Return the modal name</h2>
+                            <pre>_modal() : mixed</pre>
+                            <div class="labels">
+                                                                                                                                                                                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    method
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                        <p>_modal</p>
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
+
+                                    
+                                                                            <h3>Response</h3>
+                                        <code>mixed</code><p></p>
+                                                                    </div>
+                            </div>
+
+                        </div>
+                                            <a id="method__serialize"></a>
+                        <div class="element clickable method private  method__serialize" data-toggle="collapse" data-target=".method__serialize .collapse">
+                            <h2>Compact the error into a simple form</h2>
+                            <pre>_serialize( $exception) : mixed|null</pre>
+                            <div class="labels">
+                                                                                                                                                                                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    method
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                        <p>_serialize</p>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
+
+                                                                            <h3>Arguments</h3>
+                                                                                    <div class="subelement argument">
+                                                <h4>$exception</h4>
+                                                <code></code><p></p>
+                                            </div>
+                                                                            
+                                                                            <h3>Response</h3>
+                                        <code>mixed|null</code><p></p>
+                                                                    </div>
+                            </div>
+
+                        </div>
+                                            <a id="method__timestamp"></a>
+                        <div class="element clickable method protected  method__timestamp inherited" data-toggle="collapse" data-target=".method__timestamp .collapse">
+                            <h2>Return a formatted time stamp</h2>
+                            <pre>_timestamp() : string</pre>
+                            <div class="labels">
+                                <span class="label">inherited</span>                                                                                                                                                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    method
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                        <p>_timestamp</p>
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
+
+                                    
+                                                                            <h3>Response</h3>
+                                        <code>string</code><p></p>
+                                                                    </div>
+                            </div>
+
+                        </div>
+                                            <a id="method__toDatabase"></a>
+                        <div class="element clickable method private  method__toDatabase" data-toggle="collapse" data-target=".method__toDatabase .collapse">
+                            <h2>Log the exception to the database</h2>
+                            <pre>_toDatabase( $exception,  $host) </pre>
+                            <div class="labels">
+                                                                                                                                                                                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    method
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                        <p>_toDatabase</p>
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    todo
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                        <p>add other system type base exception logs</p>
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
+
+                                                                            <h3>Arguments</h3>
+                                                                                    <div class="subelement argument">
+                                                <h4>$exception</h4>
+                                                <code></code><p></p>
+                                            </div>
+                                                                                    <div class="subelement argument">
+                                                <h4>$host</h4>
+                                                <code></code><p></p>
+                                            </div>
+                                                                            
+                                                                    </div>
+                            </div>
+
+                        </div>
+                                            <a id="method__toFile"></a>
+                        <div class="element clickable method private  method__toFile" data-toggle="collapse" data-target=".method__toFile .collapse">
+                            <h2>Log the exception to a flat file</h2>
+                            <pre>_toFile( $exception,  $host) </pre>
+                            <div class="labels">
+                                                                                                                                                                                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    method
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                        <p>_toFile</p>
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
+
+                                                                            <h3>Arguments</h3>
+                                                                                    <div class="subelement argument">
+                                                <h4>$exception</h4>
+                                                <code></code><p></p>
+                                            </div>
+                                                                                    <div class="subelement argument">
+                                                <h4>$host</h4>
+                                                <code></code><p></p>
+                                            </div>
+                                                                            
+                                                                    </div>
+                            </div>
+
+                        </div>
+                                            <a id="method_construct"></a>
+                        <div class="element clickable method public  method_construct" data-toggle="collapse" data-target=".method_construct .collapse">
+                            <h2>Runs all the setup for the ExceptionLogger object</h2>
+                            <pre>construct() : \Framework\Commander\ExceptionLog</pre>
+                            <div class="labels">
+                                                                <span class="label">static</span>                                                                                                                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    method
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                        <p>construct</p>
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
+
+                                    
+                                                                            <h3>Response</h3>
+                                        <code><a href="../classes/Framework.Commander.ExceptionLog.html">\Framework\Commander\ExceptionLog</a></code><p></p>
+                                                                    </div>
+                            </div>
+
+                        </div>
+                                            <a id="method_getInstance"></a>
+                        <div class="element clickable method public  method_getInstance inherited" data-toggle="collapse" data-target=".method_getInstance .collapse">
+                            <h2>Return an already created instance or make one and return it</h2>
+                            <pre>getInstance() : mixed</pre>
+                            <div class="labels">
+                                <span class="label">inherited</span>                                <span class="label">static</span>                                                                                                                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    method
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                        <p>getInstance</p>
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
+
+                                    
+                                                                            <h3>Response</h3>
+                                        <code>mixed</code><p></p>
+                                                                    </div>
+                            </div>
+
+                        </div>
+                                            <a id="method_log"></a>
+                        <div class="element clickable method public  method_log" data-toggle="collapse" data-target=".method_log .collapse">
+                            <h2>Log the exception</h2>
+                            <pre>log( $exception,  $host) </pre>
+                            <div class="labels">
+                                                                                                                                                                                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    method
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                        <p>log</p>
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
+
+                                                                            <h3>Arguments</h3>
+                                                                                    <div class="subelement argument">
+                                                <h4>$exception</h4>
+                                                <code></code><p></p>
+                                            </div>
+                                                                                    <div class="subelement argument">
+                                                <h4>$host</h4>
+                                                <code></code><p></p>
+                                            </div>
+                                                                            
+                                                                    </div>
+                            </div>
+
+                        </div>
+                    
+                                            <h3><i class="icon-custom icon-constant"></i> Constants</h3>
+                                                    <a id="constant_sTypeAdministration"> </a>
+                            <div class="element clickable constant  constant_sTypeAdministration inherited" data-toggle="collapse" data-target=".constant_sTypeAdministration .collapse">
+                                <h2>sTypeAdministration</h2>
+                                <pre>sTypeAdministration</pre>
+                                <div class="labels">
+                                    <span class="label">inherited</span>                                </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        const
+                                                    </th>
+                                                    <td>
+                                                                                                                    <p>integer administration</p>
+                                                                                                            </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+                                    </div>
+                                </div>
+                            </div>
+                                                    <a id="constant_sTypeFunnel"> </a>
+                            <div class="element clickable constant  constant_sTypeFunnel inherited" data-toggle="collapse" data-target=".constant_sTypeFunnel .collapse">
+                                <h2>sTypeFunnel</h2>
+                                <pre>sTypeFunnel</pre>
+                                <div class="labels">
+                                    <span class="label">inherited</span>                                </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        const
+                                                    </th>
+                                                    <td>
+                                                                                                                    <p>integer funnel</p>
+                                                                                                            </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+                                    </div>
+                                </div>
+                            </div>
+                                                    <a id="constant_sTypeSite"> </a>
+                            <div class="element clickable constant  constant_sTypeSite inherited" data-toggle="collapse" data-target=".constant_sTypeSite .collapse">
+                                <h2>sTypeSite</h2>
+                                <pre>sTypeSite</pre>
+                                <div class="labels">
+                                    <span class="label">inherited</span>                                </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        const
+                                                    </th>
+                                                    <td>
+                                                                                                                    <p>integer site</p>
+                                                                                                            </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+                                    </div>
+                                </div>
+                            </div>
+                                                    <a id="constant_sTypeCron"> </a>
+                            <div class="element clickable constant  constant_sTypeCron inherited" data-toggle="collapse" data-target=".constant_sTypeCron .collapse">
+                                <h2>sTypeCron</h2>
+                                <pre>sTypeCron</pre>
+                                <div class="labels">
+                                    <span class="label">inherited</span>                                </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        const
+                                                    </th>
+                                                    <td>
+                                                                                                                    <p>integer cron</p>
+                                                                                                            </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+                                    </div>
+                                </div>
+                            </div>
+                                                    <a id="constant_administration"> </a>
+                            <div class="element clickable constant  constant_administration inherited" data-toggle="collapse" data-target=".constant_administration .collapse">
+                                <h2>administration</h2>
+                                <pre>administration</pre>
+                                <div class="labels">
+                                    <span class="label">inherited</span>                                </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        const
+                                                    </th>
+                                                    <td>
+                                                                                                                    <p>integer administration</p>
+                                                                                                            </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+                                    </div>
+                                </div>
+                            </div>
+                                                    <a id="constant_funnel"> </a>
+                            <div class="element clickable constant  constant_funnel inherited" data-toggle="collapse" data-target=".constant_funnel .collapse">
+                                <h2>funnel</h2>
+                                <pre>funnel</pre>
+                                <div class="labels">
+                                    <span class="label">inherited</span>                                </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        const
+                                                    </th>
+                                                    <td>
+                                                                                                                    <p>integer funnel</p>
+                                                                                                            </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+                                    </div>
+                                </div>
+                            </div>
+                                                    <a id="constant_site"> </a>
+                            <div class="element clickable constant  constant_site inherited" data-toggle="collapse" data-target=".constant_site .collapse">
+                                <h2>site</h2>
+                                <pre>site</pre>
+                                <div class="labels">
+                                    <span class="label">inherited</span>                                </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        const
+                                                    </th>
+                                                    <td>
+                                                                                                                    <p>integer site</p>
+                                                                                                            </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+                                    </div>
+                                </div>
+                            </div>
+                                                    <a id="constant_cron"> </a>
+                            <div class="element clickable constant  constant_cron inherited" data-toggle="collapse" data-target=".constant_cron .collapse">
+                                <h2>cron</h2>
+                                <pre>cron</pre>
+                                <div class="labels">
+                                    <span class="label">inherited</span>                                </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        const
+                                                    </th>
+                                                    <td>
+                                                                                                                    <p>integer cron</p>
+                                                                                                            </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+                                    </div>
+                                </div>
+                            </div>
+                                            
+                                                                <h3><i class="icon-custom icon-property"></i> Properties</h3>
+                                                    <a id="property__coreEuri"> </a>
+                            <div class="element clickable property  private property__coreEuri" data-toggle="collapse" data-target=".property__coreEuri .collapse">
+                                <h2>_coreEuri</h2>
+                                <pre>_coreEuri : \Framework\Core\Euri</pre>
+                                <div class="labels">
+                                                                                                        </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        var
+                                                    </th>
+                                                    <td>
+                                                                                                                    
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+
+                                                                                    <h3>Type(s)</h3>
+                                            <code><a href="../classes/Framework.Core.Euri.html">\Framework\Core\Euri</a></code>
+                                                                            </div>
+                                </div>
+                            </div>
+                                                    <a id="property__cTracking"> </a>
+                            <div class="element clickable property  private property__cTracking" data-toggle="collapse" data-target=".property__cTracking .collapse">
+                                <h2>_cTracking</h2>
+                                <pre>_cTracking : \Framework\Commander\Tracking</pre>
+                                <div class="labels">
+                                                                                                        </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        var
+                                                    </th>
+                                                    <td>
+                                                                                                                    
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+
+                                                                                    <h3>Type(s)</h3>
+                                            <code><a href="../classes/Framework.Commander.Tracking.html">\Framework\Commander\Tracking</a></code>
+                                                                            </div>
+                                </div>
+                            </div>
+                                                    <a id="property__mException"> </a>
+                            <div class="element clickable property  private property__mException" data-toggle="collapse" data-target=".property__mException .collapse">
+                                <h2>_mException</h2>
+                                <pre>_mException : \Framework\Modulus\Modal\</pre>
+                                <div class="labels">
+                                                                                                        </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        var
+                                                    </th>
+                                                    <td>
+                                                                                                                    
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+
+                                                                                    <h3>Type(s)</h3>
+                                            <code>\Framework\Modulus\Modal\</code>
+                                                                            </div>
+                                </div>
+                            </div>
+                                                    <a id="property__dModals"> </a>
+                            <div class="element clickable property  private property__dModals" data-toggle="collapse" data-target=".property__dModals .collapse">
+                                <h2>_dModals</h2>
+                                <pre>_dModals : array</pre>
+                                <div class="labels">
+                                                                                                        </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        var
+                                                    </th>
+                                                    <td>
+                                                                                                                    <p>_dModals</p>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+
+                                                                                    <h3>Type(s)</h3>
+                                            <code>array</code>
+                                                                            </div>
+                                </div>
+                            </div>
+                                                    <a id="property__sPrefix"> </a>
+                            <div class="element clickable property  protected property__sPrefix inherited" data-toggle="collapse" data-target=".property__sPrefix .collapse">
+                                <h2>_prefix</h2>
+                                <pre>_sPrefix : string</pre>
+                                <div class="labels">
+                                    <span class="label">inherited</span>                                                                    </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        var
+                                                    </th>
+                                                    <td>
+                                                                                                                    <p>_prefix</p>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+
+                                                                                    <h3>Type(s)</h3>
+                                            <code>string</code>
+                                                                            </div>
+                                </div>
+                            </div>
+                                                    <a id="property__instances"> </a>
+                            <div class="element clickable property  private property__instances inherited" data-toggle="collapse" data-target=".property__instances .collapse">
+                                <h2>_instances</h2>
+                                <pre>_instances : array</pre>
+                                <div class="labels">
+                                    <span class="label">inherited</span>                                    <span class="label">static</span>                                </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        var
+                                                    </th>
+                                                    <td>
+                                                                                                                    <p>_instances</p>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+
+                                                                                    <h3>Type(s)</h3>
+                                            <code>array</code>
+                                                                            </div>
+                                </div>
+                            </div>
+                                                    <a id="property__dEventAction"> </a>
+                            <div class="element clickable property  protected property__dEventAction inherited" data-toggle="collapse" data-target=".property__dEventAction .collapse">
+                                <h2>_dEventAction</h2>
+                                <pre>_dEventAction : boolean|string</pre>
+                                <div class="labels">
+                                    <span class="label">inherited</span>                                                                    </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        var
+                                                    </th>
+                                                    <td>
+                                                                                                                    
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+
+                                                                                    <h3>Type(s)</h3>
+                                            <code>boolean|string</code>
+                                                                            </div>
+                                </div>
+                            </div>
+                                                    <a id="property__dEventData"> </a>
+                            <div class="element clickable property  protected property__dEventData inherited" data-toggle="collapse" data-target=".property__dEventData .collapse">
+                                <h2>_dEventData</h2>
+                                <pre>_dEventData : array</pre>
+                                <div class="labels">
+                                    <span class="label">inherited</span>                                                                    </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        var
+                                                    </th>
+                                                    <td>
+                                                                                                                    
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+
+                                                                                    <h3>Type(s)</h3>
+                                            <code>array</code>
+                                                                            </div>
+                                </div>
+                            </div>
+                                                            </div>
+            </div>
+            <a id="\Framework\Commander\ExceptionLog"></a>
+            <ul class="breadcrumb">
+                <li><a href="../index.html"><i class="icon-custom icon-class"></i></a></li>
+                    
+    
+    <li><span class="divider">\</span><a href="../namespaces/Framework.Commander.html">Commander</a></li>
+
+                <li class="active"><span class="divider">\</span><a href="../classes/Framework.Commander.ExceptionLog.html">ExceptionLog</a></li>
+            </ul>
+        </div>
+    </div>
+
+    </div>
+
+        <footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by
+            <a href="http://glyphicons.com/">Glyphicons</a>.<br/>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and<br/>
+            generated on Mon, 01 Feb 2016 18:11:15 +0000.<br/>
+    </footer>
+    </body>
+</html>

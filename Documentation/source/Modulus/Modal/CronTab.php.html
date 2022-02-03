@@ -1,0 +1,131 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * Cron
+ *
+ * @package Framework\Modulus\Model
+ * @version 1.0.0
+ */
+namespace Framework\Modulus\Modal;
+
+/**
+ * Cron
+ *
+ * This model is used for the framework cron system. It help
+ * keep track of previous cron job runs and their stats as well
+ * as what cron jobs need to be run in the future
+ */
+class CronTab extends \Framework\Modulus\Query
+{
+
+	public function getCrontab()
+	{
+		$query = &quot;SELECT `key`, `simple-name`, `interval`, `status`, `simple-description`, `order`, `active`, `last-run` FROM `system-crontab` WHERE `key`!=0 ORDER BY `order`&quot;;
+		$preparedStatement = $this-&gt;Prepare( $query );
+		$preparedStatement = $this-&gt;Execute( $preparedStatement );
+		if( $preparedStatement-&gt;rowCount() &lt;= 0 ){
+      return false;
+    }
+		return $preparedStatement-&gt;fetchAll(\PDO::FETCH_ASSOC);
+	}
+
+	public function docketLastRun()
+	{
+		$query = &quot;SELECT `last-run` FROM `system-crontab` WHERE `key`=0&quot;;
+		$preparedStatement = $this-&gt;Prepare( $query );
+		$preparedStatement = $this-&gt;Execute( $preparedStatement );
+		$resource = $preparedStatement-&gt;fetch(\PDO::FETCH_ASSOC);
+		return $resource['last-run'];
+	}
+
+	public function docketState()
+	{
+		$query = &quot;SELECT `active` FROM `system-crontab` WHERE `key`=0&quot;;
+		$preparedStatement = $this-&gt;Prepare( $query );
+		$preparedStatement = $this-&gt;Execute( $preparedStatement );
+		$resource = $preparedStatement-&gt;fetch(\PDO::FETCH_ASSOC);
+		return $resource['active'];
+	}
+
+	public function docketStatus()
+	{
+		$query = &quot;SELECT `status` FROM `system-crontab` WHERE `key`=0&quot;;
+		$preparedStatement = $this-&gt;Prepare( $query );
+		$preparedStatement = $this-&gt;Execute( $preparedStatement );
+		$resource = $preparedStatement-&gt;fetch(\PDO::FETCH_ASSOC);
+		return $resource['status'];
+	}
+
+	public function getActiveJobs()
+	{
+		$query = &quot;SELECT * FROM `system-crontab` WHERE `key`!=0 AND `active`=1 ORDER BY `order`&quot;;
+		$preparedStatement = $this-&gt;Prepare( $query );
+		$preparedStatement = $this-&gt;Execute( $preparedStatement );
+		if( $preparedStatement-&gt;rowCount() &lt;= 0 ){
+      return false;
+    }
+		return $preparedStatement-&gt;fetchAll(\PDO::FETCH_ASSOC);
+	}
+
+	public function updateLastRun( $key )
+  {
+		$query = &quot;UPDATE `system-crontab` SET `last-run` = NOW() WHERE `key`=:key&quot;;
+		$preparedStatement = $this-&gt;Prepare( $query );
+		$preparedStatement-&gt;bindValue(':key', $key, \PDO::PARAM_INT);
+		return $this-&gt;Execute( $preparedStatement );
+	}
+
+  public function setStatus( $key, $status )
+  {
+		$query = &quot;UPDATE `system-crontab` SET `status` = :status WHERE `key`=:key&quot;;
+		$preparedStatement = $this-&gt;Prepare( $query );
+		$preparedStatement-&gt;bindValue(':status', 	$status, \PDO::PARAM_INT);
+		$preparedStatement-&gt;bindValue(':key', 		$key, 	\PDO::PARAM_INT);
+		return $this-&gt;Execute( $preparedStatement );
+	}
+
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,81 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * Footer
+ *
+ * @package App\Objects
+ * @version 1.2.0
+ */
+namespace App\Objects;
+
+/**
+ * Footer
+ *
+ * This builds both the top and side navigation elements
+ */
+class Footer
+{
+
+  private $_dTokens;
+
+  public function __construct($tokens)
+  {
+    $this-&gt;_dTokens = $tokens;
+    return $this;
+  }
+
+  public function build(){
+    return &quot;
+    &lt;div class='page-footer'&gt;
+      &lt;div class='page-footer-inner'&gt; {$this-&gt;_dTokens['copyright-year']} &amp;copy; {$this-&gt;_dTokens['company-name']}
+        &lt;a target='_blank' title='{$this-&gt;_dTokens['company-website']}' href='{$this-&gt;_dTokens['company-website-full']}'&gt;{$this-&gt;_dTokens['company-website']}&lt;/a&gt;
+      &lt;/div&gt;
+      &lt;div class='scroll-to-top' style='display: block;'&gt;
+        &lt;i class='icon-arrow-up'&gt;&lt;/i&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;\n&quot;;
+  }
+}</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

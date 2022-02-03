@@ -1,0 +1,176 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * Query
+ *
+ * @package Framework\Modulus
+ * @version 1.0.0
+ */
+namespace Framework\Modulus;
+
+/**
+ * Query
+ *
+ * The main query object. Every model must extend this
+ */
+class Query
+{
+    //Database name
+    /**
+     * @var mixed
+     */
+    private $DBName;
+
+    //PDODatabases instance
+    /**
+     * @var mixed
+     */
+    private $PDODatabases;
+
+    //Database handle
+    /**
+     * @var mixed
+     */
+    private $DB;
+
+    /**
+     * @param $dbname
+     * @param DBConfig $config
+     */
+    public function __construct($dbname, DBConfig $config)
+    {
+        //Created the PDOdatabases instance
+        $this-&gt;PDODatabases = PDOdatabases::create_instance();
+
+        //set the database name for reconnection
+        $this-&gt;DBName = $dbname;
+
+        //Connect!
+        $this-&gt;Connect($dbname, $config);
+    }
+
+    //Initial connection to database
+    /**
+     * @param $dbname
+     * @param DBConfig $config
+     */
+    private function Connect($dbname, DBConfig $config)
+    {
+        //Connect to the database
+        $this-&gt;DB = $this-&gt;PDODatabases-&gt;connect($dbname, $config);
+    }
+
+    //This is called if the database connection goes stale
+    private function Reconnect()
+    {
+        $this-&gt;PDODatabases-&gt;resetconnection($this-&gt;DBName);
+        $this-&gt;DB = $this-&gt;PDODatabases-&gt;connect($this-&gt;DBName);
+    }
+
+    //This prepares a statement
+    /**
+     * @param $query
+     * @return mixed
+     */
+    protected function Prepare($query)
+    {
+        try {
+            return $this-&gt;DB-&gt;prepare($query);
+        } catch (\PDOException $e) {
+            throw new \Framework\Exceptional\PDOdatabasesException(
+                $e-&gt;getMessage(), 42, 1, $e-&gt;getFile(), $e-&gt;getLine(), $e);
+
+        }
+
+    }
+
+    
+    protected function StartTransaction()
+    {
+      $this-&gt;DB-&gt;beginTransaction();
+    }
+
+    
+    protected function RollBackTransaction()
+    {
+      $this-&gt;DB-&gt;rollBack();
+    }
+
+    
+    protected function CommitTransaction()
+    {
+      $this-&gt;DB-&gt;commit();
+    }
+
+    /**
+     * @param PDOStatement $PreparedStatement
+     * @return mixed
+     */
+    protected function Execute(\PDOStatement $PreparedStatement)
+    {
+      try {
+        $PreparedStatement-&gt;execute();
+      } catch (\PDOException $e) {
+        if( $e-&gt;getCode() != 2006 ){ 
+          throw $e;
+        }
+        $this-&gt;Reconnect();
+        $this-&gt;Execute( 
+          $PreparedStatement 
+        );
+      }
+      return $PreparedStatement;
+    }
+    //Get the last inserted id
+    /**
+     * @return mixed
+     */
+    protected function LastInsertID()
+    {
+        return $this-&gt;DB-&gt;lastInsertId();
+    }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

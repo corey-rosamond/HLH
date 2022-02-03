@@ -1,0 +1,113 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * Funnel
+ *
+ * @package Framework\Modulus\Modal
+ * @version 1.0.0
+ */
+namespace Framework\Modulus\Modal;
+
+/**
+ * Funnel
+ *
+ * This is your main interface to the user table
+ */
+class Funnel extends \Framework\Modulus\Query
+{
+
+  /**
+   * Get all funnel information for the specified funnel
+   * @method get
+   * @param $key
+   * @return bool
+   * @throws \Framework\Exceptional\PDOdatabasesException
+   */
+  public function get( $key )
+  {
+    $query = &quot;SELECT * FROM `funnels` WHERE `key`=:key&quot;;
+    $preparedStatement = $this-&gt;Prepare($query);
+    $preparedStatement-&gt;bindValue(':key', $key, \PDO::PARAM_INT);
+    $preparedStatement = $this-&gt;Execute($preparedStatement);
+    if( $preparedStatement-&gt;rowCount() &lt;= 0 ){
+      return false;
+    }
+    return $preparedStatement-&gt;fetch(\PDO::FETCH_ASSOC);
+  }
+
+  /**
+   * Find a funnel key using its host name
+   * @method findFunnelKey
+   * @param $host
+   * @return bool
+   * @throws \Framework\Exceptional\PDOdatabasesException
+   */
+  public function findFunnelKey( $host )
+  {
+    $query = &quot;SELECT `key` FROM `funnels` WHERE `address`=:host&quot;;
+    $preparedStatement = $this-&gt;Prepare($query);
+    $preparedStatement-&gt;bindValue(':host', $host, \PDO::PARAM_STR );
+    $preparedStatement = $this-&gt;Execute($preparedStatement);
+    if( $preparedStatement-&gt;rowCount() &lt;= 0 ){
+      return false;
+    }
+    $resource = $preparedStatement-&gt;fetch(\PDO::FETCH_ASSOC);
+    return $resource['key'];
+  }
+
+  /**
+   * Get all funnels key and name order by name desc
+   * @method getFunnelKeyAndName
+   */
+  public function getFunnelKeyAndName()
+  {
+    $query = &quot;SELECT `name`, `key` FROM `funnels` order by `name` desc&quot;;
+    $preparedStatement = $this-&gt;Prepare($query);
+    $preparedStatement = $this-&gt;Execute($preparedStatement);
+    return $preparedStatement-&gt;fetchAll(\PDO::FETCH_ASSOC);
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,113 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+namespace Framework;
+
+require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/vendor/aws-autoloader.php';
+
+session_start();
+
+/** Define the correct and incorrect seperators */
+define('DSEP', DIRECTORY_SEPARATOR);
+define('RSEP', ((DSEP === '/') ? '\\' : '/'));
+
+/**
+ * Return a path with the correct platform directory seperators
+ * @param  string $path Path before conversion to platform specific seperators
+ * @return string       Path after conversion to platform specific seperators
+ */
+function _FixPath($path){
+  return str_replace(RSEP, DSEP, $path);
+}
+
+/**
+ * Include a file with the correct separators and the correct method enabling exceptions
+ * @param  string $path Path before conversion to platform specific seperators
+ * @return void
+ * @uses   \Framework\_FixPath()
+ */
+function _IncludeCorrect($path)
+{ include_once _FixPath($path); }
+
+/** Setup the base defines to get us running */
+define(&quot;WEB_ROOT&quot;, dirname(__DIR__) . DSEP);
+define(&quot;FRAMEWORK_ROOT&quot;, __DIR__ . DSEP);
+define(&quot;FRAMEWORK_SUPPORT&quot;, FRAMEWORK_ROOT . &quot;Support&quot; . DSEP);
+define(&quot;FRAMEWORK_ABSTRACT&quot;, FRAMEWORK_SUPPORT . &quot;Abstracts&quot; . DSEP);
+define(&quot;FRAMEWORK_INTERFACE&quot;, FRAMEWORK_SUPPORT . &quot;Interfaces&quot; . DSEP);
+define(&quot;FRAMEWORK_OBJECT&quot;, FRAMEWORK_SUPPORT . &quot;Object&quot; . DSEP);
+define(&quot;FRAMEWORK_APPLICATION&quot;, FRAMEWORK_ROOT . &quot;Application&quot; . DSEP);
+define(&quot;CONFIGURATION_ROOT&quot;, FRAMEWORK_ROOT . 'Configuration' . DSEP);
+define(&quot;LOG_DIRECTORY&quot;, FRAMEWORK_ROOT . &quot;Logs&quot; . DSEP);
+
+ini_set('display_errors', 0);
+
+_IncludeCorrect(FRAMEWORK_ROOT.&quot;Exceptional&quot;.DSEP.&quot;ExceptionInterface.php&quot;);
+_IncludeCorrect(FRAMEWORK_ROOT.&quot;Exceptional&quot;.DSEP.&quot;BaseException.php&quot;);
+_IncludeCorrect(FRAMEWORK_ROOT.&quot;Exceptional&quot;.DSEP.&quot;StandardExceptions.php&quot;);
+_IncludeCorrect(FRAMEWORK_ROOT.&quot;Exceptional&quot;.DSEP.&quot;StandardFaults.php&quot;);
+_IncludeCorrect(FRAMEWORK_ROOT.&quot;Exceptional&quot;.DSEP.&quot;Handler.php&quot;);
+_IncludeCorrect(FRAMEWORK_ROOT.&quot;Event&quot;.DSEP.&quot;Autoload.php&quot;);
+_IncludeCorrect(FRAMEWORK_ROOT.&quot;Core&quot;.DSEP.&quot;Core.php&quot;);
+_IncludeCorrect(FRAMEWORK_ROOT.&quot;Modulus&quot;.DSEP.&quot;Mysql.interface.php&quot;);
+_IncludeCorrect(FRAMEWORK_ROOT.&quot;Modulus&quot;.DSEP.&quot;PDOdatabases.php&quot;);
+_IncludeCorrect(FRAMEWORK_ROOT.&quot;Modulus&quot;.DSEP.&quot;Query.php&quot;);
+_IncludeCorrect(FRAMEWORK_ROOT.&quot;Core&quot;.DSEP.&quot;Architect.php&quot;);
+_IncludeCorrect(FRAMEWORK_ROOT.&quot;Core&quot;.DSEP.&quot;Contour.php&quot;);
+_IncludeCorrect(FRAMEWORK_ROOT.&quot;Core&quot;.DSEP.&quot;Receptionist.php&quot;);
+_IncludeCorrect(FRAMEWORK_ROOT.&quot;Core&quot;.DSEP.&quot;Admit.php&quot;);
+_IncludeCorrect(FRAMEWORK_ROOT.&quot;Core&quot;.DSEP.&quot;Euri.php&quot;);
+_IncludeCorrect(FRAMEWORK_ROOT.&quot;Core&quot;.DSEP.&quot;Advent.php&quot;);
+_IncludeCorrect(FRAMEWORK_ROOT.&quot;Core&quot;.DSEP.&quot;Fiolos.php&quot;);
+
+/** Set the exception handlers */
+set_error_handler( array('Framework\Exceptional\Handler', 'StandardException') );
+register_shutdown_function( array('Framework\Exceptional\Handler', 'FatalException') );
+
+/** Let the Architect take it from here */
+$Architect = \Framework\Core\Architect::getInstance();
+$Architect-&gt;run();
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,116 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * TrackingMaster
+ *
+ * @package Framework\Modulus\Datatable
+ * @version 1.0.0
+ */
+namespace Framework\Modulus\Datatable;
+
+/**
+ * TrackingMaster
+ *
+ * This is the prototype datatable master object for the tracking system
+ * It will help me learn the cause of my tracking anomaly
+ */
+class TrackingMaster extends \Framework\Modulus\Datatable
+{
+  /** @var array $_defaultFilterValues The default filter values */
+  protected $_defaultFilterValues = [];
+  /** @var array $_columnDefinitions */
+  protected $_columnDefinitions = [
+    [&quot;label&quot;=&gt;&quot;Session Key&quot;, &quot;style&quot;=&gt;&quot;width:10%;text-align:center;&quot;, &quot;order&quot;=&gt;true],
+    [&quot;label&quot;=&gt;&quot;IP Address&quot;, &quot;style&quot;=&gt;&quot;width:10%;text-align:center;&quot;, &quot;order&quot;=&gt;true],
+    [&quot;label&quot;=&gt;&quot;Funnel Name&quot;, &quot;style&quot;=&gt;&quot;width:20%&quot;, &quot;order&quot;=&gt;true],
+    [&quot;label&quot;=&gt;&quot;Tracking Link&quot;, &quot;style&quot;=&gt;&quot;width:20%&quot;, &quot;order&quot;=&gt;true],
+    [&quot;label&quot;=&gt;&quot;Date &amp;amp; Time&quot;, &quot;style&quot;=&gt;&quot;width:20%;text-align:right;&quot;, &quot;order&quot;=&gt;true],
+  ];
+  /** @var int $_resultLimit The limit for queries */
+  protected $_resultLimit = 50;
+
+
+  /**
+   * The inital query for the datatable
+   * @method _initialQuery
+   * @return array
+   * @throws \Framework\Exceptional\PDOdatabasesException
+   */
+  protected function _initialQuery()
+  {
+    $query = &quot;
+      SELECT
+        `fs`.`key` as `session-key`,
+        INET6_NTOA(`fs`.`ip-address`) as `ip-address`,
+        `f`.`name` as `funnel-name`,
+        IFNULL(`mel`.`name`, 'None') as `campaign-name`,
+        `time-stamp`
+      FROM `funnel-sessions` as `fs`
+      LEFT JOIN `funnels` as `f`
+      ON `fs`.`funnel-key`=`f`.`key`
+      LEFT JOIN `mediabuy-email-links` as `mel`
+      ON `fs`.`campaign-key`=`mel`.`key`
+      ORDER BY `fs`.`key` desc
+      {$this-&gt;_limit()}
+    &quot;;
+    $statement = $this-&gt;_prepare($query);
+    $statement = $this-&gt;_execute($statement);
+    return $statement-&gt;fetchAll(\PDO::FETCH_ASSOC);
+  }
+
+  /**
+   * Format row data
+   * @method _rowFormatter
+   * @param $row
+   * @return mixed
+   */
+  protected function _rowFormatter($row)
+  {
+    $row['session-key'] = sprintf(&quot;#%012s&quot;, $row['session-key']);
+    $row['time-stamp'] = date( &quot;l jS \of F Y h:i:s A&quot;, strtotime( $row['time-stamp'] ) );
+    return $row;
+  }
+}</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

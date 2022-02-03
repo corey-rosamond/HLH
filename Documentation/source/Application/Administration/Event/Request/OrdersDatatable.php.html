@@ -1,0 +1,144 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * OrdersDatatable
+ *
+ * @package App\Event\Main
+ * @version 1.0.0
+ */
+namespace App\Event\Request;
+
+/**
+ * OrdersDatatable
+ *
+ * This controls the orders Datatable
+ */
+\Framework\_IncludeCorrect( FRAMEWORK_ROOT.&quot;Advent&quot;.DSEP.&quot;Request.php&quot; );
+class OrdersDatatable  extends \Framework\Advent\Request
+{
+
+  /**
+   * Does this page require that the user be logged in
+   * @var     boolean     $requireLogin
+   * @access  protected
+   * @static
+   */
+  public static $requiresLogin = false;
+
+  /**
+   * Permission group required to view this page or false if none
+   * @var     mixed     $permissionGroup  FALSE if none
+   * @access  protected
+   * @static
+   */
+  public static $permissionGroup = false;
+
+  /**
+   * Permission required in the group defined above required to view this page
+   * @var     mixed     $permission   FALSE if none
+   * @access  protected
+   * @static
+   */
+  public static $permission = false;
+
+  /**
+   * The events for this Request object
+   * @method events
+   * @param   string $event the event we were asked to run
+   * @return  void
+   * @access  protected
+   */
+  protected function events(){
+    $model            = \Framework\Core\Modulus::get( 'Orders', &quot;Holylandhealth&quot; );
+    $oID              = (( !isset( $_POST['order_id'] ) || $_POST['order_id'] === '' )? false : $_POST['order_id'] );
+    $oDateStart       = (( !isset( $_POST['order_date_from'] ) || $_POST['order_date_from'] === '' )? false : date(&quot;Y-m-d&quot;,strtotime($_POST['order_date_from'])) );
+    $oDateEnd         = (( !isset( $_POST['order_date_to'] ) || $_POST['order_date_to'] === '' )? false : date(&quot;Y-m-d&quot;,strtotime($_POST['order_date_to'])) );
+    $oFirstName       = (( !isset( $_POST['first_name'] ) || $_POST['first_name'] === '' )? false : $_POST['first_name'] );
+    $oLastName        = (( !isset( $_POST['last_name'] ) || $_POST['last_name'] === '' )? false : $_POST['last_name'] );
+    $oAmount          = (( !isset( $_POST['amount'] ) || $_POST['amount'] === '' )? false : $_POST['amount'] );
+    $oStatus          = (( !isset( $_POST['order_status'] ) || $_POST['order_status'] === '' )? false : $_POST['order_status'] );
+    $lStart           = $_POST['start'];
+    $lEnd             = $_POST['length'];
+    $oColumn          = (( !isset( $_POST['order'][0]['column'] ) ) ? 'key' : $_POST['order'][0]['column'] );
+    $oDirection       = (( !isset( $_POST['order'][0]['dir'] ) ) ? 'desc' : $_POST['order'][0]['dir'] );
+    $data             = $model-&gt;getOrdersDatatable( $oID, $oDateStart, $oDateEnd, $oFirstName, $oLastName, $oAmount,$oStatus, $lStart, $lEnd, $oColumn, $oDirection );
+    $iTotalRecords    = $model-&gt;getOrdersDatatable( $oID, $oDateStart, $oDateEnd, $oFirstName, $oLastName, $oAmount,$oStatus, $lStart, $lEnd, $oColumn, $oDirection, true );
+    $iDisplayLength   = intval( $_POST['length'] );
+    $iDisplayLength   = (( $iDisplayLength &lt; 0 )? $iTotalRecords : $iDisplayLength );
+    $iDisplayStart    = intval( $_POST['start'] );
+    $sEcho            = intval( $_POST['draw'] );
+    $end              = $iDisplayStart + $iDisplayLength;
+    $end              = (( $end &gt; $iTotalRecords )? $iTotalRecords : $end );
+    $records          = array();
+    $records[&quot;data&quot;]  = array();
+    $status_list = array(
+      &quot;Created&quot; =&gt; 'danger',
+      &quot;Captured&quot; =&gt; &quot;success&quot;,
+      &quot;Approved&quot; =&gt; &quot;warning&quot;,
+      &quot;Fulfillment&quot; =&gt; &quot;info&quot;,
+      &quot;Complete&quot; =&gt; &quot;primary&quot;,
+      &quot;Auth Capture&quot; =&gt; &quot;default&quot;,
+      &quot;Canceled&quot; =&gt; &quot;danger&quot;,
+      &quot;Authorized&quot; =&gt; &quot;primary&quot;
+    );
+    if($data){
+      foreach( $data as $row){
+        $records[&quot;data&quot;][] = array(
+          $row['key'], $row['order-date'], $row['first-name'], $row['last-name'], '$' . $row['total-before'],
+          '&lt;span class=&quot;label label-sm label-'.($status_list[$row['status']]).'&quot;&gt;'.($row['status']).'&lt;/span&gt;',
+          '&lt;a href=&quot;/CustomerRelations/Orders/OrderView?customer='.$row['key'].'&quot; class=&quot;btn btn-sm btn-circle btn-default btn-editable&quot;&gt;
+          &lt;i class=&quot;fa fa-search&quot;&gt;&lt;/i&gt; View&lt;/a&gt;'
+        );
+      }
+    }
+    $records[&quot;draw&quot;] = $sEcho;
+    $records[&quot;recordsTotal&quot;] = $iTotalRecords;
+    $records[&quot;recordsFiltered&quot;] = $iTotalRecords;
+    echo json_encode( $records );
+    exit();
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

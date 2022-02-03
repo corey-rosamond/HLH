@@ -1,0 +1,230 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * Manage
+ *
+ * @package App\Event\Management\Users
+ * @version 1.0.0
+ */
+namespace App\Event\Page\Management\Users;
+
+/**
+ * Manage
+ *
+ * This is the main interface for manageing users and their permissions
+ */
+class Manage extends \App\Event\Page{
+
+  /** @var string Title */
+  public $title           = &quot;Manage Users&quot;;
+
+  /** @var string Header */
+  public $header          = &quot;Manage&quot;;
+
+  /** @var string sub header */
+  public $subheader       = &quot;Users&quot;;
+
+  /** @var the permission this system requires */
+  public $permissionGroup = 'user-system';
+
+  /** @var the permission this system requires */
+  public $permission      = null;
+
+  /** @var script file for this page */
+  public $script          = &quot;Live/Page-Scripts/Management.Users.Manage.js&quot;;
+
+  /**
+   * Construct the event object
+   * @method __construct
+   * @return self
+   * @access public
+   */
+  public function __construct()
+  {
+    $this-&gt;userModel = \Framework\Core\Modulus::get(&quot;User&quot;, &quot;Holylandhealth&quot;, false);
+    return $this;
+  }
+
+  /**
+   * build the User Manage page
+   * @method build
+   * @return string html content for the view
+   * @access public
+   */
+  public function build()
+  {
+    $html = '';
+    /** Get a list of the current users */
+    $userList = $this-&gt;userModel-&gt;getManageUserDatatable();
+    /** Make our datatable columns */
+    $columns = [
+      ['label'=&gt;'Key',          'order'=&gt;true, 'style'=&gt;'text-align:center;width:50px;'],
+      ['label'=&gt;'Username',     'order'=&gt;true, 'style'=&gt;''],
+      ['label'=&gt;'Name',         'order'=&gt;true, 'style'=&gt;''],
+      ['label'=&gt;'Email Address','order'=&gt;true, 'style'=&gt;''],
+      ['label'=&gt;'Phone Number', 'order'=&gt;true, 'style'=&gt;''],
+      ['label'=&gt;'Last Login',   'order'=&gt;true, 'style'=&gt;''],
+      ['label'=&gt;'Actions',      'order'=&gt;false,'style'=&gt;'width:450px;text-align:left;']
+    ];
+    /** Make the data table */
+    $datatable = new \Framework\Support\Object\Datatable( 'user-datatable', $columns );
+    /** loop through the users adding them to the datatable */
+    foreach($userList as $user){
+      /** set the actions and the button styles */
+      $action = 'Disable';
+      $icon   = 'fa fa-thumbs-o-down';
+      $button = 'btn green-sharp border-white';
+      /** If the status is false then update the button to the none default */
+      if(!$user['status']){
+        $icon   = 'fa fa-thumbs-o-up';
+        $action = 'Activate';
+        $button = 'btn red-thunderbird border-white';
+      }
+      /** create the actions section */
+      $user['actions'] = '&lt;div class=&quot;btn-group btn-group-solid&quot; data-user-key=&quot;'.$user['key'].'&quot;&gt;
+            &lt;button class=&quot;'.$button.' user-information&quot;  data-url=&quot;/Request/FormRequest?action=get&amp;name=Management.Users.Manage.Information&quot; type=&quot;button&quot;&gt;
+              &lt;i class=&quot;fa fa-user&quot; style=&quot;margin-right:2px;&quot;&gt;&lt;/i&gt; Information
+            &lt;/button&gt;
+            &lt;button class=&quot;'.$button.' user-permissions&quot;  data-url=&quot;/Request/FormRequest?action=get&amp;name=Management.Users.Manage.Permissions&quot; type=&quot;button&quot;&gt;
+              &lt;i class=&quot;fa fa fa-key&quot; style=&quot;margin-right:2px;&quot;&gt;&lt;/i&gt; Permissions
+            &lt;/button&gt;
+            &lt;button class=&quot;'.$button.' user-log&quot;          data-url=&quot;/Request/FormRequest?action=get&amp;name=Management.Users.Manage.Log&quot; type=&quot;button&quot;&gt;
+              &lt;i class=&quot;fa fa-list&quot; style=&quot;margin-right:2px;&quot;&gt;&lt;/i&gt; Log
+            &lt;/button&gt;
+            &lt;button
+              class=&quot;'.$button.' disable-user&quot;
+              data-action=&quot;'.$action.'&quot;
+              data-placement=&quot;left&quot;
+              data-animation=&quot;true&quot;
+              data-original-title=&quot;'.$action.' User!&quot;
+              data-popout=&quot;true&quot;
+              data-singleton=&quot;true&quot;
+              data-btn-ok-class=&quot;btn green-sharp white-stripe&quot;
+              data-btn-ok-label=&quot;Yes!&quot;
+              data-btn-ok-icon=&quot;fa fa-thumbs-o-up&quot;
+              data-btn-cancel-class=&quot;btn red-thunderbird grey-salt-stripe&quot;
+              data-btn-cancel-label=&quot;No!&quot;
+              data-btn-cancel-icon=&quot;fa fa-thumbs-o-down&quot;&gt;
+              &lt;i class=&quot;'.$icon.'&quot; style=&quot;margin-right:3px;&quot;&gt;&lt;/i&gt; '.$action.'
+            &lt;/button&gt;
+      &lt;/div&gt;';
+      /** Set the content for the users phone number */
+      $user['phone-number']   = $this-&gt;formatPhoneNumber( $user['phone-number'] );
+      /** set the content for the users email address */
+      $user['email-address']  = $this-&gt;formatEmailAddress( $user['email-address'] );
+      /** set the content for the last login date */
+      $user['last-login']     = $this-&gt;formatLastActive( $user['last-login'] );
+      /** Unset the status section we only needed that for the actions menu */
+      unset($user['status']);
+      /** add the row to the data table */
+      $datatable-&gt;addRow($user);
+    }
+    /** finalize the data table */
+    $html = $datatable-&gt;finalize();
+
+    /** include our form models */
+    $html .= $this-&gt;includeForms();
+
+    /** return the page content so we can render the page */
+    return ( new \Framework\Support\Object\Portlet('User List', $html ) )
+      -&gt;setType('box')
+      -&gt;setIcon('fa-1x fa fa-shield')
+      -&gt;setFontColor('font-blue-steel')
+      -&gt;setColor('blue-chambray')
+      -&gt;finalize();
+  }
+
+  /**
+   * Include the forms needed for this program
+   * @method includeForms
+   * @return string html form content
+   * @access private
+   */
+  private function includeForms(){
+    return '
+      &lt;div id=&quot;user-log&quot; class=&quot;modal fade&quot; tabindex=&quot;-1&quot;&gt;&lt;/div&gt;
+      &lt;div id=&quot;user-information&quot; class=&quot;modal fade&quot; tabindex=&quot;-1&quot;&gt;&lt;/div&gt;
+      &lt;div id=&quot;user-permissions&quot; class=&quot;modal fade&quot; tabindex=&quot;-1&quot;&gt;&lt;/div&gt;
+    ';
+  }
+
+  /**
+   * Format the phone number for readability
+   * @method formatPhoneNumber
+   * @param  int            $number the phone number
+   * @return string                 the formated number
+   * @access private
+   */
+  private function formatPhoneNumber( $number ){
+    if($number==''){ return 'Phone Number Not Set'; }
+    return &quot;(&quot;.substr($number,0,3).&quot;) &quot;.substr($number,3,3).&quot;-&quot;.substr($number,6);
+  }
+
+  /**
+   * Return the phone number or string saying its not set
+   * @method formatEmailAddress
+   * @param  string             $email string containing email address
+   * @return string                    string containing email address
+   * @access private
+   */
+  private function formatEmailAddress( $email ){
+    if($email==''){ return 'Email Address Not Set'; }
+    return $email;
+  }
+
+  /**
+   * Return the last active date or last logged in
+   * @method formatLastActive
+   * @param  string           $date the last login date
+   * @return string                 the last login date
+   * @access private
+   */
+  private function formatLastActive( $date ){
+    if($date==''){ return 'Never Logged In'; }
+    return $date;
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

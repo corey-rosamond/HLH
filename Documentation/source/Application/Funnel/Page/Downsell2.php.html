@@ -1,0 +1,82 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * Downsell2
+ *
+ * @package App\Page
+ * @version 1.2.0
+ */
+namespace App\Page;
+
+/**
+ * Downsell2
+ *
+ * The Downsell2
+ */
+class Downsell2 extends \App\Abstracts\FunnelPage
+{
+  /** @var int Include the pageType */
+  protected $_pageType = self::downsell2;
+
+  /**
+   * Builds the content area and calls all sub functions to build
+   * the ui specific to this page
+   * @method _content
+   * @param $data
+   * @return string|void
+   */
+  protected function _content($data)
+  {
+    return &quot;
+      &lt;div id=\&quot;funnel-content\&quot;&gt;
+        &lt;form method=\&quot;post\&quot; action=\&quot;{destination-success}\&quot; id=\&quot;funnel-upsell-form\&quot;&gt;
+          {$data['content']} {$this-&gt;_products()}
+        &lt;/form&gt;
+      &lt;/div&gt;
+    &quot;;
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

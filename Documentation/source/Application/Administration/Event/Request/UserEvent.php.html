@@ -1,0 +1,95 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * UserEvent
+ *
+ * @package App\Event\Main
+ * @version 1.0.0
+ */
+namespace App\Event\Request;
+
+/**
+ * UserEvent
+ *
+ * This runs the user ajax events
+ */
+
+class UserEvent extends \Framework\Event\Base
+{
+    /**
+     * @var mixed
+     */
+    public $requiresLogin = false;
+    /**
+     * @return mixed
+     */
+    public function __construct()
+    {return $this;}
+    public function run()
+    {
+      try {
+      switch ($_POST['action']) {
+          case 'forgot':
+            echo json_encode(array(&quot;result&quot; =&gt; false, &quot;message&quot; =&gt; &quot;Not implemented!&quot;));
+            break;
+          case &quot;login&quot;:
+            /** Ask patron to log them in*/
+            $result = \Framework\Core\Patron::login($_POST['username'], $_POST['password'], $_POST['remember']);
+            /** return the result */
+            echo json_encode($result);
+            break;
+          case 'logout':
+            $result = \Framework\Core\Patron::logout();
+            echo json_encode($result);
+            break;
+      }
+      } catch (\Framwork\Core\Exceptional\BaseException $exception) {
+          $exception-&gt;log();
+          echo json_encode($exception);
+      }
+    }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,95 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * abstract Cronjob
+ *
+ * @package Framework\Event
+ * @version 1.0.0
+ */
+namespace Framework\Event;
+
+/**
+ * This will be the event abstraction layer
+ */
+abstract class Cronjob extends \Framework\Support\Abstracts\Singleton
+{
+
+  /**
+   * The messages array
+   * @var     array       $messages
+   * @access  protected
+   */
+  protected $messages = [];
+
+  /**
+   * The status that will be returned by the cron job
+   * @var     array       $status
+   * @access  protected
+   */
+  protected $status = true;
+
+  /**
+   * Add a message to the cronJobs message queue
+   * @method  addMessage
+   * @param   boolean     $type     Did it work or not
+   * @param   string      $message  Some meaningfull message
+   * @return  mixed                 Reference to new message in colleciton
+   * @access  protected
+   */
+  protected function addMessage( $type, $message )
+  { return array_push( $this-&gt;messages,['type'=&gt;$type,'message'=&gt;$message]); }
+
+  /**
+   * Return the end of job report with our completeion status and any
+   * Messages we would like to logged
+   * @method    returnReport
+   * @return    array         An arry that contains the outcoe status and messsages we need logged
+   * @access    protected
+   */
+  protected function returnReport($cCronTab, $data)
+  { return ['status'=&gt;(($this-&gt;status)?$cCronTab::statusIdle:$cCronTab-&gt;chooseFailureStatus($data)),'messages'=&gt;$this-&gt;messages];}
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

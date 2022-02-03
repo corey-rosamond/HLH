@@ -1,0 +1,57 @@
+<div id="email-link-edit" class="modal fade" tabindex="-1" style="postion:fixed;top:30%;">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+        <h4 class="modal-title">Edit Tracking Link</h4>
+    </div>
+    <div class="modal-body">
+        <form class="form-horizontal form-bordered" role="form">
+            
+            <input type="hidden" id="link-key" />
+
+            <div class="input-group margin-top-10">
+                <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                <input type="text" id="name" class="form-control" placeholder="Name"> 
+            </div>
+
+            <div class="input-group margin-top-10">
+                <span class="input-group-addon"><i class="fa fa-link"></i></span>
+                <select id="promoter" class="form-control" placeholder="Promoter"> 
+
+                </select>
+            </div>
+
+            <div class="input-group margin-top-10">
+                <span class="input-group-addon"><i class="fa fa-link"></i></span>
+                <select id="funnel" class="form-control" placeholder="Funnel"> 
+
+                </select>
+            </div>
+
+            <div class="input-group margin-top-10">
+                <span class="input-group-addon"><i class="fa fa-usd"></i></span>
+                <input id="cost" type="text" class="form-control" placeholder="Cost"> 
+            </div>
+            
+            <div class="input-group margin-top-10">
+                <span class="input-group-addon"><i class="fa fa-usd"></i></span>
+                <input id="expected-return" type="text" class="form-control" placeholder="Expected Return"> 
+                   </div>
+            
+            <div class="input-group margin-top-10" style="width:100%;">
+                <label class="control-label col-md-3">Date Range</label>
+                <div class="col-md-4">
+                    <div id="reportrange" class="btn default">
+                        <i class="fa fa-calendar"></i> &nbsp;
+                        <span> </span>
+                        <b class="fa fa-angle-down"></b>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" data-dismiss="modal" class="btn btn-outline dark">Close</button>
+        <button id="save-button" type="button" class="btn green">Save changes</button>
+    </div>
+</div>

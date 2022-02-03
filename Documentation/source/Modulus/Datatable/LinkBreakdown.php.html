@@ -1,0 +1,157 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * LinkBreakdown
+ *
+ * @package Framework\Modulus\Datatable
+ * @version 1.0.0
+ */
+namespace Framework\Modulus\Datatable;
+
+/**
+ * LinkBreakdown
+ *
+ * This is the datatable that generates the report for click through rate
+ */
+class LinkBreakdown extends \Framework\Modulus\Datatable
+{
+  /****************************************************/
+  /*                 DATATABLE SETTINGS               */
+  /****************************************************/
+  /** @var array $_tools */
+  protected $_dsTools = null;
+  /** @var int $_resultLimit The limit for queries */
+  protected $_dsResultLimit = 50;
+  /** @var boolean $_dsSortable */
+  protected $_dsSortable = false;
+  /** @var boolean $_dsFilterable */
+  protected $_dsFilterable = false;
+  /** @var boolean $_dsPagination */
+  protected $_dsPagination = false;
+  /** @var boolean $_dsShowInfo */
+  protected $_dsShowInfo = false;
+  /****************************************************/
+  /*             DATATABLE CONFIGURATION              */
+  /****************************************************/
+  /** @var array $_columnDefinitions */
+  protected $_gsColumnDefinitions = [
+    [&quot;label&quot;=&gt;&quot;Key&quot;,          &quot;style&quot;=&gt;&quot;width:50%&quot;,     &quot;order&quot;=&gt;true],
+    [&quot;label&quot;=&gt;&quot;Value&quot;,        &quot;style&quot;=&gt;&quot;width:50%&quot;,     &quot;order&quot;=&gt;true],
+  ];
+  /** @var array $_columnFilters This is an array of defined filters for this datatable */
+  protected $_gsColumnFilters = ['funnel-key'=&gt;[],'link-key'=&gt;[]];
+  /** @var array $_defaultFilterValues The default filter values */
+  protected $_gsDefaultFilterValues = [];
+  /****************************************************/
+  /*           EVENT REQUEST DATA MEMBERS             */
+  /****************************************************/
+  /** @var integer $_erFunnelKey */
+  protected $_erFunnelKey;
+  /** @var integer $_erLinkKey */
+  protected $_erLinkKey;
+
+  /**
+   * The initial query for the datatable
+   * @method _initialQuery
+   * @return array
+   * @throws \Framework\Exceptional\PDOdatabasesException
+   */
+  protected function _initialQuery()
+  {
+    if(is_null($this-&gt;_erFunnelKey)||is_null($this-&gt;_erLinkKey)){
+      return false;
+    }
+    $data = [];
+    $data[] = $this-&gt;_totalRevenueGenerated();
+    return $data;
+  }
+
+  /**
+   * Format row data
+   * @method _rowFormatter
+   * @param $row
+   * @return mixed
+   */
+  protected function _rowFormatter($row)
+  {
+    $row['total'] = &quot;$&quot;.number_format($row['total'],2);
+    return $row;
+  }
+
+
+  protected function _totalRevenueGenerated()
+  {
+    $query = &quot;
+      SELECT 'Total Revenue Generated' as `label`, sum(`funnel-orders`.`order-total-before`) as `total`
+      FROM `funnel-orders`
+      WHERE `funnel-orders`.`funnel-key`=:funnelKey
+      AND `funnel-orders`.`campaign-key`=:campaignKey&quot;;
+    $statement = $this-&gt;_prepare($query);
+    $statement-&gt;bindValue(&quot;:funnelKey&quot;, $this-&gt;_erFunnelKey);
+    $statement-&gt;bindValue(&quot;:campaignKey&quot;, $this-&gt;_erLinkKey);
+    $statement = $this-&gt;_execute($statement);
+    return $statement-&gt;fetch(\PDO::FETCH_ASSOC);
+  }
+
+  protected function _eRequestParse()
+  {
+    parent::_eRequestParse();
+    $this-&gt;_erFunnelKey = (($this-&gt;_erData['funnel-key']==&quot;&quot;)?null:$this-&gt;_erData['funnel-key']);
+    $this-&gt;_erLinkKey = (($this-&gt;_erData['link-key']==&quot;&quot;)?null:$this-&gt;_erData['link-key']);
+  }
+
+  public function run()
+  {
+    $this-&gt;_eRequestParse();
+    if(is_null($this-&gt;_erFunnelKey)||is_null($this-&gt;_erLinkKey)){
+      $this-&gt;_eResponse([], 1, 0, 0);
+    }
+    /** @var array $records */
+    $records = $this-&gt;_initialQuery();
+    /** Let _eResponse handle the rest */
+    $this-&gt;_eResponse($records, ($this-&gt;_erDrawCount+2), sizeof($records), 0);
+  }
+}</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

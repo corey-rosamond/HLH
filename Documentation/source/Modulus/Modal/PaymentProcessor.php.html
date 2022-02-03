@@ -1,0 +1,95 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * PaymentProcessor
+ *
+ * @package Framework\Modulus\Datatable
+ * @version 1.0.0
+ */
+namespace Framework\Modulus\Modal;
+
+class PaymentProcessor extends \Framework\Modulus\Query
+{
+  public function addLogEntry($oKey, $response, $rText, $aCode, $transId, $avsResponse, $cvvResponse, $type, $rCode, $amount)
+  {
+    $query = &quot;INSERT INTO `funnel-order-transactions`
+      (`order-key`,`response`,`response-text`,`authcode`,`transaction-id`,`avs-response`,`cvv-response`,`type`,`response-code`,`amount`) VALUES
+      (:oKey, :response, :rText, :aCode, :transId, :avsResponse, :cvvResponse, :type, :rCode, :amount)&quot;;
+    $PreparedStatement = $this-&gt;Prepare( $query );
+    $PreparedStatement-&gt;bindValue(':oKey',        $oKey,        \PDO::PARAM_INT);
+    $PreparedStatement-&gt;bindValue(':response',    $response,    \PDO::PARAM_STR);
+    $PreparedStatement-&gt;bindValue(':rText',       $rText,       \PDO::PARAM_STR);
+    $PreparedStatement-&gt;bindValue(':aCode',       $aCode,       \PDO::PARAM_STR);
+    $PreparedStatement-&gt;bindValue(':transId',     $transId,     \PDO::PARAM_STR);
+    $PreparedStatement-&gt;bindValue(':avsResponse', $avsResponse, \PDO::PARAM_STR);
+    $PreparedStatement-&gt;bindValue(':cvvResponse', $cvvResponse, \PDO::PARAM_STR);
+    $PreparedStatement-&gt;bindValue(':type',        $type,        \PDO::PARAM_STR);
+    $PreparedStatement-&gt;bindValue(':rCode',       $rCode,       \PDO::PARAM_STR);
+    $PreparedStatement-&gt;bindValue(':amount',      $amount,      \PDO::PARAM_STR);
+    $this-&gt;Execute($PreparedStatement);
+    return $this-&gt;LastInsertID();
+  }
+
+  public function getOrder( $key )
+  {
+    $Query = &quot;SELECT * FROM `funnel-order-transactions` WHERE `order-key`=:Key ORDER BY `timestamp` DESC&quot;;
+    $PreparedStatement = $this-&gt;Prepare( $Query );
+    $PreparedStatement-&gt;bindValue(':Key', $key, \PDO::PARAM_INT);
+    $PreparedStatement = $this-&gt;Execute($PreparedStatement);
+    return $PreparedStatement-&gt;fetchAll(\PDO::FETCH_ASSOC);
+  }
+
+  public function getOrderCount( $key )
+  {
+    $Query = &quot;SELECT count(`key`) as `total` FROM `funnel-order-transactions` WHERE `order-key`=:Key&quot;;
+    $PreparedStatement = $this-&gt;Prepare( $Query );
+    $PreparedStatement-&gt;bindValue(':Key', $key, \PDO::PARAM_INT);
+    $PreparedStatement = $this-&gt;Execute($PreparedStatement);
+    $resource = $PreparedStatement-&gt;fetch(\PDO::FETCH_ASSOC);
+    return $resource['total'];
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

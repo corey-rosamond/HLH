@@ -1,0 +1,143 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+
+namespace App\Page;
+
+\Framework\_IncludeCorrect(APP_ROOT.&quot;Abstracts&quot;.DSEP.&quot;FunnelPage.php&quot;);
+class ThankYou extends \App\Abstracts\FunnelPage
+{
+  protected $_cFunnel;
+  protected $_dOrder;
+  protected $_dBillingAddress;
+  protected $_dShippingAddress;
+  protected $_dCustomer;
+  protected $_dOrderItems;
+
+  protected function _content( $tokens )
+  {
+    $this-&gt;_dOrder  = $this-&gt;_cFunnel-&gt;order();
+    if(!isset($this-&gt;_dOrder['customer-key'])){
+      $this-&gt;_redirectTo(self::typePage, self::checkout);
+    }
+    $this-&gt;_dCustomer = $this-&gt;_cFunnel-&gt;customer($this-&gt;_dOrder['customer-key']);
+    $this-&gt;_dOrderItems = $this-&gt;_cFunnel-&gt;orderItems();
+    $this-&gt;_dBillingAddress = $this-&gt;_cFunnel-&gt;billingAddress();
+    $this-&gt;_dShippingAddress= $this-&gt;_cFunnel-&gt;shippingAddress();
+    $this-&gt;_cFunnel-&gt;registerToken('{order-number}', sprintf('#%08d',$this-&gt;_dOrder['key']));
+    $this-&gt;_cFunnel-&gt;registerToken('{order-email}', $this-&gt;_dCustomer['email-address']);
+    $this-&gt;_cFunnel-&gt;registerToken('{billing-information}',&quot;
+      {$this-&gt;_dBillingAddress['name']}&lt;br /&gt;
+      {$this-&gt;_dBillingAddress['address-line-one']}&lt;br /&gt;
+      {$this-&gt;_dBillingAddress['address-line-two']}&lt;br /&gt;
+      {$this-&gt;_dBillingAddress['city']}
+      {$this-&gt;_dBillingAddress['state']},
+      {$this-&gt;_dBillingAddress['zip']}
+    &quot;);
+    $this-&gt;_cFunnel-&gt;registerToken('{shipping-information}',&quot;
+      {$this-&gt;_dShippingAddress['name']}&lt;br /&gt;
+      {$this-&gt;_dShippingAddress['address-line-one']}&lt;br /&gt;
+      {$this-&gt;_dShippingAddress['address-line-two']}&lt;br /&gt;
+      {$this-&gt;_dShippingAddress['city']}
+      {$this-&gt;_dShippingAddress['state']},
+      {$this-&gt;_dShippingAddress['zip']}
+    &quot;);
+    $itemsTable = &quot;&quot;;
+    $total = 0;
+    if($this-&gt;_dOrderItems) {
+      foreach ($this-&gt;_dOrderItems as $item) {
+        if ($item['status'] == \Framework\Commander\OrderItems::reconciled) {
+          $total += $item['price'];
+          $item['price'] = &quot;$&quot; . number_format ($item['price'], 2);
+          $itemsTable .= &quot;&lt;tr&gt;&lt;td&gt;1&lt;/td&gt;&lt;td&gt;{$item['name']}&lt;/td&gt;&lt;td&gt;{$item['price']}&lt;/td&gt;&lt;/tr&gt;&quot;;
+        }
+      }
+    }
+    $total = '$'.number_format( $total, 2);
+    $this-&gt;_cFunnel-&gt;registerToken('{sub-total-value}', $total);
+    $this-&gt;_cFunnel-&gt;registerToken('{order-total-value}', $total);
+    $this-&gt;_cFunnel-&gt;registerToken('{order-items}', $itemsTable);
+    $this-&gt;_tokens = $this-&gt;_cFunnel-&gt;getTokens();
+    return &quot;
+    &lt;div id=\&quot;funnel-content\&quot;&gt;\n
+      &lt;div class=\&quot;funnel-content-box thank-you-pre-reciept\&quot;&gt;
+        &lt;h3&gt;{$tokens['content-one-title']}&lt;/h3&gt;
+        &lt;div class=\&quot;content\&quot;&gt;{$tokens['content-one-content']}&lt;/div&gt;
+      &lt;/div&gt;
+  		&lt;div class=\&quot;funnel-content-box thank-you-billing\&quot;&gt;
+  			&lt;h3&gt;{$tokens['billing-information-title']}&lt;/h3&gt;
+  			&lt;div class=\&quot;content\&quot;&gt;{billing-information}&lt;/div&gt;
+  		&lt;/div&gt;
+  		&lt;div class=\&quot;funnel-content-box thank-you-shipping\&quot;&gt;
+  			&lt;h3&gt;{$tokens['shipping-information-title']}&lt;/h3&gt;
+  			&lt;div class=\&quot;content\&quot;&gt;{shipping-information}&lt;/div&gt;
+  		&lt;/div&gt;
+  		&lt;div class=\&quot;funnel-content-box thank-you-order-items\&quot;&gt;
+        &lt;h3&gt;{$tokens['order-summary-title']}&lt;/h3&gt;
+        &lt;div class=\&quot;content\&quot;&gt;
+    			&lt;table cellspacing=\&quot;0\&quot; cellpadding=\&quot;0\&quot; class=\&quot;thank-you-order-items\&quot;&gt;
+    				&lt;tr&gt;
+              &lt;th&gt;{$tokens['quantity-label']}&lt;/th&gt;
+              &lt;th&gt;{$tokens['product-name-label']}&lt;/th&gt;
+              &lt;th&gt;{$tokens['product-price-label']}&lt;/th&gt;
+            &lt;/tr&gt;
+  			    {order-items}
+          &lt;/table&gt;
+    			&lt;table cellspacing=\&quot;0\&quot; cellpadding=\&quot;0\&quot; class=\&quot;thank-you-order-items-totals\&quot;&gt;
+    				&lt;tr&gt;&lt;td colspan=\&quot;2\&quot;&gt;{$tokens['sub-total-label']}&lt;/td&gt;&lt;td&gt;{sub-total-value}&lt;/td&gt;&lt;/tr&gt;
+    				&lt;tr&gt;&lt;td colspan=\&quot;2\&quot;&gt;{$tokens['shipping-label']}&lt;/td&gt;&lt;td&gt;{$tokens['shipping-value']}&lt;/td&gt;&lt;/tr&gt;
+    				&lt;tr&gt;&lt;td colspan=\&quot;2\&quot;&gt;{$tokens['tax-label']}&lt;/td&gt;&lt;td&gt;{$tokens['tax-value']}&lt;/td&gt;&lt;/tr&gt;
+    				&lt;tr&gt;&lt;td colspan=\&quot;2\&quot;&gt;{$tokens['order-total-label']}&lt;/td&gt;&lt;td&gt;{order-total-value}&lt;/td&gt;&lt;/tr&gt;
+    			&lt;/table&gt;
+        &lt;/div&gt;
+  		&lt;/div&gt;
+      &lt;div class=\&quot;funnel-content-box\&quot;&gt;
+  			&lt;h3&gt;{$tokens['content-two-title']}&lt;/h3&gt;
+  	    &lt;div class=\&quot;content\&quot;&gt;{$tokens['content-two-content']}&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;&quot;;
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

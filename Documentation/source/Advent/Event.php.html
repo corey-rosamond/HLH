@@ -1,0 +1,485 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * Event
+ *
+ * @package Framework\Advent
+ * @version 1.0.0
+ */
+namespace Framework\Advent;
+
+/**
+ * Event
+ *
+ * This is the base for all events run through the advent system
+ */
+\Framework\_IncludeCorrect( FRAMEWORK_ROOT . &quot;Advent&quot; . DSEP . &quot;Object&quot; . DSEP . &quot;MainCollection.php&quot; );
+abstract class Event extends \Framework\Support\Abstracts\Singleton{
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /**                                          CONSTANTS                                                  */
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  /** Path file constants */
+  const application = 0;  /** Application */
+  const framework   = 1;  /** Framework */
+  const absolute    = 2;  /** Absolute */
+
+  /** Asset types contants */
+  const image   = 0;      /** Images */
+  const style   = 1;      /** Style Sheets */
+  const script  = 2;      /** Script Files */
+
+  /**
+   * This is the main host for the site we need it for the web assets to avoid path issues
+   * @var     string      $host
+   * @access  protected
+   */
+  protected $host;
+
+  /**
+   * Initalize the event object
+   * @method  Initalize
+   * @return  \Framework\      An instance of this page object
+   * @access  public
+   * @static
+   */
+  public static function initalize(array $paramaters = array() ){
+    try{
+      /** @var $instance Instances of the page object */
+      $instance = self::getInstance();
+      /** @var \Framework\Core\Euri  $Euri  Euri is what handles all of our uri issues */
+      $Euri = \Framework\Core\Euri::getInstance();
+      /** Set the main host to avoid issues with asset includes */
+      $instance-&gt;host = $Euri-&gt;server('host');
+      /** Initalize all of the web asset paths */
+      $instance-&gt;initalizeAssets();
+      /** Initalize all the requested modules */
+      $instance-&gt;initalizeModules();
+      /** Setup the buffer */
+      $instance-&gt;initalizeBuffer();
+      if( count( $paramaters ) &gt; 0 ){
+        /**  If paramaters were set make sure we save them */
+        $instance-&gt;paramaters = $paramaters;
+      }
+    } catch(\Framework\Exceptional\BaseException $exception){
+      /**
+       * We failed to load the page throw an exception so someone
+       * Smarter than us can fix the issue and load a page
+       */
+      throw new \Framework\Exceptional\AdventFault(
+        $instance-&gt;exceptionMessage[self::excptError],
+        self::eventError,
+        self::eventError,
+        $exception-&gt;getFile(),
+        $exception-&gt;getLine(),
+        $exception
+      );
+    }
+    return $instance;
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /**                                    EVENT EXCEPTIONS                                                 */
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  /** Exception Codes */
+  const excptAdventFatal  = 10;
+  const excptAccessDenied = 11;
+  const excptError        = 12;
+  const excptNotFound     = 13;
+  /** Event Codes */
+  const eventEntry        = 0;
+  const eventError        = 1;
+  const eventNotFound     = 2;
+  const eventPermDenied   = 3;
+  const eventLogin        = 4;
+  const eventLogout       = 5;
+  const adventFailure     = 6;
+
+  /**
+   * This is your exception messages array. This way if we need to add or change exception / messsages
+   * All we have to do is change it up here and those values get propagated downward to the rest of those
+   * module
+   * @var     array     $exceptionMessage
+   * @access  protected
+   */
+  protected $exceptionMessage = [
+    self::excptAdventFatal  =&gt; &quot;[AdventEventManagement]: Has failed in a way we can not recover from!&quot;,
+    self::excptAccessDenied =&gt; &quot;[AdventEventManagement]: Access Denied insufficent permissions!&quot;,
+    self::excptError        =&gt; &quot;[AdventEventManagement]: Event Error encountered event not salvageable!&quot;,
+    self::excptNotFound     =&gt; &quot;[AdventEventManagement]: 404 Event not found!&quot;
+  ];
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /**                                    EVENT PERMISSIONS                                                */
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * Does this page require that the user be logged in
+   * @var     boolean     $requireLogin
+   * @access  protected
+   */
+   public static $requiresLogin = false;
+
+  /**
+   * Permission group required to view this page or false if none
+   * @var     mixed     $permissionGroup  FALSE if none
+   * @access  protected
+   */
+   public static $permissionGroup = false;
+
+  /**
+   * Permission required in the group defined above required to view this page
+   * @var     mixed     $permission   FALSE if none
+   * @access  protected
+   */
+   public static $permission = false;
+
+  /**
+   * This will tell you if a user meets the correct criteria to view this page event
+   * @method  userCanView
+   * @return  boolean      TRUE if the user meets the requirements to view this page event
+   * @uses    Patron::getInstance()
+   * @uses    Patron-&gt;isLoggedIn()
+   * @uses    Patron-&gt;checkGroup()
+   * @uses    Patron-&gt;checkPermission()
+   * @throws  \Framework\Exceptional\AdventException()
+   * @access  public
+   * @static
+   */
+
+  public static function userMeetsRequirements(){
+    /** @var \Framework\Core\Patron An instance of the patron Core Module */
+    $Patron = \Framework\Core\Patron::getInstance();
+    if( self::$requiresLogin &amp;&amp; !$Patron-&gt;isLoggedIn() ){
+      /** The Event required the user to be logged in but they are not */
+      throw new \Framework\Exceptional\AdventException(
+        $this-&gt;exceptionMessage[self::excptAccessDenied],
+        self::eventLogin,
+        self::excptAccessDenied,
+        __FILE__,
+        __LINE__,
+        null
+      );
+    }
+    if( !self::$permissionGroup ){
+      /** No premission group required we are done */
+      return true;
+    }
+    if( !$Patron-&gt;checkGroup( self::$permissionGroup ) ){
+      /** The event required a permission group and the user does not have it */
+      throw new \Framework\Exceptional\AdventException(
+        $this-&gt;exceptionMessage[self::excptAccessDenied],
+        self::eventPermDenied,
+        self::excptAccessDenied,
+        __FILE__,
+        __LINE__,
+        null
+      );
+    }
+    if( !self::$permission ){
+      /** No permission required we are done */
+      return true;
+    }
+    if( !$Patron-&gt;checkPermission( self::$permission ) ){
+      /** The user does not have the required permission */
+      throw new \Framework\Exceptional\AdventException(
+        $this-&gt;exceptionMessage[self::excptAccessDenied],
+        self::eventPermDenied,
+        self::excptAccessDenied,
+        __FILE__,
+        __LINE__,
+        null
+      );
+    }
+    /** The user meets the requirements */
+    return true;
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /**                                        ASSET METHODS                                                */
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * This is an array struct of aset locations
+   * @var     [][][]    Array of sub arrays that contain all the paths
+   * @access  protected
+   */
+  protected $location  = [
+    self::application =&gt;  [ self::image =&gt; [], self::style =&gt; [], self::script =&gt; [] ],
+    self::framework =&gt;    [ self::image =&gt; [], self::style =&gt; [], self::script =&gt; [] ]
+  ];
+
+  /**
+   * Setup the asset location array
+   * @method  initalizeAssets
+   * @return  Setup all the locations for the assets
+   * @uses    Contour-&gt;webasset()
+   * @access  private
+   */
+  protected function initalizeAssets(){
+    $Contour = \Framework\Core\Contour::getInstance();
+    $this-&gt;location[ self::application ][ self::image ] = $Contour-&gt;webasset( 'images' );
+    $this-&gt;location[ self::application ][ self::style ] = $Contour-&gt;webasset( 'styles' );
+    $this-&gt;location[ self::application ][ self::script ] = $Contour-&gt;webasset( 'scripts' );
+    $this-&gt;location[ self::framework ][ self::image ] = &quot;WebAssets/Images/&quot;;
+    $this-&gt;location[ self::framework ][ self::style ] = &quot;WebAssets/Styles/&quot;;
+    $this-&gt;location[ self::framework ][ self::script ] = &quot;WebAssets/Scripts/&quot;;
+  }
+
+  /**
+   * Get the asset path with the system and type constants
+   * @method  assetPath
+   * @param   integar    $system
+   * @param   integar    $type
+   * @access  private
+   */
+  protected function assetPath( $system, $type  ){
+    if( $system === 2 ){
+      return &quot;&quot;;
+    }
+    return '//'.$this-&gt;host.'/'.$this-&gt;location[ $system ][ $type ];
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /**                            REQUESTED MODALS / CONTROLLERS / TEMPLATES                               */
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * These are the modals this page will use. Nothing needs to be done
+   * Beyond this to get them the framework will just do it for you
+   * @var     array       $modal
+   * @access  protected
+   */
+  protected $modal = [];
+
+  /**
+   * Controllers are more function intensive they are in charge of controlling
+   * groups of methods that logicly belong together
+   * @var     array      $controller
+   * @access  protected
+   */
+  protected $controller = [];
+
+  /**
+   * Templates are a snipet oh html that we break into parts then
+   * we transpose the data on top of the html and give it back
+   * @var     array       $modal
+   * @access  protected
+   */
+  protected $template = [];
+
+  /**
+   * Initalize all the needed modules
+   * @method  initalizeModules
+   * @return  void
+   * @access  protected
+   */
+  protected function initalizeModules(){
+    if( count( $this-&gt;modal ) &gt; 0) {
+      /** Setup the requested Modals for this event */
+      $this-&gt;setupModal();
+    }
+    if( count( $this-&gt;template ) &gt; 0 ){
+      /** Setup the requested Templates for this event */
+      $this-&gt;setupTemplate();
+    }
+    if( count( $this-&gt;controller ) &gt; 0 ){
+      /** Setup the requested Controllers for the event */
+      $this-&gt;setupController();
+    }
+  }
+
+  /**
+   * Setup requested modals in the modal collection for this event
+   * @method  setupModal
+   * @return  void
+   * @uses    \Framework\Core\Receptionist::modal()
+   * @access  protected
+   */
+  protected function setupModal(){
+    /** Use array map to iterate over the Modal array */
+    array_map(
+      function( $arguments ){
+        /** check how many dots */
+        $count = substr_count( $arguments, &quot;.&quot; );
+        switch( $count ){
+          case 1:
+            $isFramework = false;
+            list( $object, $selector ) = explode(&quot;.&quot;, $arguments );
+          break;
+          case 2:
+            list( $object, $selector, $isFramework ) = explode(&quot;.&quot;, $arguments );
+            $isFramework = (($isFramework=='true')?true:false);
+          break;
+        }
+        /** Use the object and slector to get the requested modal and add it to the array */
+        $this-&gt;modal[ $arguments ] = \Framework\Core\Receptionist::modal( $object, $isFramework );
+    }, array_keys( $this-&gt;modal ) );
+  }
+
+  /**
+   * Setup the requested template objects in the template collection for the event
+   * @modal   setupTemplate
+   * @return  void
+   * @access  protected
+   * @todo    Implement the template system
+   */
+  protected function setupTemplate(){
+
+
+  }
+
+  /**
+   * Setup requested controllers in the controller collection for this page event
+   * @method  setupController
+   * @return  void
+   * @uses    \Framework\Core\Receptionist::controller()
+   * @access  protected
+   */
+  protected function setupController()
+  {
+    /** Map out the array keys and loop through them */
+    array_map(
+      function( $arguments ){
+        /** Split the argument passed into object and selector */
+        list( $object, $selector ) = explode(&quot;.&quot;, $arguments );
+        /** Use the selector to determine if its a framework controller */
+        $isFramework = (( $selector !== &quot;Framework&quot; )? true : false );
+        /** Add the Controller to the array  */
+        $this-&gt;controller[ $arguments ] = \Framework\Core\Receptionist::controller( $object, $isFramework );
+      }, array_keys( $this-&gt;controller )
+    );
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /**                                     BUFFER RELATED METHODS                                          */
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * This is the size of the write buffer
+   * @var     string    $buffer
+   * @access  protected
+   */
+  protected $chunkSize;
+
+  /**
+   * This is the write buffer this will hold the page during the render process
+   * @var     string  $buffer
+   * @access  protected
+   */
+  protected $buffer;
+
+  /**
+   * Initalize the write buffer
+   * @method initalizeBuffer
+   * @return void
+   * @access protected
+   */
+  protected function initalizeBuffer(){
+    $this-&gt;clear();
+    $this-&gt;chunkSize = \Framework\Core\Contour::getInstance()-&gt;setting(&quot;chunk-size&quot;);
+  }
+
+  /**
+   * Cut the output into chunks and output each chunk this keeps apache from haveing to
+   * pole through slowly and greatly increases render speed
+   * @method  chunkRender
+   * @return  void
+   * @access  protected
+   */
+  protected function chunkRender(){
+    array_map(
+      function($chunk){
+        echo $chunk;
+      }, str_split( $this-&gt;buffer, $this-&gt;chunkSize )
+    );
+  }
+
+  /**
+   * Write to the page buffer
+   * @method  write
+   * @param   string  $content  Content to add to the page buffer
+   * @return  void
+   * @access  protected
+   */
+  public function write($content){
+    $this-&gt;buffer .= $content;
+  }
+
+  /**
+   * Get the buffer this is mainly for the token system
+   * @method  getBuffer
+   * @return  string
+   * @access  public
+   */
+  public function getBuffer(){
+    return $this-&gt;buffer;
+  }
+
+  /**
+   * Set the buffer to the new value this is mainly for the token system
+   * @method  setbuffer
+   * @param   string      $buffer
+   * @return  void
+   * @access  public
+   */
+  public function setbuffer($buffer){
+    $this-&gt;buffer = $buffer;
+  }
+
+  /**
+   * Clear the page buffer
+   * @method  clear
+   * @return  void
+   * @access  protected
+   */
+  protected function clear(){
+    unset($this-&gt;buffer);
+    $this-&gt;buffer = &quot;&quot;;
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

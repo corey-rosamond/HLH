@@ -1,0 +1,115 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+
+namespace Framework\Objectify;
+
+\Framework\_IncludeCorrect(FRAMEWORK_ROOT.&quot;Objectify&quot;.DSEP.&quot;Service&quot;.DSEP.&quot;ServiceToken.php&quot;);
+class EmailToken extends ServiceToken
+{
+  protected $_address;
+  protected $_port;
+  protected $_username;
+  protected $_password;
+  protected $_paramaters = ['address'=&gt;'Server Address','port'=&gt;'Server Port','username'=&gt;'Service Username','password'=&gt;'Service Password'];
+  public function __construct( $key, $name, $typeKey, $typeName, array $arguments = array() )
+  {
+    if( isset($arguments['address']) ){
+      $this-&gt;_address = $arguments['address'];
+    }
+    if( isset($arguments['port']) ){
+      $this-&gt;_port = $arguments['port'];
+    }
+    if( isset($arguments['username']) ){
+      $this-&gt;_username = $arguments['username'];
+    }
+    if( isset($arguments['password']) ){
+      $this-&gt;_password = $arguments['password'];
+    }
+    return parent::__construct( $key, $name, $typeKey, $typeName, $arguments );
+  }
+
+  public function address( $address = null )
+  {
+    if( !is_null( $address ) ){
+      $this-&gt;_address = $address;
+    }
+    return $this-&gt;_address;
+  }
+
+  public function port( $port = null )
+  {
+    if( !is_null( $port ) ){
+      $this-&gt;_port = $port;
+    }
+    return $this-&gt;_port;
+  }
+
+  public function username( $username = null )
+  {
+    if( !is_null( $username ) ){
+      $this-&gt;_username = $username;
+    }
+    return $this-&gt;_username;
+  }
+
+  public function password( $password = null )
+  {
+    if( !is_null( $password ) ){
+      $this-&gt;_password = $password;
+    }
+    return $this-&gt;_password;
+  }
+
+  public function __destruct()
+  {
+    unset( $this-&gt;_address );
+    unset( $this-&gt;_port );
+    unset( $this-&gt;_username );
+    unset( $this-&gt;_password );
+    return parent::__destruct();
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

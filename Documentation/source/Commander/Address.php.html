@@ -1,0 +1,216 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+
+namespace Framework\Commander;
+
+class Address extends \Framework\Support\Abstracts\Singleton
+{
+
+  private $_document;
+  private $_modal;
+
+  private $_apType  = &quot;box&quot;;
+  private $_asTitle = &quot;Shipping Address&quot;;
+  private $_abTitle = &quot;Shipping Address&quot;;
+  private $_asIcon  = &quot;fa fa-pencil&quot;;
+  private $_abIcon  = &quot;icon-paper-clip&quot;;
+  private $_asColor = &quot;red-sunglo&quot;;
+  private $_abColor = &quot;green-meadow&quot;;
+  private $_asId    = &quot;aShippingDt&quot;;
+  private $_abId    = &quot;aShippingDt&quot;;
+  private $_asEBid  = &quot;edit-shipping-address&quot;;
+  private $_asEPid  = &quot;edit-shipping-address-popup&quot;;
+  private $_aeSBid  = &quot;edit-shipping-address-save&quot;;
+
+
+  public static function construct()
+  {
+    $instance = self::getInstance();
+    $instance-&gt;_modal     = \Framework\Core\Receptionist::modal( &quot;Address&quot;, &quot;Holylandhealth&quot;, true );
+    $instance-&gt;_document  = \Framework\Core\Receptionist::controller( 'Document', true );
+    return $instance;
+  }
+
+  public function get( $key )
+  { return $this-&gt;_modal-&gt;get( $key ); }
+
+  public function makeAddress( $name, $lineOne, $lineTwo, $city, $state, $zip)
+  { return $this-&gt;_modal-&gt;makeAddress( $name, $lineOne, $lineTwo, $city, $state, $zip); }
+
+  public function billingPortlet( $key, $name )
+  {
+    return $this-&gt;_document-&gt;portlet(
+      $this-&gt;_apType,$this-&gt;_abColor,$this-&gt;_abIcon,$this-&gt;_abTitle,'',
+      $this-&gt;_document-&gt;datatable(
+        $this-&gt;_abId,[],$this-&gt;_datatableData($this-&gt;_modal-&gt;get($key),$name)
+      ),[],[],true
+    );
+  }
+
+  public function shippingPortlet( $key, $name, $enable = true )
+  {
+    $address  = $this-&gt;_modal-&gt;get( $key );
+    $tools    = [];
+    $actions  = [['name'=&gt;'button','text'=&gt;'Edit','button-class'=&gt;'btn btn-default btn-sm','button-id'=&gt;$this-&gt;_asEBid,'icon'=&gt;$this-&gt;_asIcon]];
+    $this-&gt;_document-&gt;makePopupForm(
+      $this-&gt;_asEBid,$this-&gt;_asEPid,$this-&gt;_aeSBid,$this-&gt;_editAddressJS(),
+      &quot;Edit {$this-&gt;_asTitle}&quot;,$this-&gt;_editAddressForm($address),$this-&gt;_asIcon
+    );
+    return $this-&gt;_document-&gt;portlet(
+      $this-&gt;_apType,$this-&gt;_asColor,$this-&gt;_asIcon,$this-&gt;_asTitle,'',
+      $this-&gt;_document-&gt;datatable(
+        $this-&gt;_asId,[],$this-&gt;_datatableData($this-&gt;_modal-&gt;get($key),$name)
+      ),$tools,$actions,true
+    );
+  }
+
+  private function _editAddressForm( $address )
+  {
+    return
+    &quot;&lt;form class=\&quot;form-inline\&quot;&gt;
+      &lt;input type=\&quot;hidden\&quot; id=\&quot;key\&quot; value=\&quot;{$address['key']}\&quot; /&gt;
+      &lt;table class=\&quot;table table-bordered table-striped\&quot;&gt;
+        &lt;tbody&gt;
+          &lt;tr&gt;
+            &lt;td style=\&quot;width:35%\&quot;&gt; Name &lt;/td&gt;
+            &lt;td style=\&quot;width:50%\&quot;&gt;{$address['name']}&lt;/td&gt;
+          &lt;/tr&gt;
+          &lt;tr&gt;
+            &lt;td style=\&quot;width:35%\&quot;&gt; Address Line One &lt;/td&gt;
+            &lt;td style=\&quot;width:50%\&quot;&gt;{$address['address-line-one']}&lt;/td&gt;
+          &lt;/tr&gt;
+          &lt;tr&gt;
+            &lt;td style=\&quot;width:35%\&quot;&gt; Address Line Two &lt;/td&gt;
+            &lt;td style=\&quot;width:50%\&quot;&gt;{$address['address-line-two']}&lt;/td&gt;
+          &lt;/tr&gt;
+          &lt;tr&gt;
+            &lt;td style=\&quot;width:35%\&quot;&gt; City &lt;/td&gt;
+            &lt;td style=\&quot;width:50%\&quot;&gt;{$address['city']}&lt;/td&gt;
+          &lt;/tr&gt;
+          &lt;tr&gt;
+            &lt;td style=\&quot;width:35%\&quot;&gt; State &lt;/td&gt;
+            &lt;td style=\&quot;width:50%\&quot;&gt;{$address['state']}&lt;/td&gt;
+          &lt;/tr&gt;
+          &lt;tr&gt;
+            &lt;td style=\&quot;width:35%\&quot;&gt; Zip &lt;/td&gt;
+            &lt;td style=\&quot;width:50%\&quot;&gt;{$address['zip']}&lt;/td&gt;
+          &lt;/tr&gt;
+        &lt;/tbody&gt;
+      &lt;/table&gt;
+    &lt;/form&gt;&quot;;
+  }
+
+  private function _editAddressJS()
+  {
+    return &quot;alert(\&quot;save clicked\&quot;);&quot;;
+  }
+
+  private function _datatableData( $address, $name )
+  {
+    $data = [];
+    $data[] = [ '&lt;strong&gt;Name&lt;/strong&gt;',   (($address['name']==&quot;&quot;)?$name:$address['name']) ];
+    $data[] = [ '&lt;strong&gt;Address&lt;/strong&gt;',$address['address-line-one'] ];
+    if( $address['address-line-two'] != &quot;&quot; ){ $data[] = [ '&lt;strong&gt;Address Two&lt;/strong&gt;', $address['address-line-two'] ]; }
+    $data[] = [ '&lt;strong&gt;City&lt;/strong&gt;',   $address['city'] ];
+    $data[] = [ '&lt;strong&gt;State&lt;/strong&gt;',  $this-&gt;_states[ltrim(rtrim(strtoupper($address['state'])))]];
+    $data[] = [ '&lt;strong&gt;Zip&lt;/strong&gt;',    $address['zip'] ];
+    return $data;
+  }
+
+  private $_states = array(
+    &quot;AL&quot; =&gt; &quot;Alabama&quot;,
+    &quot;AK&quot; =&gt; &quot;Alaska&quot;,
+    &quot;AZ&quot; =&gt; &quot;Arizona&quot;,
+    &quot;AR&quot; =&gt; &quot;Arkansas&quot;,
+    &quot;CA&quot; =&gt; &quot;California&quot;,
+    &quot;CO&quot; =&gt; &quot;Colorado&quot;,
+    &quot;CT&quot; =&gt; &quot;Connecticut&quot;,
+    &quot;DE&quot; =&gt; &quot;Delaware&quot;,
+    &quot;FL&quot; =&gt; &quot;Florida&quot;,
+    &quot;GA&quot; =&gt; &quot;Georgia&quot;,
+    &quot;HI&quot; =&gt; &quot;Hawaii&quot;,
+    &quot;ID&quot; =&gt; &quot;Idaho&quot;,
+    &quot;IL&quot; =&gt; &quot;Illinois&quot;,
+    &quot;IN&quot; =&gt; &quot;Indiana&quot;,
+    &quot;IA&quot; =&gt; &quot;Iowa&quot;,
+    &quot;KS&quot; =&gt; &quot;Kansas&quot;,
+    &quot;KY&quot; =&gt; &quot;Kentucky&quot;,
+    &quot;LA&quot; =&gt; &quot;Louisiana&quot;,
+    &quot;ME&quot; =&gt; &quot;Maine&quot;,
+    &quot;MD&quot; =&gt; &quot;Maryland&quot;,
+    &quot;MA&quot; =&gt; &quot;Massachusetts&quot;,
+    &quot;MI&quot; =&gt; &quot;Michigan&quot;,
+    &quot;MN&quot; =&gt; &quot;Minnesota&quot;,
+    &quot;MS&quot; =&gt; &quot;Mississippi&quot;,
+    &quot;MO&quot; =&gt; &quot;Missouri&quot;,
+    &quot;MT&quot; =&gt; &quot;Montana&quot;,
+    &quot;NE&quot; =&gt; &quot;Nebraska&quot;,
+    &quot;NV&quot; =&gt; &quot;Nevada&quot;,
+    &quot;NH&quot; =&gt; &quot;New Hampshire&quot;,
+    &quot;NJ&quot; =&gt; &quot;New Jersey&quot;,
+    &quot;NM&quot; =&gt; &quot;New Mexico&quot;,
+    &quot;NY&quot; =&gt; &quot;New York&quot;,
+    &quot;NC&quot; =&gt; &quot;North Carolina&quot;,
+    &quot;ND&quot; =&gt; &quot;North Dakota&quot;,
+    &quot;OH&quot; =&gt; &quot;Ohio State&quot;,
+    &quot;OK&quot; =&gt; &quot;Oklahoma&quot;,
+    &quot;OR&quot; =&gt; &quot;Oregon&quot;,
+    &quot;PA&quot; =&gt; &quot;Pennsylvania&quot;,
+    &quot;RI&quot; =&gt; &quot;Rhode Island&quot;,
+    &quot;SC&quot; =&gt; &quot;South Carolina&quot;,
+    &quot;SD&quot; =&gt; &quot;South Dakota&quot;,
+    &quot;TN&quot; =&gt; &quot;Tennessee&quot;,
+    &quot;TX&quot; =&gt; &quot;Texas&quot;,
+    &quot;UT&quot; =&gt; &quot;Utah&quot;,
+    &quot;VT&quot; =&gt; &quot;Vermont&quot;,
+    &quot;VA&quot; =&gt; &quot;Virginia&quot;,
+    &quot;WA&quot; =&gt; &quot;Washington&quot;,
+    &quot;WV&quot; =&gt; &quot;West Virginia&quot;,
+    &quot;WI&quot; =&gt; &quot;Wisconsin&quot;,
+    &quot;WY&quot; =&gt; &quot;Wyoming&quot;
+  );
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

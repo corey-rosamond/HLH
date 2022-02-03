@@ -1,0 +1,252 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * Tracking
+ *
+ * @package Framework\Modulus\Model
+ * @version 1.0.0
+ */
+namespace Framework\Modulus\Modal;
+
+/**
+ * Tracking
+ *
+ * This is the main interface for tracking records
+ */
+class Tracking extends \Framework\Modulus\Query
+{
+  /** SESSIONS */
+  private $_sTable  = &quot;funnel-sessions&quot;;
+  private $_stKey   = &quot;key&quot;;
+  /** VIEWS */
+  private $_vTable  = &quot;funnel-session-views&quot;;
+  private $_vtKey   = &quot;key&quot;;
+  private $_vptKey  = &quot;funnel-page-key&quot;;
+  private $_vstKey  = &quot;funnel-session-key&quot;;
+  /** PAGES */
+  private $_pTable  = &quot;funnel-pages&quot;;
+  private $_ptKey   = &quot;key&quot;;
+  /** EMAIL LINKS */
+  private $_elTable  = &quot;mediabuy-email-links&quot;;
+  private $_eltKey   = &quot;key&quot;;
+
+  public function session( $key )
+  {
+    $query = &quot;SELECT `key`, INET6_NTOA(`ip-address`) as `ip-address`, `campaign-key`, `time-stamp`, `funnel-key`
+      FROM `{$this-&gt;_sTable}` WHERE `{$this-&gt;_stKey}`=:key&quot;;
+    $preparedStatement = $this-&gt;Prepare( $query );
+    $preparedStatement-&gt;bindValue(':key', $key, \PDO::PARAM_INT);
+    $preparedStatement = $this-&gt;Execute( $preparedStatement );
+    if($preparedStatement-&gt;rowCount() == 0){
+      return 0;
+    }
+    return $preparedStatement-&gt;fetch( \PDO::FETCH_ASSOC );
+  }
+
+  public function link( $key )
+  {
+    $query =
+    &quot;SELECT * FROM `{$this-&gt;_elTable}` WHERE `{$this-&gt;_eltKey}`=:key&quot;;
+    $preparedStatement = $this-&gt;Prepare( $query );
+    $preparedStatement-&gt;bindValue(':key', $key, \PDO::PARAM_INT);
+    $preparedStatement = $this-&gt;Execute( $preparedStatement );
+    if($preparedStatement-&gt;rowCount() == 0){
+      return 0;
+    }
+    return $preparedStatement-&gt;fetch( \PDO::FETCH_ASSOC );
+  }
+
+  /**
+   * Page views for a specific session key
+   * @method  viewsForSession
+   * @param   int     $key    The session-key for the order we want to access
+   * @return  array           Array of page views of the submited session-key
+   * @access  public
+   */
+  public function viewsForSession( $key )
+  {
+    $query =
+    &quot;SELECT
+      `{$this-&gt;_vTable}`.`time-stamp` as `timestamp`,
+      `{$this-&gt;_pTable}`.`name` as `page-name`,
+      'placeholder' as `time-on-page`
+    FROM `{$this-&gt;_vTable}`
+    LEFT JOIN `{$this-&gt;_pTable}`
+      ON `{$this-&gt;_vTable}`.`{$this-&gt;_vptKey}` = `{$this-&gt;_pTable}`.`{$this-&gt;_ptKey}`
+      WHERE `{$this-&gt;_vstKey}` = :key
+      ORDER BY `{$this-&gt;_vTable}`.`time-stamp` desc&quot;;
+    $preparedStatement = $this-&gt;Prepare( $query );
+    $preparedStatement-&gt;bindValue(':key', $key, \PDO::PARAM_INT);
+    $preparedStatement = $this-&gt;Execute( $preparedStatement );
+    if($preparedStatement-&gt;rowCount() == 0){
+      return [];
+    }
+    return $preparedStatement-&gt;fetchAll( \PDO::FETCH_ASSOC );
+  }
+
+  /**
+   * Count of total page views for a specific session
+   * @method  viewCountForSession
+   * @param   int     $key  The session-key for the order we want to access
+   * @return  int           integer representation of total page vies for the submitted session-key
+   * @access  public
+   */
+  public function viewCountForSession( $key )
+  {
+    $query = &quot;SELECT count(`{$this-&gt;_vtKey}`) AS `total` FROM `{$this-&gt;_vTable}` WHERE `{$this-&gt;_vstKey}`=:key&quot;;
+    $preparedStatement = $this-&gt;Prepare( $query );
+    $preparedStatement-&gt;bindValue(':key', $key, \PDO::PARAM_INT);
+    $preparedStatement = $this-&gt;Execute( $preparedStatement );
+    if($preparedStatement-&gt;rowCount() == 0){
+      return 0;
+    }
+    $resource = $preparedStatement-&gt;fetch( \PDO::FETCH_ASSOC );
+    return $resource['total'];
+  }
+
+  /**
+   * Get the uncompacted version of the ip address for the submitted session key
+   * @method  getVisitorIpAddress
+   * @param   int     $key  The session-key for the order we want to access
+   * @return  string        Ip address string for this session-key
+   * @access  public
+   */
+  public function getVisitorIpAddress( $key )
+  {
+    $query = &quot;SELECT INET6_NTOA(`ip-address`) as `ip-address` FROM `{$this-&gt;_sTable}` WHERE `{$this-&gt;_stKey}`=:key&quot;;
+    $preparedStatement = $this-&gt;Prepare( $query );
+    $preparedStatement-&gt;bindValue(':key', $key, \PDO::PARAM_INT);
+    $preparedStatement = $this-&gt;Execute( $preparedStatement );
+    if($preparedStatement-&gt;rowCount() == 0){
+      return 0;
+    }
+    $resource = $preparedStatement-&gt;fetch( \PDO::FETCH_ASSOC );
+    return $resource['ip-address'];
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /**                                        CONVERT TO NEW FORMAT                                        */
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /**
+   * Make a session in the funnel-sessions table
+   * @method  makeSession
+   * @param   string      $ipAddress
+   * @param   int         $campaignKey
+   * @return  boolean
+   */
+  public function makeSession( $ipAddress, $campaignKey )
+  {
+    $query = 'INSERT INTO `funnel-sessions` ( `ip-address`, `campaign-key` ) VALUES ( :ipAddress, :campaignKey )';
+    $preparedStatement = $this-&gt;Prepare( $query );
+    $preparedStatement-&gt;bindValue( ':ipAddress', $ipAddress, \PDO::PARAM_INT );
+    $preparedStatement-&gt;bindValue( ':campaignKey', $campaignKey, \PDO::PARAM_INT );
+    return $this-&gt;Execute( $preparedStatement );
+  }
+
+  /**
+   * @method getLinkImpressions
+   * @param  int             $key linkKey
+   * @return int                  total impressions
+   */
+  public function getLinkImpressions( $key )
+  {
+    $query = 'SELECT count(`key`) as `total` FROM `funnel-sessions` WHERE `campaign-key`=:key';
+    $preparedStatement = $this-&gt;Prepare($query);
+    $preparedStatement-&gt;bindValue(':key', $key, \PDO::PARAM_INT);
+    $preparedStatement = $this-&gt;Execute($preparedStatement);
+    if ($preparedStatement-&gt;rowCount() == 0) {return 0;}
+    $resource = $preparedStatement-&gt;fetch(\PDO::FETCH_ASSOC);
+    return $resource['total'];
+  }
+
+
+  public function getPageImpressions($key)
+  {
+    $query = '
+      select
+        `funnel-page-key`,
+        count(`fsv`.`key`) as `impressions`
+      FROM `funnel-sessions` as `fs`
+      LEFT JOIN `funnel-session-views` as `fsv`
+      ON `fs`.`key`=`fsv`.`funnel-session-key`
+      WHERE `fs`.`campaign-key` = :key
+      GROUP BY `fsv`.`funnel-page-key`';
+    $preparedStatement = $this-&gt;Prepare($query);
+    $preparedStatement-&gt;bindValue(':key', $key, \PDO::PARAM_INT);
+    $preparedStatement = $this-&gt;Execute($preparedStatement);
+    if ($preparedStatement-&gt;rowCount() == 0) {return 0;}
+    return $preparedStatement-&gt;fetchAll(\PDO::FETCH_ASSOC);
+  }
+
+  public function getPageTypes()
+  {
+    $query = 'SELECT `key`,`name` FROM `funnel-pages`';
+    $preparedStatement = $this-&gt;Prepare($query);
+    $preparedStatement = $this-&gt;Execute($preparedStatement);
+    if ($preparedStatement-&gt;rowCount() == 0) {return 0;}
+    return $preparedStatement-&gt;fetchAll(\PDO::FETCH_ASSOC);
+  }
+
+
+  public function getImpressionsByPageAndCampaign( $page, $link )
+  {
+    $query = '
+        select DISTINCT count( `fsv`.`key` ) as `impressions`
+        FROM `funnel-sessions` as `fs`
+        LEFT JOIN `funnel-session-views` as `fsv`
+        ON `fs`.`key`=`fsv`.`funnel-session-key`
+        WHERE `fs`.`campaign-key` = :link
+        AND `fsv`.`funnel-page-key`=:page';
+      $preparedStatement = $this-&gt;Prepare($query);
+      $preparedStatement-&gt;bindValue(':page', $page, \PDO::PARAM_INT);
+      $preparedStatement-&gt;bindValue(':link', $link, \PDO::PARAM_INT);
+      $preparedStatement = $this-&gt;Execute($preparedStatement);
+      if ($preparedStatement-&gt;rowCount() == 0) {return 0;}
+      $resource = $preparedStatement-&gt;fetch(\PDO::FETCH_ASSOC);
+      return $resource['impressions'];
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

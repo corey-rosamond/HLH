@@ -1,0 +1,100 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * CronLog
+ *
+ * @package App\Event\Page\Main
+ * @version 1.2.0
+ */
+namespace App\Event\Page\Technical\CronTab;
+
+/**
+ * CronLog
+ *
+ * This is the cronlog
+ */
+class CronLog extends \App\Abstracts\Page
+{
+  /****************************************************/
+  /*                  PAGE SETTINGS                   */
+  /****************************************************/
+  /** @var string $documentTitle */
+  protected $documentTitle = &quot;Funnel: Click Through Rate&quot;;
+  /** @var array $pageHeader The header for this page */
+  protected $pageHeader = &quot;Click Through Rate: &quot;;
+  /** @var array $scripts Array of script files we need framework to include */
+  protected $_pageScripts = [];
+  /****************************************************/
+  /*               REQUIRED CONTROLLERS               */
+  /****************************************************/
+
+  /**
+   * This will build the body of the document out the rest of the sections of the
+   * page will be handled by the Application\Page abstract or by the
+   * Advent\Page Abstract
+   * @method  body
+   * @param   array $parameters This is an optional array of paramtars that can be passed
+   * @return  string                The html needed to render the body for this page
+   * @access  public
+   */
+  public function Body(array $parameters = array() )
+  {
+    $CronTab  = $this-&gt;receptionist(self::oTypeController, 'CronTab');
+    $this-&gt;_cDocument-&gt;addTab(&quot;CronTab&quot;, $CronTab-&gt;cronTabDatatable(), false, false, true);
+    $this-&gt;_cDocument-&gt;addTab(&quot;CronLog&quot;, $CronTab-&gt;cronLogDatatable(), false, false, false);
+    return $this-&gt;_cDocument-&gt;portlet(
+        &quot;light portlet-fit portlet-datatable bordered font-dark&quot;,
+        '',
+        'fa fa-hourglass',
+        &quot;Docket &lt;span style=\&quot;font-weight:normal;margin-left:10px;\&quot;&gt;{$CronTab-&gt;docketState()}{$CronTab-&gt;docketStatus()}{$CronTab-&gt;docketLastRun()}&lt;/span&gt;&quot;,
+        '',
+        $this-&gt;_cDocument-&gt;renderTabSystem(),
+        [],
+        []
+      );
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,117 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * ThankYou
+ *
+ * @package App\Event
+ * @version 1.2.0
+ */
+namespace App\Event;
+
+/**
+ * ThankYou
+ *
+ * This is the ThankYou
+ */
+class ThankYou extends \App\Abstracts\Event
+{
+  /** @var int $_eventType */
+  protected $_eventType = self::thankYou;
+  /** @var \Framework\Core\Euri $_coreEuri */
+  protected $_coreEuri;
+  /** @var \Framework\Core\Admit $_coreAdmit */
+  protected $_coreAdmit;
+  /** @var \Framework\Core\Contour $_coreContour */
+  protected $_coreContour;
+  /** @var \Framework\Commander\Tracking $_cTracking */
+  protected $_cTracking;
+  /** @var \App\System $_cSystem */
+  protected $_cSystem;
+  /** @var \Framework\Commander\Funnel $_cFunnel */
+  protected $_cFunnel;
+
+  /**
+   * ThankYou constructor.
+   * @method __construct
+   * @param $system
+   */
+  public function __construct($system)
+  {
+    /** @var \App\System _cSystem */
+    $this-&gt;_cSystem = $system;
+    /** @var \Framework\Core\Euri _coreEuri */
+    $this-&gt;_coreEuri = $system-&gt;_coreEuri;
+    /** @var \Framework\Core\Admit _coreAdmit */
+    $this-&gt;_coreAdmit = $system-&gt;_coreAdmit;
+    /** @var \Framework\Core\Admit _coreContour */
+    $this-&gt;_coreContour = $system-&gt;_coreContour;
+    /** @var \Framework\Commander\Tracking _cTracking */
+    $this-&gt;_cTracking = $system-&gt;_cTracking;
+    /** Return whatever the page abstract gives us back */
+    return parent::__construct($system);
+  }
+
+  /**
+   * Run the event
+   * @method run
+   */
+  public function run()
+  {
+    $this-&gt;_dOrder = $this-&gt;_cFunnel-&gt;order();
+    if(!isset($this-&gt;_dOrder['customer-key'])){
+      $this-&gt;_redirectTo(self::typePage, self::checkout);
+    }
+    /** Run pre Qualify this will make sure we end up where we need to be */
+    $outcome = $this-&gt;_cFunnel-&gt;closeoutOrder();
+    /** if it worked send them to the thank you page */
+    if($outcome){
+      $this-&gt;_completeAndMove(self::successNext);
+      exit();
+    }
+    $this-&gt;_completeAndMove(self::failureNext);
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,137 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * MediaBuyEmailLink
+ *
+ * @package Framework\Modulus\Datatable
+ * @version 1.0.0
+ */
+namespace Framework\Modulus\Datatable;
+
+/**
+ * MediaBuyEmailLink
+ *
+ * This is the prototype datatable master object for the tracking system
+ * It will help me learn the cause of my tracking anomaly
+ */
+class MediaBuyEmailLink extends \Framework\Modulus\Datatable
+{
+  /** @var array $_columnDefinitions */
+  protected $_columnDefinitions = [
+    [&quot;label&quot;=&gt;&quot;Link #&quot;,         &quot;style&quot;=&gt;&quot;text-align:center;&quot;,          &quot;order&quot;=&gt;true],
+    [&quot;label&quot;=&gt;&quot;Name&quot;,           &quot;style&quot;=&gt;&quot;text-align:center;&quot;,          &quot;order&quot;=&gt;true],
+    [&quot;label&quot;=&gt;&quot;Promoter&quot;,       &quot;style&quot;=&gt;&quot;&quot;,                            &quot;order&quot;=&gt;true],
+    [&quot;label&quot;=&gt;&quot;Funnel&quot;,         &quot;style&quot;=&gt;&quot;&quot;,                            &quot;order&quot;=&gt;true],
+    [&quot;label&quot;=&gt;&quot;Start Date&quot;,     &quot;style&quot;=&gt;&quot;text-align:right;&quot;,           &quot;order&quot;=&gt;true],
+    [&quot;label&quot;=&gt;&quot;End Date&quot;,       &quot;style&quot;=&gt;&quot;text-align:right;&quot;,           &quot;order&quot;=&gt;true],
+    [&quot;label&quot;=&gt;&quot;Cost&quot;,           &quot;style&quot;=&gt;&quot;text-align:right;&quot;,           &quot;order&quot;=&gt;true],
+    [&quot;label&quot;=&gt;&quot;Expected Yield&quot;, &quot;style&quot;=&gt;&quot;width:20%;text-align:right;&quot;, &quot;order&quot;=&gt;true]
+  ];
+  /** @var array $_columnFilters This is an array of defined filters for this datatable */
+  protected $_columnFilters = [
+    false,
+    [
+      'type'=&gt;self::searchFilter,
+      'id'=&gt;'',
+      'name'=&gt;'',
+      'placeholder'=&gt;'',
+      'filter-name'=&gt;'',
+      'filter-type'=&gt;''
+    ],
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+  ];
+  /** @var array $_defaultFilterValues The default filter values */
+  protected $_defaultFilterValues = [];
+  /** @var int $_resultLimit The limit for queries */
+  protected $_resultLimit = 50;
+
+  /**
+   * The inital query for the datatable
+   * @method _initialQuery
+   * @return array
+   * @throws \Framework\Exceptional\PDOdatabasesException
+   */
+  protected function _initialQuery()
+  {
+    $query = &quot;
+      select
+       `mel`.`key`,
+       `mel`.`name` as `link-name`,
+       `mp`.`name` as `promoter-name`,
+       `f`.`name` as `funnel-name`,
+       `mel`.`start-date`,
+       `mel`.`end-date`,
+       `mel`.`cost`,
+       `mel`.`expected-return`
+      FROM `mediabuy-email-links` as `mel`
+      LEFT JOIN `mediabuy-promoters` as `mp`
+      ON `mel`.`promoter-key` = `mp`.`key`
+      LEFT JOIN `funnels` as `f`
+      ON `mel`.`funnel-key` = `f`.`key`
+      ORDER BY `mel`.`name` DESC
+      {$this-&gt;_limit()}
+    &quot;;
+    $statement = $this-&gt;_prepare($query);
+    $statement = $this-&gt;_execute($statement);
+    return $statement-&gt;fetchAll(\PDO::FETCH_ASSOC);
+  }
+
+  /**
+   * Format row data
+   * @method _rowFormatter
+   * @param $row
+   * @return mixed
+   */
+  protected function _rowFormatter($row)
+  {
+    return $row;
+  }
+}</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

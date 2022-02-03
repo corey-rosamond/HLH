@@ -1,0 +1,113 @@
+{
+  "hosts":{
+    "administration.ones-n-zeros.com":{
+      "settings":{"mode":1,"entry":"System","directory":"Administration","site":"administration.ones-n-zeros.com","chunk-size":4096},
+      "locations":{"event":"%APP%Event/","request":"%APP%Event/Request","modal":"%APPR%common/Modal/","crontab":"%APPR%common/Cron/","controller":"%APPR%common/Controller/"},
+      "web-assets":{"images-remote":false,"images-directory":"Assets/Images/","images-location":"//s3-us-west-1.amazonaws.com/hlhadminresources/","styles-remote":false,"styles-directory":"Assets/Styles/","styles-location":"//s3-us-west-1.amazonaws.com/hlhadminresources/","scripts-remote":false,"scripts-directory":"Assets/Scripts/","scripts-location":"//s3-us-west-1.amazonaws.com/hlhadminresources/","plugins-remote":false,"plugins-directory":"Assets/Plugins/","plugins-location":"//s3-us-west-1.amazonaws.com/hlhadminresources/"},
+      "events":{
+        "entry":"Page\\Main\\Dashboard\\Dashboard",
+        "error":"Page\\Main\\NotFound",
+        "not-found":"Page\\Main\\NotFound",
+        "login":"Page\\Main\\User\\Login",
+        "logout":"Page\\Main\\User\\Logout",
+        "permission-denied":"Page\\Main\\User\\PermissionDenied"},
+      "navigation":{
+        "Home": {
+          "event-space": "Main", "permission": false,
+          "sections": [{
+              "header": "Dashboard", "event-space": "Dashboard", "icon": "icon-home",
+              "menu":[
+                { "icon":   "icon-home",        "text": "Dashboard",      "destination": "/Main/Dashboard/Dashboard" }
+              ]
+            },{
+              "header": "Knowledge base", "event-space": "KnowledgeBase", "icon": "icon-note",
+              "menu": [
+                { "icon":   "icon-home",        "text": "Dashboard",      "destination": "/Main/Dashboard/Dashboard" }
+              ]
+            }, {
+              "header": "Help Desk", "event-space": "HelpDesk", "icon": "fa fa-users",
+              "menu": [
+                { "icon":   "icon-home",        "text": "Dashboard",      "destination": "/Main/Dashboard/Dashboard" }
+              ]
+            }, {
+              "header": "User", "event-space": "User", "icon": "icon-user",
+              "menu": [
+                { "icon":   "icon-user",        "text": "My Profile",     "destination": "/Main/User/MyProfile" }
+              ]
+            }
+          ]
+        },
+        "Customer Relations": { "event-space": "CustomerRelations", "permission": "customer-relations",
+          "sections":[ {
+              "header": "Orders", "event-space": "Orders", "icon": "icon-home",
+              "menu":[
+                { "icon":   "icon-home",        "text": "Dashboard",      "destination": "/CustomerRelations/Orders/Dashboard"  },
+                { "icon":   "fa fa-cogs",       "text": "Order List",     "destination":  "/CustomerRelations/Orders/OrderList" }
+              ]
+            }, {
+              "header": "Tickets", "event-space": "Tickets", "icon": "fa fa-users",
+              "menu":[
+                { "icon":   "icon-home",        "text": "Dashboard",      "destination":  "/CustomerRelations/Tickets/Dashboard" },
+                { "icon":   "fa fa-cogs",       "text": "Ticket List",    "destination":  "/CustomerRelations/Tickets/List" }
+              ]
+            }
+          ]
+        },
+        "Reports": { "event-space": "Reports", "permission": "reports",
+          "sections": [ {
+              "header": "Link Reports", "event-space": "LinkSystem", "icon": "fa fa-users",
+              "menu":[
+                { "icon": "fa fa-line-chart",   "text": "Link Breakdown", "destination": "/Reports/LinkSystem/LinkBreakdown" }
+              ]
+            }, {
+              "header": "Funnel", "event-space": "Funnel", "icon": "fa fa-users",
+              "menu":[
+                { "icon": "fa fa-line-chart",   "text": "Click Through Rate", "destination": "/Reports/Funnel/ClickThroughRate" }
+              ]
+            }, {
+            "header": "Tracking", "event-space": "Tracking", "icon": "fa fa-users",
+            "menu":[
+              { "icon": "fa fa-line-chart",   "text": "Sessions", "destination": "/Reports/Tracking/Sessions" }
+            ]
+          }
+          ]
+        },
+        "Management": { "event-space": "Management", "permission": "management",
+          "sections": [ {
+              "header": "User System", "event-space": "Users", "icon": "fa fa-users",
+              "menu": [
+                { "icon": "fa fa-cogs", "text": "Manage Users", "destination": "/Management/Users/Manage" }
+              ]
+            }, {
+              "header": "MediaBuy System", "event-space":  "MediaBuy", "icon": "fa fa-university",
+              "menu": [
+                { "icon":   "fa fa-link",       "text": "Email Links",  "destination": "/Management/MediaBuy/EmailLinks" }
+              ]
+            }, {
+              "header": "Configuration", "event-space":  "Configuration", "icon": "fa fa-university",
+              "menu": [
+                { "icon":   "fa fa-link",       "text": "Products",    "destination": "/Management/Configuration/Products" }
+              ]
+            }
+          ]
+        },
+        "Technical":{"event-space":"Technical","permission":"management",
+          "sections":[{"header":"Home","event-space":"home","icon":"icon-home","menu":[
+
+          ]},{"header":"Cron Tab","event-space":"CronTab","icon":"fa fa-hourglass","menu":[
+            {"icon":"fa fa-hourglass","text":"Cronlog","destination":"/Technical/CronTab/CronLog"}
+          ]},{"header":"Server Log","event-space":"ServerLog","icon":"fa fa-university","menu":[
+            {"icon":"fa fa-link","text":"Framework","destination":"/Technical/ServerLog/Framework"}
+          ]}
+        ]}
+      },
+      "patron":{
+         "permissions":{
+            "roles":{"executive":false,"owner":false,"developer":false,"affiliate":false,"customer-service":false},
+            "development":{"view-server-logs":false,"view-revision-logs":false,"view-server-monitor":false,"push-to-live":false},
+            "user-system":{"add-users":false,"edit-users":false,"view-users":false,"deactivate-user":false,"view-user-log":false}
+         }, "password-requirements":{"minimum-capital":1,"minimum-numbers":1,"minimum-symbols":1,"minimum-length":8 }
+      }
+    }
+  }
+}

@@ -1,0 +1,12 @@
+.page-header-inner .page-logo{
+  display: block;
+  float: left;
+  height: 46px;
+  padding-left: 20px;
+  padding-right: 20px;
+  width: 235px;
+}
+.page-header-inner .hor-menu{
+  float: left;
+  margin: 0;
+}

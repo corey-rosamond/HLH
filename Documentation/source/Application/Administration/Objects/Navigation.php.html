@@ -1,0 +1,356 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * Navigation
+ *
+ * @package App\Objects
+ * @version 1.0.0
+ */
+namespace App\Objects;
+
+/**
+ * Navigation
+ *
+ * This builds both the top and side navigation elements
+ */
+class Navigation
+{
+
+  /**
+   * This is the full menu system for admin pulled from Contour
+   * @var     array     $menu
+   * @access  private
+   */
+  private $menu;
+
+  /**
+   * This is the event data which will be pulled from advent
+   * @var     array     $event
+   * @access  private
+   */
+  private $event;
+
+  /**
+   * This is the active or currently selected section
+   * @var     array     $selectedSection
+   * @access  private
+   */
+  private $selectedSection;
+
+  /**
+   * This is the active section group for the left side bar
+   * @var     array     $selectedGroup
+   * @access  private
+   */
+  private $selectedGroup;
+
+  /**
+   * This is the active sections left side bar menu data
+   * @var     array     $sectionMenu
+   * @access  private
+   */
+  private $sectionMenu;
+
+  /**
+   * Construct the navigation object and the event object
+   * Set the selected section and group
+   * @method  __construct
+   * @return  Navigation
+   * @uses    \Framework\Core\Contour::getInstance()
+   * @uses    \Framework\Core\Contour-&gt;navigation()
+   * @uses    \Framework\Core\Advent-&gt;getInstance()
+   * @uses    \Framework\Core\Advent-&gt;getEvent()
+   * @access  public
+   */
+  public function __construct()
+  {
+    /** @var array $menu Get the menu object from contour */
+    $this-&gt;menu = \Framework\Core\Contour::getInstance()-&gt;navigation();
+    /** @var array $event Get the event object from advent */
+    $this-&gt;event = \Framework\Core\Advent::getInstance()-&gt;activeEvent();
+    /** @var string $selectedSection The selected section of the menu */
+    $this-&gt;selectedSection = $this-&gt;event[0];
+    /** @var string $selectedGroup The section group currently selected */
+    $this-&gt;selectedGroup = $this-&gt;event[1];
+    /** @var string Name of the selected section Element */
+    $this-&gt;selectedSectionElement = $this-&gt;event[2];
+    /** @var string $sectionMenu The menu to show in the SideNavigation */
+    $this-&gt;sectionMenu = $this-&gt;findSection( $this-&gt;selectedSection );
+    /** Return the navigation Object */
+    return $this;
+  }
+
+  /**
+   * Find the section to use for the sideNavigation
+   * @param   string $section  This is the section we are looking for
+   * @return  array            The section of the menu we want to output in the sidebar
+   * @access  private
+   */
+  private function findSection( $selectedSection )
+  {
+    /** Map ourselves throught the navigation array */
+    array_map(
+      /** Iterate over the groups use the navigation variable to write to */
+      function( $section ) use ( &amp;$selectedSection ){
+        if( $section['event-space'] === $selectedSection ){
+          $selectedSection = $section['sections'];
+        }
+      }, $this-&gt;menu 
+    );
+    return $selectedSection;
+  }
+
+  /**
+   * TopNavigation
+   * @method  TopNavigation
+   * @return  string
+   * @access  public
+   */
+  public function topNavigation()
+  {
+    /** @var string $navigation We are going to push all the html into navigation */
+    $navigation = &quot;&quot;;
+    /** Map our way throuogh the navigation structure */
+    array_map( 
+      /** The section is the title attributes is The attributes */
+      function( $section, $attributes ) use (&amp;$navigation){
+        /** Check that the user has the needed permission sto view this section */
+        if( self::canDisplayMenu( $attributes ) ){
+          /** @var MegaMenu $MegaMenu Make our mega menu object */
+          $MegaMenu = ( new \App\Objects\MegaMenu() )
+            -&gt;setTitle( $section )
+            -&gt;setIndex( $section );
+          /** Check if this is the active event */
+          if( $attributes['event-space'] == $this-&gt;selectedSection ){ 
+            /** This is the active mega menu mark it */
+            $MegaMenu-&gt;makeActive(); 
+          }
+          /** Map our way through the sections */
+          array_map(
+            /** Get each section */
+            function( $section ) use ( &amp;$navigation, &amp;$MegaMenu ){
+              /** Add sections to the mega menu */
+              $MegaMenu-&gt;addSection( $section['header'], $section['menu'] );
+              /** Add the mega menu to the navigation  */
+            }, $attributes['sections']
+          );
+          /** Complete the mega menu */
+          $navigation .= $MegaMenu-&gt;make();
+        }
+      }, array_keys( $this-&gt;menu ), $this-&gt;menu
+    );
+    /** Return the top navigation in its wrapper */
+    return $this-&gt;TopNavigationWrap( $navigation );
+  }
+
+  /**
+   * The wrapper for the top navigation area
+   * @method  TopNavigationWrap
+   * @param   string $navigation This is the html for the top navigation
+   * @return  string The top navigation html in the wrapper
+   * @access  private
+   */
+  private function TopNavigationWrap( $navigation )
+  {
+    return &quot;
+    &lt;div class=\&quot;hor-menu hidden-sm hidden-xs\&quot;&gt;
+      &lt;ul class=\&quot;nav navbar-nav\&quot;&gt;{$navigation}&lt;/ul&gt;
+    &lt;/div&gt;&quot;;
+  }
+
+  /**
+   * Generate the SideNavigation
+   * @method  SideNavigation
+   * @return  string
+   * @access  public
+   */
+  public function SideNavigation()
+  {
+    /** Pull the first item off the top */
+    $group = array_shift( $this-&gt;sectionMenu );
+    /** @var string $navigation We are going to push all the html into navigation */
+    $navigation = $this-&gt;SideGroupStart( 
+      'nav-item'.(( $this-&gt;selectedGroup === $group['event-space'] )? ' active open' : '' ), 
+      $group['icon'], $group['header'], (( $this-&gt;selectedGroup == $group['event-space'] )? true : false )
+    );
+    /** Map our way throught the menu */
+    array_map(
+      /** Iterate over the groups use the navigation variable to write to */
+      function( $element ) use ( &amp;$navigation ){
+        /** Add this element to the navigation */
+        $navigation .= $this-&gt;SideGroupElement(
+          'start'.( ( $this-&gt;selectedGroup === $element['destination'] )? ' active open' : '' ), 
+          $element['destination'], $element['icon'], $element['text'],
+          (( $this-&gt;selectedGroup === $element['destination'] ) ? true : false )
+        );
+      }, $group['menu']
+    );
+    /** End the side group */
+    $navigation .= $this-&gt;SideGroupEnd();
+    /** Done with the first record now fill out the rest */
+    array_map( 
+      /** Setup the group */
+      function( $group ) use ( &amp;$navigation ){
+        /** @var string $class This is the class name for the link group */
+        $class = 'nav-item'.(( $this-&gt;selectedGroup === $group['event-space'] )?' active open':'');
+        /** @var string $nvaigation Reference to the navigation variable */
+        $navigation .= $this-&gt;SideGroupStart( 
+          $class, $group['icon'], $group['header'], (( $this-&gt;selectedGroup == $group['event-space'] )? true: false )
+        );
+        array_map(
+          /** Iterate over the groups use the navigation variable to write to */
+          function( $element ) use ( &amp;$navigation ){
+            /** @var string $class This is the class name for the link group */
+            $class = 'nav-item'.(( $this-&gt;selectedGroup === $element['destination'])? ' active open' : '' );
+            /** @var string $nvaigation Reference to the navigation variable */
+            $navigation .= $this-&gt;SideGroupElement( $class, $element['destination'], $element['icon'], $element['text'] );
+          }, $group['menu']
+        );
+        /** End the SideGroup */
+        $navigation .= $this-&gt;SideGroupEnd();
+      }, $this-&gt;sectionMenu
+    );
+    /** Return the side inside the wrapper */
+    return $this-&gt;SidebarWrap( $navigation );
+  }
+
+  /**
+   * Wrap the sidebar Naviagion in the remaining sidebar html 
+   * This way this is one more thing page does not have to worry about
+   * @method    SidebarWrap
+   * @param     string    $sidebar    Sidebar html content
+   * @return    string                HTML for building the sideBar
+   * @access    private
+   */
+  private function SidebarWrap( $sidebar )
+  {
+    return &quot;
+    &lt;nav class='page-sidebar-wrapper'&gt;
+      &lt;div class='page-sidebar navbar-collapse collapse'&gt;
+        &lt;ul class='page-sidebar-menu  page-header-fixed hidden-sm hidden-xs' data-keep-expanded='false' data-auto-scroll='true' data-slide-speed='200' style='padding-top: 10px'&gt;
+          &lt;li class='sidebar-toggler-wrapper hide'&gt;
+            &lt;div class='sidebar-toggler'&gt;&lt;/div&gt;
+          &lt;/li&gt;
+          {$sidebar}
+        &lt;/ul&gt;
+      &lt;/div&gt;
+    &lt;/nav&gt;
+    &quot;;
+  }
+
+  /**
+   * Return the html content needed to start a Side Navigation Group
+   * @method  SideGropuStart
+   * @param   string  $class  Class Name
+   * @param   string  $icon   Element Icon
+   * @param   string  $title  Display Text
+   * @return  string          String of html to start the group
+   * @access  private
+   */
+  private function SideGroupStart( $class, $icon, $title, $selected = false )
+  {
+    return 
+    &quot;&lt;li class='{$class}'&gt;
+      &lt;a href='javascript:;' class='nav-link nav-toggle'&gt;
+        &lt;i class='{$icon}'&gt;&lt;/i&gt;
+        &lt;span class='title'&gt;{$title}&lt;/span&gt;
+        &quot;.(($selected)?&quot;&lt;span class=\&quot;selected\&quot;&gt;&lt;/span&gt;&quot;:&quot;&quot;).&quot;
+        &lt;span class='arrow'&gt;&lt;/span&gt;
+      &lt;/a&gt;&lt;ul class='sub-menu'&gt;&quot;;
+  }
+
+  /**
+   * Return the html needed to make a Side Navigation Element
+   * @method  SideGroupElement
+   * @param   string    $class        Class Name
+   * @param   string    $destination  OnClick Destination
+   * @param   string    $icon         Element Icon
+   * @param   string    $text         Display Text
+   * @return  string                  String of html to make the element
+   * @access  private
+   */
+  private function SideGroupElement( $class, $destination, $icon, $title )
+  {
+    return 
+    &quot;&lt;li class='{$class}'&gt;
+      &lt;a href='{$destination}' class='nav-link' style=\&quot;padding: 6px 15px 6px 30px;\&quot;&gt;
+        &lt;i class='{$icon}'&gt;&amp;nbsp;&lt;/i&gt;&amp;nbsp;
+        &lt;span class='title'&gt;{$title}&lt;/span&gt;
+      &lt;/a&gt;
+    &lt;/li&gt;&quot;;
+  }
+
+  /**
+   * Return the html needed to end a Side Navigation Group
+   * @method  SideGroupEnd
+   * @return  String of html to end the group
+   * @access  private
+   */
+  private function SideGroupEnd()
+  {
+    return &quot;&lt;/ul&gt;&lt;/li&gt;&quot;;
+  }
+
+  /**
+   * check if we can display this menu for this user
+   * @method canDisplayMenu
+   * @param  array         $entry the entry to check
+   * @return boolean
+   * @access public
+   */
+  private static function canDisplayMenu( $entry )
+  {
+    /** if we have a permission we need to check it */
+    if( $entry['permission'] ){
+      if( !\Framework\Core\Patron::getInstance()-&gt;hasPermission( $entry['permission'], null ) ){ 
+        return false; 
+      }
+    }
+    /** if we get here they passed */
+    return true;
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

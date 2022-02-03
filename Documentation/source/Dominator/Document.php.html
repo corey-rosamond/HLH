@@ -1,0 +1,112 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * Document
+ *
+ * @package Framework\Dominator
+ * @version 1.0.0
+ */
+namespace Framework\Dominator;
+
+/**
+ * Document: The web page object
+ *
+ * Document is the fulfillment center for your website. You should never
+ * use echo or print just write your conent to the document and when
+ * everything is done call render
+ * @todo Implement a purge method
+ */
+class Document extends \Framework\Support\Abstraction\Singleton
+{
+    /**
+     * This is where all of your information is stored
+     * @var mixed
+     * @access private
+     */
+    private $data = &quot;&quot;;
+
+    /**
+     * This is your method for writing to the buffer
+     * @param $data
+     * @access public
+     */
+    public function write($data)
+    {
+        $this-&gt;data .= $data;
+    }
+
+    /**
+     * Render the page and clear the data
+     *
+     * We split the data into chunks and output it
+     * this way we avoid apache having to fill the buffer repeatedly
+     * then empty it
+     * @return void
+     * @access public
+     * @todo set the chunk size to a more reasonable amount
+     */
+    public static function render()
+    {
+        $output_array = str_split(self::getInstance()-&gt;data, 4096);
+        foreach ($output_array as $index =&gt; $chunk) {
+            echo $chunk;
+        }
+        return true;
+    }
+
+    /**
+     * purge
+     *
+     * Clear the buffer
+     * @return void
+     * @access public
+     */
+    public static function purge()
+    {
+        self::getInstance()-&gt;data = &quot;&quot;;
+    }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

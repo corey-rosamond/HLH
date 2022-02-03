@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta charset="utf-8"/>
+    <title>     &raquo; \App
+</title>
+    <meta name="author" content=""/>
+    <meta name="description" content=""/>
+
+            <link href="../css/template.css" rel="stylesheet" media="all"/>
+    
+            <!--[if lt IE 9]>
+        <script src="https://html5shim.googlecode.com/svn/trunk/html5.js" type="text/javascript"></script>
+        <![endif]-->
+        <script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script>
+        <script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script>
+        <script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script>
+        <script src="../js/bootstrap.js" type="text/javascript"></script>
+        <script src="../js/template.js" type="text/javascript"></script>
+        <script src="../js/prettify/prettify.min.js" type="text/javascript"></script>
+    
+            <link rel="shortcut icon" href="../img/favicon.ico"/>
+        <link rel="apple-touch-icon" href="../img/apple-touch-icon.png"/>
+        <link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png"/>
+        <link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png"/>
+    </head>
+<body>
+
+        <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                    <span class="icon-bar"></span> <span class="icon-bar"></span>
+                    <span class="icon-bar"></span> </a>
+                <a class="brand" href="../index.html">HLH Framework</a>
+
+                <div class="nav-collapse">
+                    <ul class="nav">
+                        <li class="dropdown">
+                            <a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                API Documentation <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                                                    <li><a>Namespaces</a></li>
+                                                                        <li><a href="../namespaces/Framework.html">Framework</a></li>
+                                                                        <li><a href="../namespaces/App.html">App</a></li>
+                                                                        <li><a href="../namespaces/Handler.html">Handler</a></li>
+                                                                                                                                </ul>
+                        </li>
+                        <li class="dropdown" id="charts-menu">
+                            <a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                Charts <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="../graph_class.html">
+                                        <i class="icon-list-alt"></i>&#160;Class hierarchy diagram
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown" id="reports-menu">
+                            <a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                Reports <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="../errors.html">
+                                        <i class="icon-list-alt"></i>&#160;Errors
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="../markers.html">
+                                        <i class="icon-list-alt"></i>&#160;Markers
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="../deprecated.html">
+                                        <i class="icon-list-alt"></i>&#160;Deprecated
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="go_to_top">
+            <a href="#___" style="color: inherit">Back to top&#160;&#160;<i class="icon-upload icon-white"></i></a>
+        </div>
+    </div>
+    
+    <div id="___" class="container">
+        <noscript>
+            <div class="alert alert-warning">
+                Javascript is disabled; several features are only available if Javascript is enabled.
+            </div>
+        </noscript>
+
+        
+            
+    <div class="row">
+
+        <div class="span4">
+            <div class="btn-group view pull-right" data-toggle="buttons-radio">
+                <button class="btn details" title="Show descriptions and method names">
+                    <i class="icon-list"></i></button><button class="btn simple" title="Show only method names">
+                    <i class="icon-align-justify"></i>
+                </button>
+            </div>
+            <ul class="side-nav nav nav-list">
+                <li class="nav-header">
+                    <i class="icon-map-marker"></i> Packages
+                </li>
+                <a href="../packages/App.html" title="App">
+                    <i class="icon-th"></i> App
+                </a>
+                <ul class="nav nav-list nav-packages">
+                        
+        <li>
+        <a href="../packages/App.Abstracts.html" title="Abstracts">
+            <i class="icon-th"></i> Abstracts
+        </a>
+        <ul class="nav nav-list nav-packages">
+                
+    
+        </ul>
+    </li>
+        <li>
+        <a href="../packages/App.Event.html" title="Event">
+            <i class="icon-th"></i> Event
+        </a>
+        <ul class="nav nav-list nav-packages">
+                
+        <li>
+        <a href="../packages/App.Event.Main.html" title="Main">
+            <i class="icon-th"></i> Main
+        </a>
+        <ul class="nav nav-list nav-packages">
+                
+    
+        </ul>
+    </li>
+        <li>
+        <a href="../packages/App.Event.Management.html" title="Management">
+            <i class="icon-th"></i> Management
+        </a>
+        <ul class="nav nav-list nav-packages">
+                
+        <li>
+        <a href="../packages/App.Event.Management.Product.html" title="Product">
+            <i class="icon-th"></i> Product
+        </a>
+        <ul class="nav nav-list nav-packages">
+                
+    
+        </ul>
+    </li>
+        <li>
+        <a href="../packages/App.Event.Management.Users.html" title="Users">
+            <i class="icon-th"></i> Users
+        </a>
+        <ul class="nav nav-list nav-packages">
+                
+    
+        </ul>
+    </li>
+    
+        </ul>
+    </li>
+        <li>
+        <a href="../packages/App.Event.Page.html" title="Page">
+            <i class="icon-th"></i> Page
+        </a>
+        <ul class="nav nav-list nav-packages">
+                
+        <li>
+        <a href="../packages/App.Event.Page.Main.html" title="Main">
+            <i class="icon-th"></i> Main
+        </a>
+        <ul class="nav nav-list nav-packages">
+                
+    
+        </ul>
+    </li>
+        <li>
+        <a href="../packages/App.Event.Page.Management.html" title="Management">
+            <i class="icon-th"></i> Management
+        </a>
+        <ul class="nav nav-list nav-packages">
+                
+        <li>
+        <a href="../packages/App.Event.Page.Management.MediaBuy.html" title="MediaBuy">
+            <i class="icon-th"></i> MediaBuy
+        </a>
+        <ul class="nav nav-list nav-packages">
+                
+    
+        </ul>
+    </li>
+    
+        </ul>
+    </li>
+    
+        </ul>
+    </li>
+        <li>
+        <a href="../packages/App.Event.Reports.html" title="Reports">
+            <i class="icon-th"></i> Reports
+        </a>
+        <ul class="nav nav-list nav-packages">
+                
+        <li>
+        <a href="../packages/App.Event.Reports.LinkSystem.html" title="LinkSystem">
+            <i class="icon-th"></i> LinkSystem
+        </a>
+        <ul class="nav nav-list nav-packages">
+                
+    
+        </ul>
+    </li>
+        <li>
+        <a href="../packages/App.Event.Reports.Tracking.html" title="Tracking">
+            <i class="icon-th"></i> Tracking
+        </a>
+        <ul class="nav nav-list nav-packages">
+                
+    
+        </ul>
+    </li>
+    
+        </ul>
+    </li>
+        <li>
+        <a href="../packages/App.Event.Request.html" title="Request">
+            <i class="icon-th"></i> Request
+        </a>
+        <ul class="nav nav-list nav-packages">
+                
+    
+        </ul>
+    </li>
+    
+        </ul>
+    </li>
+        <li>
+        <a href="../packages/App.Objects.html" title="Objects">
+            <i class="icon-th"></i> Objects
+        </a>
+        <ul class="nav nav-list nav-packages">
+                
+    
+        </ul>
+    </li>
+        <li>
+        <a href="../packages/App.Page.html" title="Page">
+            <i class="icon-th"></i> Page
+        </a>
+        <ul class="nav nav-list nav-packages">
+                
+    
+        </ul>
+    </li>
+    
+                </ul>
+            </ul>
+        </div>
+
+        <div class="span8 package-contents">
+                
+    <ul class="breadcrumb">
+        <li><a href="../index.html"><i class="icon-th"></i></a></li>
+            
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.html">App</a>
+    </li>
+
+    </ul>
+
+    
+                
+    <ul class="breadcrumb">
+        <li><a href="../index.html"><i class="icon-th"></i></a></li>
+            
+                
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.html">App</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.Event.html">Event</a>
+    </li>
+
+    </ul>
+
+    
+        
+        
+                    <div class="package-indent">
+                <h3><i class="icon-custom icon-class"></i> Classes, interfaces and traits</h3>
+                
+                
+                                        <div id="Checkout" class="element ajax clickable class">
+        <h1>Checkout<a href="../classes/App.Event.Checkout.html">¶</a></h1>
+        <p class="short_description">Checkout</p>
+        <div class="details collapse">This is the Checkout event</div>
+        <a href="../classes/App.Event.Checkout.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="Downsell1" class="element ajax clickable class">
+        <h1>Downsell1<a href="../classes/App.Event.Downsell1.html">¶</a></h1>
+        <p class="short_description">Downsell1</p>
+        <div class="details collapse">This is the Checkout event</div>
+        <a href="../classes/App.Event.Downsell1.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="Downsell2" class="element ajax clickable class">
+        <h1>Downsell2<a href="../classes/App.Event.Downsell2.html">¶</a></h1>
+        <p class="short_description">Downsell2</p>
+        <div class="details collapse">This is the Checkout event</div>
+        <a href="../classes/App.Event.Downsell2.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="Downsell3" class="element ajax clickable class">
+        <h1>Downsell3<a href="../classes/App.Event.Downsell3.html">¶</a></h1>
+        <p class="short_description">Downsell3</p>
+        <div class="details collapse">This is the Checkout event</div>
+        <a href="../classes/App.Event.Downsell3.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="Downsell4" class="element ajax clickable class">
+        <h1>Downsell4<a href="../classes/App.Event.Downsell4.html">¶</a></h1>
+        <p class="short_description">Downsell4</p>
+        <div class="details collapse">This is the Checkout event</div>
+        <a href="../classes/App.Event.Downsell4.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="Downsell5" class="element ajax clickable class">
+        <h1>Downsell5<a href="../classes/App.Event.Downsell5.html">¶</a></h1>
+        <p class="short_description">Downsell5</p>
+        <div class="details collapse">This is the Checkout event</div>
+        <a href="../classes/App.Event.Downsell5.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="Page" class="element ajax clickable class">
+        <h1>Page<a href="../classes/App.Abstracts.Page.html">¶</a></h1>
+        <p class="short_description">Page</p>
+        <div class="details collapse">This is the base for all admin pages
+INFORMATION
+
+Object Types
+oTypeController    = 0
+oTypeCronjob       = 1
+oTypeModal         = 3
+oTypeDatatable     = 4</div>
+        <a href="../classes/App.Abstracts.Page.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="ThankYou" class="element ajax clickable class">
+        <h1>ThankYou<a href="../classes/App.Event.ThankYou.html">¶</a></h1>
+        <p class="short_description">ThankYou</p>
+        <div class="details collapse">This is the ThankYou</div>
+        <a href="../classes/App.Event.ThankYou.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="Upsell1" class="element ajax clickable class">
+        <h1>Upsell1<a href="../classes/App.Event.Upsell1.html">¶</a></h1>
+        <p class="short_description">Upsell1</p>
+        <div class="details collapse">This is the Checkout event</div>
+        <a href="../classes/App.Event.Upsell1.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="Upsell2" class="element ajax clickable class">
+        <h1>Upsell2<a href="../classes/App.Event.Upsell2.html">¶</a></h1>
+        <p class="short_description">Upsell2</p>
+        <div class="details collapse">This is the Checkout event</div>
+        <a href="../classes/App.Event.Upsell2.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="Upsell3" class="element ajax clickable class">
+        <h1>Upsell3<a href="../classes/App.Event.Upsell3.html">¶</a></h1>
+        <p class="short_description">Upsell3</p>
+        <div class="details collapse">This is the Checkout event</div>
+        <a href="../classes/App.Event.Upsell3.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="Upsell4" class="element ajax clickable class">
+        <h1>Upsell4<a href="../classes/App.Event.Upsell4.html">¶</a></h1>
+        <p class="short_description">Upsell4</p>
+        <div class="details collapse">This is the Checkout event</div>
+        <a href="../classes/App.Event.Upsell4.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="Upsell5" class="element ajax clickable class">
+        <h1>Upsell5<a href="../classes/App.Event.Upsell5.html">¶</a></h1>
+        <p class="short_description">Upsell5</p>
+        <div class="details collapse">This is the Checkout event</div>
+        <a href="../classes/App.Event.Upsell5.html" class="more">« More »</a>
+    </div>
+
+                            </div>
+            
+                
+    <ul class="breadcrumb">
+        <li><a href="../index.html"><i class="icon-th"></i></a></li>
+            
+                
+                
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.html">App</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.Event.html">Event</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.Event.Page.html">Page</a>
+    </li>
+
+    </ul>
+
+    
+                
+    <ul class="breadcrumb">
+        <li><a href="../index.html"><i class="icon-th"></i></a></li>
+            
+                
+                
+                
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.html">App</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.Event.html">Event</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.Event.Page.html">Page</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.Event.Page.Main.html">Main</a>
+    </li>
+
+    </ul>
+
+    
+        
+        
+                    <div class="package-indent">
+                <h3><i class="icon-custom icon-class"></i> Classes, interfaces and traits</h3>
+                
+                
+                                        <div id="CronLog" class="element ajax clickable class">
+        <h1>CronLog<a href="../classes/App.Event.Page.Technical.CronTab.CronLog.html">¶</a></h1>
+        <p class="short_description">CronLog</p>
+        <div class="details collapse">This is the cronlog</div>
+        <a href="../classes/App.Event.Page.Technical.CronTab.CronLog.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="Dashboard" class="element ajax clickable class">
+        <h1>Dashboard<a href="../classes/App.Event.Page.Main.Dashboard.Dashboard.html">¶</a></h1>
+        <p class="short_description">Page</p>
+        <div class="details collapse">This is the base for all admin pages
+INFORMATION
+
+Object Types
+oTypeController    = 0
+oTypeCronjob       = 1
+oTypeModal         = 3
+oTypeDatatable     = 4</div>
+        <a href="../classes/App.Event.Page.Main.Dashboard.Dashboard.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="Dashboard" class="element ajax clickable class">
+        <h1>Dashboard<a href="../classes/App.Event.Page.CustomerRelations.Orders.Dashboard.html">¶</a></h1>
+        <p class="short_description">Page</p>
+        <div class="details collapse">This is the base for all admin pages
+INFORMATION
+
+Object Types
+oTypeController    = 0
+oTypeCronjob       = 1
+oTypeModal         = 3
+oTypeDatatable     = 4</div>
+        <a href="../classes/App.Event.Page.CustomerRelations.Orders.Dashboard.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="LinkBreakdown" class="element ajax clickable class">
+        <h1>LinkBreakdown<a href="../classes/App.Event.Page.Reports.LinkSystem.LinkBreakdown.html">¶</a></h1>
+        <p class="short_description">LinkBreakdown</p>
+        <div class="details collapse">Breakdown of the performance of a given link</div>
+        <a href="../classes/App.Event.Page.Reports.LinkSystem.LinkBreakdown.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="MyProfile" class="element ajax clickable class">
+        <h1>MyProfile<a href="../classes/App.Event.Page.Main.User.MyProfile.html">¶</a></h1>
+        <p class="short_description">Page</p>
+        <div class="details collapse">This is the base for all admin pages
+INFORMATION
+
+Object Types
+oTypeController    = 0
+oTypeCronjob       = 1
+oTypeModal         = 3
+oTypeDatatable     = 4</div>
+        <a href="../classes/App.Event.Page.Main.User.MyProfile.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="NotFound" class="element ajax clickable class">
+        <h1>NotFound<a href="../classes/App.Event.Main.NotFound.html">¶</a></h1>
+        <p class="short_description">Main Dashboard</p>
+        <div class="details collapse"></div>
+        <a href="../classes/App.Event.Main.NotFound.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="OrderList" class="element ajax clickable class">
+        <h1>OrderList<a href="../classes/App.Event.Page.CustomerRelations.Orders.OrderList.html">¶</a></h1>
+        <p class="short_description">Page</p>
+        <div class="details collapse">This is the base for all admin pages
+INFORMATION
+
+Object Types
+oTypeController    = 0
+oTypeCronjob       = 1
+oTypeModal         = 3
+oTypeDatatable     = 4</div>
+        <a href="../classes/App.Event.Page.CustomerRelations.Orders.OrderList.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="OrderList" class="element ajax clickable class">
+        <h1>OrderList<a href="../classes/App.Event.Page.CustomerRelations.Orders.OrderList.html">¶</a></h1>
+        <p class="short_description">Page</p>
+        <div class="details collapse">This is the base for all admin pages
+INFORMATION
+
+Object Types
+oTypeController    = 0
+oTypeCronjob       = 1
+oTypeModal         = 3
+oTypeDatatable     = 4</div>
+        <a href="../classes/App.Event.Page.CustomerRelations.Orders.OrderList.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="OrderView" class="element ajax clickable class">
+        <h1>OrderView<a href="../classes/App.Event.Page.CustomerRelations.Orders.OrderView.html">¶</a></h1>
+        <p class="short_description">Page</p>
+        <div class="details collapse">This is the base for all admin pages
+INFORMATION
+
+Object Types
+oTypeController    = 0
+oTypeCronjob       = 1
+oTypeModal         = 3
+oTypeDatatable     = 4</div>
+        <a href="../classes/App.Event.Page.CustomerRelations.Orders.OrderView.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="ReportDashboard" class="element ajax clickable class">
+        <h1>ReportDashboard<a href="../classes/App.Event.Main.ReportDashboard.html">¶</a></h1>
+        <p class="short_description">Main Dashboard</p>
+        <div class="details collapse"></div>
+        <a href="../classes/App.Event.Main.ReportDashboard.html" class="more">« More »</a>
+    </div>
+
+                            </div>
+            
+    
+                
+    <ul class="breadcrumb">
+        <li><a href="../index.html"><i class="icon-th"></i></a></li>
+            
+                
+                
+                
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.html">App</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.Event.html">Event</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.Event.Page.html">Page</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.Event.Page.Management.html">Management</a>
+    </li>
+
+    </ul>
+
+    
+                
+    <ul class="breadcrumb">
+        <li><a href="../index.html"><i class="icon-th"></i></a></li>
+            
+                
+                
+                
+                
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.html">App</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.Event.html">Event</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.Event.Page.html">Page</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.Event.Page.Management.html">Management</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.Event.Page.Management.MediaBuy.html">MediaBuy</a>
+    </li>
+
+    </ul>
+
+    
+        
+        
+                    <div class="package-indent">
+                <h3><i class="icon-custom icon-class"></i> Classes, interfaces and traits</h3>
+                
+                
+                                        <div id="EmailLinks" class="element ajax clickable class">
+        <h1>EmailLinks<a href="../classes/App.Event.Page.Management.MediaBuy.EmailLinks.html">¶</a></h1>
+        <p class="short_description">Page</p>
+        <div class="details collapse">This is the base for all admin pages
+INFORMATION
+
+Object Types
+oTypeController    = 0
+oTypeCronjob       = 1
+oTypeModal         = 3
+oTypeDatatable     = 4</div>
+        <a href="../classes/App.Event.Page.Management.MediaBuy.EmailLinks.html" class="more">« More »</a>
+    </div>
+
+                            </div>
+            
+    
+    
+    
+                
+    <ul class="breadcrumb">
+        <li><a href="../index.html"><i class="icon-th"></i></a></li>
+            
+                
+                
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.html">App</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.Event.html">Event</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.Event.Main.html">Main</a>
+    </li>
+
+    </ul>
+
+    
+        
+        
+                    <div class="package-indent">
+                <h3><i class="icon-custom icon-class"></i> Classes, interfaces and traits</h3>
+                
+                
+                                        <div id="Login" class="element ajax clickable class">
+        <h1>Login<a href="../classes/App.Event.Page.Main.User.Login.html">¶</a></h1>
+        <p class="short_description">Login</p>
+        <div class="details collapse">This is the user login page</div>
+        <a href="../classes/App.Event.Page.Main.User.Login.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="OrdersDatatable" class="element ajax clickable class">
+        <h1>OrdersDatatable<a href="../classes/App.Event.Request.OrdersDatatable.html">¶</a></h1>
+        <p class="short_description"></p>
+        <div class="details collapse"></div>
+        <a href="../classes/App.Event.Request.OrdersDatatable.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="UserEvent" class="element ajax clickable class">
+        <h1>UserEvent<a href="../classes/App.Event.Request.UserEvent.html">¶</a></h1>
+        <p class="short_description">UserEvent</p>
+        <div class="details collapse">This runs the user ajax events</div>
+        <a href="../classes/App.Event.Request.UserEvent.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="UserRequest" class="element ajax clickable class">
+        <h1>UserRequest<a href="../classes/App.Event.Request.UserRequest.html">¶</a></h1>
+        <p class="short_description"></p>
+        <div class="details collapse"></div>
+        <a href="../classes/App.Event.Request.UserRequest.html" class="more">« More »</a>
+    </div>
+
+                            </div>
+            
+    
+                
+    <ul class="breadcrumb">
+        <li><a href="../index.html"><i class="icon-th"></i></a></li>
+            
+                
+                
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.html">App</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.Event.html">Event</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.Event.Request.html">Request</a>
+    </li>
+
+    </ul>
+
+    
+        
+        
+                    <div class="package-indent">
+                <h3><i class="icon-custom icon-class"></i> Classes, interfaces and traits</h3>
+                
+                
+                                        <div id="FormRequest" class="element ajax clickable class">
+        <h1>FormRequest<a href="../classes/App.Event.Request.FormRequest.html">¶</a></h1>
+        <p class="short_description">FormRequest</p>
+        <div class="details collapse">This is how yout get all the static form files. This allows them to be accesed without
+altering our .htaccess. And it allows us to restrict access to them to limit the amount
+of information people can glean about our system</div>
+        <a href="../classes/App.Event.Request.FormRequest.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="ManagementMediaBuyEmailLinks" class="element ajax clickable class">
+        <h1>ManagementMediaBuyEmailLinks<a href="../classes/App.Event.Request.ManagementMediaBuyEmailLinks.html">¶</a></h1>
+        <p class="short_description">ManagementMediaBuyEmailLinks</p>
+        <div class="details collapse">All request functions for the MediaBuy Email Links</div>
+        <a href="../classes/App.Event.Request.ManagementMediaBuyEmailLinks.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="ManagementUsersManage" class="element ajax clickable class">
+        <h1>ManagementUsersManage<a href="../classes/App.Event.Request.ManagementUsersManage.html">¶</a></h1>
+        <p class="short_description">ManagementUsersManage</p>
+        <div class="details collapse">This is the request object for the Management/Users/Manage
+application</div>
+        <a href="../classes/App.Event.Request.ManagementUsersManage.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="MediaBuyEmail" class="element ajax clickable class">
+        <h1>MediaBuyEmail<a href="../classes/App.Event.Request.MediaBuyEmail.html">¶</a></h1>
+        <p class="short_description">MediaBuyEmail</p>
+        <div class="details collapse">This file is in charge of getting mini portlets</div>
+        <a href="../classes/App.Event.Request.MediaBuyEmail.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="Portlet" class="element ajax clickable class">
+        <h1>Portlet<a href="../classes/App.Event.Request.Portlet.html">¶</a></h1>
+        <p class="short_description">Portlet</p>
+        <div class="details collapse">This file is in charge of getting mini portlets</div>
+        <a href="../classes/App.Event.Request.Portlet.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="ReportsLinkSystemLinkBreakdown" class="element ajax clickable class">
+        <h1>ReportsLinkSystemLinkBreakdown<a href="../classes/App.Event.Request.ReportsLinkSystemLinkBreakdown.html">¶</a></h1>
+        <p class="short_description">ManagementMediaBuyEmailLinks</p>
+        <div class="details collapse">All request functions for the MediaBuy Email Links</div>
+        <a href="../classes/App.Event.Request.ReportsLinkSystemLinkBreakdown.html" class="more">« More »</a>
+    </div>
+
+                            </div>
+            
+    
+                
+    <ul class="breadcrumb">
+        <li><a href="../index.html"><i class="icon-th"></i></a></li>
+            
+                
+                
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.html">App</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.Event.html">Event</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.Event.Reports.html">Reports</a>
+    </li>
+
+    </ul>
+
+    
+                
+    <ul class="breadcrumb">
+        <li><a href="../index.html"><i class="icon-th"></i></a></li>
+            
+                
+                
+                
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.html">App</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.Event.html">Event</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.Event.Reports.html">Reports</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.Event.Reports.Tracking.html">Tracking</a>
+    </li>
+
+    </ul>
+
+    
+        
+        
+                    <div class="package-indent">
+                <h3><i class="icon-custom icon-class"></i> Classes, interfaces and traits</h3>
+                
+                
+                                        <div id="Sessions" class="element ajax clickable class">
+        <h1>Sessions<a href="../classes/App.Event.Page.Reports.Tracking.Sessions.html">¶</a></h1>
+        <p class="short_description">Page</p>
+        <div class="details collapse">This is the base for all admin pages
+INFORMATION
+
+Object Types
+oTypeController    = 0
+oTypeCronjob       = 1
+oTypeModal         = 3
+oTypeDatatable     = 4</div>
+        <a href="../classes/App.Event.Page.Reports.Tracking.Sessions.html" class="more">« More »</a>
+    </div>
+
+                            </div>
+            
+    
+                
+    <ul class="breadcrumb">
+        <li><a href="../index.html"><i class="icon-th"></i></a></li>
+            
+                
+                
+                
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.html">App</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.Event.html">Event</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.Event.Reports.html">Reports</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.Event.Reports.LinkSystem.html">LinkSystem</a>
+    </li>
+
+    </ul>
+
+    
+        
+        
+                    <div class="package-indent">
+                <h3><i class="icon-custom icon-class"></i> Classes, interfaces and traits</h3>
+                
+                
+                                        <div id="ClickThroughRate" class="element ajax clickable class">
+        <h1>ClickThroughRate<a href="../classes/App.Event.Page.Reports.Funnel.ClickThroughRate.html">¶</a></h1>
+        <p class="short_description">ClickThroughRate</p>
+        <div class="details collapse">Click through rate report</div>
+        <a href="../classes/App.Event.Page.Reports.Funnel.ClickThroughRate.html" class="more">« More »</a>
+    </div>
+
+                            </div>
+            
+    
+    
+                
+    <ul class="breadcrumb">
+        <li><a href="../index.html"><i class="icon-th"></i></a></li>
+            
+                
+                
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.html">App</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.Event.html">Event</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.Event.Management.html">Management</a>
+    </li>
+
+    </ul>
+
+    
+                
+    <ul class="breadcrumb">
+        <li><a href="../index.html"><i class="icon-th"></i></a></li>
+            
+                
+                
+                
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.html">App</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.Event.html">Event</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.Event.Management.html">Management</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.Event.Management.Users.html">Users</a>
+    </li>
+
+    </ul>
+
+    
+        
+        
+                    <div class="package-indent">
+                <h3><i class="icon-custom icon-class"></i> Classes, interfaces and traits</h3>
+                
+                
+                                        <div id="Manage" class="element ajax clickable class">
+        <h1>Manage<a href="../classes/App.Event.Page.Management.Users.Manage.html">¶</a></h1>
+        <p class="short_description">Manage</p>
+        <div class="details collapse">This is the main interface for manageing users and their permissions</div>
+        <a href="../classes/App.Event.Page.Management.Users.Manage.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="System" class="element ajax clickable class">
+        <h1>System<a href="../classes/App.System.html">¶</a></h1>
+        <p class="short_description">System</p>
+        <div class="details collapse">System is the main entry point for all apps built on the framework</div>
+        <a href="../classes/App.System.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="System" class="element ajax clickable class">
+        <h1>System<a href="../classes/App.System.html">¶</a></h1>
+        <p class="short_description"></p>
+        <div class="details collapse"></div>
+        <a href="../classes/App.System.html" class="more">« More »</a>
+    </div>
+
+                            </div>
+            
+    
+                
+    <ul class="breadcrumb">
+        <li><a href="../index.html"><i class="icon-th"></i></a></li>
+            
+                
+                
+                
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.html">App</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.Event.html">Event</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.Event.Management.html">Management</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.Event.Management.Product.html">Product</a>
+    </li>
+
+    </ul>
+
+    
+        
+        
+                    <div class="package-indent">
+                <h3><i class="icon-custom icon-class"></i> Classes, interfaces and traits</h3>
+                
+                
+                                        <div id="Products" class="element ajax clickable class">
+        <h1>Products<a href="../classes/App.Event.Page.Management.Configuration.Products.html">¶</a></h1>
+        <p class="short_description">Page</p>
+        <div class="details collapse">This is the base for all admin pages
+INFORMATION
+
+Object Types
+oTypeController    = 0
+oTypeCronjob       = 1
+oTypeModal         = 3
+oTypeDatatable     = 4</div>
+        <a href="../classes/App.Event.Page.Management.Configuration.Products.html" class="more">« More »</a>
+    </div>
+
+                            </div>
+            
+    
+    
+    
+                
+    <ul class="breadcrumb">
+        <li><a href="../index.html"><i class="icon-th"></i></a></li>
+            
+                
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.html">App</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.Page.html">Page</a>
+    </li>
+
+    </ul>
+
+    
+        
+        
+                    <div class="package-indent">
+                <h3><i class="icon-custom icon-class"></i> Classes, interfaces and traits</h3>
+                
+                
+                                        <div id="CheckoutPage" class="element ajax clickable class">
+        <h1>CheckoutPage<a href="../classes/App.Page.CheckoutPage.html">¶</a></h1>
+        <p class="short_description">CheckoutPage</p>
+        <div class="details collapse">The checkout page</div>
+        <a href="../classes/App.Page.CheckoutPage.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="ContactUsPage" class="element ajax clickable class">
+        <h1>ContactUsPage<a href="../classes/App.Page.ContactUsPage.html">¶</a></h1>
+        <p class="short_description">ContactUsPage</p>
+        <div class="details collapse">The ContactUsPage page</div>
+        <a href="../classes/App.Page.ContactUsPage.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="ContentPage" class="element ajax clickable class">
+        <h1>ContentPage<a href="../classes/App.Page.ContentPage.html">¶</a></h1>
+        <p class="short_description">ContentPage</p>
+        <div class="details collapse">The ContentPage page</div>
+        <a href="../classes/App.Page.ContentPage.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="Downsell1" class="element ajax clickable class">
+        <h1>Downsell1<a href="../classes/App.Page.Downsell1.html">¶</a></h1>
+        <p class="short_description">Downsell1</p>
+        <div class="details collapse">The Downsell1</div>
+        <a href="../classes/App.Page.Downsell1.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="Downsell2" class="element ajax clickable class">
+        <h1>Downsell2<a href="../classes/App.Page.Downsell2.html">¶</a></h1>
+        <p class="short_description">Downsell2</p>
+        <div class="details collapse">The Downsell2</div>
+        <a href="../classes/App.Page.Downsell2.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="Downsell3" class="element ajax clickable class">
+        <h1>Downsell3<a href="../classes/App.Page.Downsell3.html">¶</a></h1>
+        <p class="short_description">Downsell3</p>
+        <div class="details collapse">The Downsell3</div>
+        <a href="../classes/App.Page.Downsell3.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="Downsell4" class="element ajax clickable class">
+        <h1>Downsell4<a href="../classes/App.Page.Downsell4.html">¶</a></h1>
+        <p class="short_description">Downsell4</p>
+        <div class="details collapse">The Downsell4</div>
+        <a href="../classes/App.Page.Downsell4.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="Downsell5" class="element ajax clickable class">
+        <h1>Downsell5<a href="../classes/App.Page.Downsell5.html">¶</a></h1>
+        <p class="short_description">Downsell5</p>
+        <div class="details collapse">The Downsell5</div>
+        <a href="../classes/App.Page.Downsell5.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="ErrorPage" class="element ajax clickable class">
+        <h1>ErrorPage<a href="../classes/App.Page.ErrorPage.html">¶</a></h1>
+        <p class="short_description">ErrorPage</p>
+        <div class="details collapse">The ErrorPage</div>
+        <a href="../classes/App.Page.ErrorPage.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="NotFoundPage" class="element ajax clickable class">
+        <h1>NotFoundPage<a href="../classes/App.Page.NotFoundPage.html">¶</a></h1>
+        <p class="short_description">NotFoundPage</p>
+        <div class="details collapse">The NotFoundPage</div>
+        <a href="../classes/App.Page.NotFoundPage.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="Upsell1" class="element ajax clickable class">
+        <h1>Upsell1<a href="../classes/App.Page.Upsell1.html">¶</a></h1>
+        <p class="short_description">Upsell1</p>
+        <div class="details collapse">The Upsell1</div>
+        <a href="../classes/App.Page.Upsell1.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="Upsell2" class="element ajax clickable class">
+        <h1>Upsell2<a href="../classes/App.Page.Upsell2.html">¶</a></h1>
+        <p class="short_description">Upsell2</p>
+        <div class="details collapse">The Upsell1</div>
+        <a href="../classes/App.Page.Upsell2.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="Upsell3" class="element ajax clickable class">
+        <h1>Upsell3<a href="../classes/App.Page.Upsell3.html">¶</a></h1>
+        <p class="short_description">Upsell3</p>
+        <div class="details collapse">The Upsell1</div>
+        <a href="../classes/App.Page.Upsell3.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="Upsell4" class="element ajax clickable class">
+        <h1>Upsell4<a href="../classes/App.Page.Upsell4.html">¶</a></h1>
+        <p class="short_description">Upsell4</p>
+        <div class="details collapse">The Upsell4</div>
+        <a href="../classes/App.Page.Upsell4.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="Upsell5" class="element ajax clickable class">
+        <h1>Upsell5<a href="../classes/App.Page.Upsell5.html">¶</a></h1>
+        <p class="short_description">Upsell5</p>
+        <div class="details collapse">The Upsell1</div>
+        <a href="../classes/App.Page.Upsell5.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="VslPage" class="element ajax clickable class">
+        <h1>VslPage<a href="../classes/App.Page.VslPage.html">¶</a></h1>
+        <p class="short_description">VSLPage</p>
+        <div class="details collapse">The VSL Page object</div>
+        <a href="../classes/App.Page.VslPage.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="VslPage" class="element ajax clickable class">
+        <h1>VslPage<a href="../classes/App.Page.VslPage.html">¶</a></h1>
+        <p class="short_description">VSLPage</p>
+        <div class="details collapse">The VSL Page object</div>
+        <a href="../classes/App.Page.VslPage.html" class="more">« More »</a>
+    </div>
+
+                            </div>
+            
+    
+                
+    <ul class="breadcrumb">
+        <li><a href="../index.html"><i class="icon-th"></i></a></li>
+            
+                
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.html">App</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.Objects.html">Objects</a>
+    </li>
+
+    </ul>
+
+    
+        
+        
+                    <div class="package-indent">
+                <h3><i class="icon-custom icon-class"></i> Classes, interfaces and traits</h3>
+                
+                
+                                        <div id="ContentArea" class="element ajax clickable class">
+        <h1>ContentArea<a href="../classes/App.Objects.ContentArea.html">¶</a></h1>
+        <p class="short_description">ContentArea</p>
+        <div class="details collapse">Handles the quick sidebar</div>
+        <a href="../classes/App.Objects.ContentArea.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="Datatable" class="element ajax clickable class">
+        <h1>Datatable<a href="../classes/Framework.Support.Object.Datatable.html">¶</a></h1>
+        <p class="short_description">Datatable</p>
+        <div class="details collapse">As a building block for our new system we needed a faster more efficent way to create these objects. This is it</div>
+        <a href="../classes/Framework.Support.Object.Datatable.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="Footer" class="element ajax clickable class">
+        <h1>Footer<a href="../classes/App.Objects.Footer.html">¶</a></h1>
+        <p class="short_description">Footer</p>
+        <div class="details collapse">This builds both the top and side navigation elements</div>
+        <a href="../classes/App.Objects.Footer.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="Header" class="element ajax clickable class">
+        <h1>Header<a href="../classes/App.Objects.Header.html">¶</a></h1>
+        <p class="short_description">Header</p>
+        <div class="details collapse">This builds both the top and side navigation elements</div>
+        <a href="../classes/App.Objects.Header.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="MegaMenu" class="element ajax clickable class">
+        <h1>MegaMenu<a href="../classes/App.Objects.MegaMenu.html">¶</a></h1>
+        <p class="short_description">MegaMenu</p>
+        <div class="details collapse">This is the interface for building mega  menus</div>
+        <a href="../classes/App.Objects.MegaMenu.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="Navigation" class="element ajax clickable class">
+        <h1>Navigation<a href="../classes/App.Objects.Navigation.html">¶</a></h1>
+        <p class="short_description">Navigation</p>
+        <div class="details collapse">This builds both the top and side navigation elements</div>
+        <a href="../classes/App.Objects.Navigation.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="QuickSidebar" class="element ajax clickable class">
+        <h1>QuickSidebar<a href="../classes/App.Objects.QuickSidebar.html">¶</a></h1>
+        <p class="short_description">QuickSidebar</p>
+        <div class="details collapse">Handles the quick sidebar</div>
+        <a href="../classes/App.Objects.QuickSidebar.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="StandardCollection" class="element ajax clickable class">
+        <h1>StandardCollection<a href="../classes/Framework.Support.Object.StandardCollection.html">¶</a></h1>
+        <p class="short_description">StandardCollection</p>
+        <div class="details collapse">This is the standard collection object</div>
+        <a href="../classes/Framework.Support.Object.StandardCollection.html" class="more">« More »</a>
+    </div>
+
+                            </div>
+            
+    
+                
+    <ul class="breadcrumb">
+        <li><a href="../index.html"><i class="icon-th"></i></a></li>
+            
+                
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.html">App</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/App.Abstracts.html">Abstracts</a>
+    </li>
+
+    </ul>
+
+    
+        
+        
+                    <div class="package-indent">
+                <h3><i class="icon-custom icon-class"></i> Classes, interfaces and traits</h3>
+                
+                
+                                        <div id="Event" class="element ajax clickable class">
+        <h1>Event<a href="../classes/App.Abstracts.Event.html">¶</a></h1>
+        <p class="short_description">Event</p>
+        <div class="details collapse">This is the event base</div>
+        <a href="../classes/App.Abstracts.Event.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="FunnelErrorMessages" class="element ajax clickable class">
+        <h1>FunnelErrorMessages<a href="../classes/Framework.Modulus.Modal.FunnelErrorMessages.html">¶</a></h1>
+        <p class="short_description">FunnelErrorMessages</p>
+        <div class="details collapse">This is the base for the whole system. It converts exceptions from being bad things to being
+amazingly useful</div>
+        <a href="../classes/Framework.Modulus.Modal.FunnelErrorMessages.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="FunnelPage" class="element ajax clickable class">
+        <h1>FunnelPage<a href="../classes/App.Abstracts.FunnelPage.html">¶</a></h1>
+        <p class="short_description">Navigator</p>
+        <div class="details collapse">This helps traverse the funnel system swiftly</div>
+        <a href="../classes/App.Abstracts.FunnelPage.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="Navigator" class="element ajax clickable class">
+        <h1>Navigator<a href="../classes/App.Abstracts.Navigator.html">¶</a></h1>
+        <p class="short_description">Navigator</p>
+        <div class="details collapse">This helps traverse the funnel system swiftly</div>
+        <a href="../classes/App.Abstracts.Navigator.html" class="more">« More »</a>
+    </div>
+
+                            </div>
+            
+    
+    
+        </div>
+    </div>
+    </div>
+
+        <footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by
+            <a href="http://glyphicons.com/">Glyphicons</a>.<br/>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and<br/>
+            generated on Mon, 01 Feb 2016 18:11:14 +0000.<br/>
+    </footer>
+    </body>
+</html>

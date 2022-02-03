@@ -1,0 +1,319 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * Receptionist
+ *
+ * @package Framework\Docket
+ * @version 1.2.0
+ */
+namespace Framework\Core;
+
+/**
+ * Receptionist
+ *
+ * This is in change of loading different types of objects getting them configured
+ * and returning them to you for use
+ * INFORMATION
+ *
+ * Object Types
+ * oTypeController    = 0
+ * oTypeCronjob       = 1
+ * oTypeModal         = 3
+ * oTypeDatatable     = 4
+ */
+class Receptionist extends Core
+{
+  /****************************************************/
+  /*                RECEPTIONIST TYPES                */
+  /****************************************************/
+  /** @const integer oTypeController */
+  const oTypeController = 0;
+  /** @const integer oTypeCronjob */
+  const oTypeCronjob = 1;
+  /** @const integer oTypeModal */
+  const oTypeModal = 2;
+  /** @const integer oTypeDatatable */
+  const oTypeDatatable = 3;
+  /****************************************************/
+  /*                   DATA MEMBERS                   */
+  /****************************************************/
+  /** @var  array _dPath collection of file paths */
+  private $_dPath;
+  /** @var  array _dCache collection of cached objects by system then type */
+  private $_dCache;
+  /** @var  array _dNamespace collection of namespaces */
+  private $_dNamespace;
+  /** @var \Framework\Modulus\Query _dDbObject */
+  private $_dDbObject;
+  /** @var string _dDbDatabase */
+  private $_dDbDatabase;
+
+  /**
+   * This builds out the basic information receptionist needs to complete the job
+   * @method construct
+   * @return object
+   */
+  public static function construct()
+  {
+    /** @var Receptionist $instance */
+    $instance = self::getInstance();
+    if(!is_null($instance-&gt;_dCache)){
+      /** Stop the ability to run construct more than once */
+      return $instance;
+    }
+    /** Include the database config file for this mode */
+    \Framework\_IncludeCorrect(CONFIGURATION.&quot;Database&quot;.DSEP.&quot;Holylandhealth.config.php&quot;);
+    /** @var array _dPath An array of paths for different resources */
+    $instance-&gt;_dPath = [
+      self::rTypeFramework =&gt; [
+        self::oTypeController =&gt; FRAMEWORK_ROOT.&quot;Commander&quot;.DSEP,
+        self::oTypeCronjob =&gt; FRAMEWORK_ROOT.&quot;Docket&quot;.DSEP,
+        self::oTypeModal =&gt; FRAMEWORK_ROOT.&quot;Modulus&quot;.DSEP.&quot;Modal&quot;.DSEP,
+        self::oTypeDatatable =&gt; FRAMEWORK_ROOT.&quot;Modulus&quot;.DSEP.&quot;Datatable&quot;.DSEP,
+      ],
+      self::rTypeApplication =&gt; [
+        self::oTypeController =&gt; APP_CONTROLLER,
+        self::oTypeCronjob =&gt; APP_CRONTAB,
+        self::oTypeModal =&gt; APP_MODAL,
+        self::oTypeDatatable =&gt; FRAMEWORK_ROOT.&quot;Modulus&quot;.DSEP.&quot;Datatable&quot;.DSEP,
+      ]
+    ];
+    /** @var array _dCache Collection of cached objects */
+    $instance-&gt;_dCache = [
+      self::rTypeFramework =&gt; [],
+      self::rTypeApplication =&gt; []
+    ];
+    /** @var array _dNamespace Collection of framework namespaces */
+    $instance-&gt;_dNamespace = [
+      self::oTypeController =&gt; &quot;\\Framework\\Commander\\&quot;,
+      self::oTypeCronjob =&gt; &quot;\\Framework\\Docket\\&quot;,
+      self::oTypeModal =&gt; &quot;\\Framework\\Modulus\\Modal\\&quot;,
+      self::oTypeDatatable =&gt; &quot;\\Framework\\Modulus\\Datatable\\&quot;
+    ];
+    /** @var \Framework\Modulus\DBConfig _dDbObject */
+    $instance-&gt;_dDbObject = new \Framework\Modulus\HolylandhealthConfig();
+    /** @var string _dDbDatabase */
+    $instance-&gt;_dDbDatabase = \Framework\Modulus\HolylandhealthConfig::$database;
+    /** Return the instance */
+    return $instance;
+  }
+
+  /**
+   * Try and get a cached version of the requested object
+   * @method _isCached
+   * @param $name
+   * @param $type
+   * @param $system
+   * @return bool
+   */
+  private function _isCached($name, $type, $system)
+  {
+    if(isset($this-&gt;_dCache[$system][&quot;{$this-&gt;_namespace($type)}{$name}&quot;])){
+      return $this-&gt;_dCache[$system][&quot;{$this-&gt;_namespace($type)}{$name}&quot;];
+    }
+    return false;
+  }
+
+  /**
+   * Adds an instance of the object to the cache
+   * @method _addCache
+   * @param $system
+   * @param $qualifiedName
+   * @param $instance
+   * @return mixed
+   */
+  private function _addCache($system, $qualifiedName, $instance )
+  { return $this-&gt;_dCache[$system][$qualifiedName] = $instance; }
+
+  /**
+   * Return the system key
+   * @method _system
+   * @param $isFramework
+   * @return int
+   */
+  private function _system($isFramework)
+  {
+    if(!$isFramework){
+      return self::rTypeApplication;
+    }
+    return self::rTypeFramework;
+  }
+
+  /**
+   * Returns the namespace string for the specified object type
+   * @method _namespace
+   * @param   $type
+   * @return  mixed
+   */
+  private function _namespace($type)
+  { return $this-&gt;_dNamespace[$type]; }
+
+  /**
+   * Include the file
+   * @method _include
+   * @param $system
+   * @param $type
+   * @param $name
+   * @return bool
+   */
+  private function _include($system, $type, $name)
+  {
+    try {
+      \Framework\_IncludeCorrect(&quot;{$this-&gt;_dPath[$system][$type]}{$name}.php&quot;);
+    } catch ( \Framework\Exceptional\IncludeOnceException $exception ){
+      return false;
+    }
+    return true;
+  }
+
+  /**
+   * Process the request doing all the leg work to get the requested resource
+   * @method _process
+   * @param $system
+   * @param $type
+   * @param $name
+   * @return bool|mixed
+   */
+  private function _process( $system, $type, $name )
+  {
+    $cached = $this-&gt;_isCached( $name, $type, $system );
+    if($cached === false){
+      if(!$this-&gt;_include($system, $type, $name)){
+        /** @todo Add a thrown exception pointing to where we were called here */
+        return false;
+      }
+      $instance = &quot;{$this-&gt;_namespace($type)}{$name}&quot;;
+      return $this-&gt;_addCache($system, $instance, $instance::getInstance());
+    }
+    return $cached;
+  }
+
+  /**
+   * Get the and construct the requested controller
+   * @method controller
+   * @param $name
+   * @param bool $isFramework
+   * @return bool
+   */
+  public static function controller( $name, $isFramework = false )
+  {
+    $instance = self::getInstance();
+    $result = $instance-&gt;_process( $instance-&gt;_system( $isFramework ), self::oTypeController, $name );
+    if($result === false){
+      return false;
+    }
+    if(method_exists($result, 'construct')){
+      return $result::construct();
+    }
+    return $result;
+  }
+
+  /**
+   * Get the and construct the requested cronjob
+   * @method cronjob
+   * @param $name
+   * @param bool $isFramework
+   * @return bool
+   */
+  public static function cronjob( $name, $isFramework = false )
+  {
+    $instance = self::getInstance();
+    $result = $instance-&gt;_process( $instance-&gt;_system( $isFramework ), self::oTypeCronjob, $name );
+    if($result === false){
+      return false;
+    }
+    if(method_exists($result, 'construct')){
+      return $result::construct();
+    }
+    return $result;
+  }
+
+
+  public static function modal( $name, $isFramework = false )
+  {
+    $instance = self::getInstance();
+    $system = $instance-&gt;_system($isFramework);
+    $cached = $instance-&gt;_isCached($name, self::oTypeModal, $system);
+    if ($cached === false) {
+      if (!$instance-&gt;_include($system, self::oTypeModal, $name)) {
+        /** @todo Add a thrown exception pointing to where we were called here */
+        return false;
+      }
+      $qualifiedName = &quot;{$instance-&gt;_namespace(self::oTypeModal)}{$name}&quot;;
+      return $instance-&gt;_addCache($system, $qualifiedName, new $qualifiedName($instance-&gt;_dDbDatabase, $instance-&gt;_dDbObject));
+    }
+    return $cached;
+  }
+
+  public static function datatable( $name, $isFramework = true )
+  {
+    $instance = self::getInstance();
+    $system = $instance-&gt;_system($isFramework);
+    $cached = $instance-&gt;_isCached($name, self::oTypeDatatable, $system);
+    if ($cached === false) {
+      if (!$instance-&gt;_include($system, self::oTypeDatatable, $name)) {
+        /** @todo Add a thrown exception pointing to where we were called here */
+        return false;
+      }
+      $qualifiedName = &quot;{$instance-&gt;_namespace(self::oTypeDatatable)}{$name}&quot;;
+      return $instance-&gt;_addCache($system, $qualifiedName, new $qualifiedName($instance-&gt;_dDbDatabase, $instance-&gt;_dDbObject));
+    }
+    return $cached;
+  }
+
+  public static function printCacheMembers()
+  {
+    $instance = self::getInstance();
+    foreach( $instance-&gt;_dCache[self::rTypeFramework] as $name =&gt; $value ){
+      echo $name.&quot;\n&quot;;
+    }
+    foreach( $instance-&gt;_dCache[self::rTypeApplication] as $name =&gt; $value ){
+      echo $name.&quot;\n&quot;;
+    }
+  }
+
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

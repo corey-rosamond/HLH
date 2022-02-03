@@ -1,0 +1,126 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * Downsell2
+ *
+ * @package App\Event
+ * @version 1.2.0
+ */
+namespace App\Event;
+
+/**
+ * Downsell2
+ *
+ * This is the Checkout event
+ */
+class Downsell2 extends \App\Abstracts\Event
+{
+  /** @var int $_eventType */
+  protected $_eventType = self::downsell2;
+
+  /**
+   * Downsell1 constructor.
+   * @method __construct
+   * @param $system
+   */
+  public function __construct($system)
+  { return parent::__construct($system); }
+
+  /**
+   * Run the event
+   * @method run
+   */
+  public function run()
+  {
+    /** Run pre Qualify this will make sure we end up where we need to be */
+    $this-&gt;_preQualify();
+    /** @var array $outcome process the cart items */
+    $outcome = $this-&gt;_cFunnel-&gt;processCartAdditions($this-&gt;_products);
+    /** Check if the outcome is false */
+    if (!$outcome['result']) {
+      /** Check if we have an invalid amount error */
+      if ($outcome['messages'][1] == 'Invalid amount') {
+        /** @var integer $alreadyProcessed Start at 0 lets figure out if they have a balance */
+        $alreadyProcessed = 0;
+        /** @var array $orderItems Get the array of all the order items */
+        /** @var integer $product loop through the products being sold on this page */
+        foreach ($this-&gt;_products as &amp;$product) {
+          /** @var boolean $orderItem Check if the product is in the orderItems */
+          $orderItem = $this-&gt;_inOrderItems($orderItems, $product);
+          /** check if false was returned */
+          if ($orderItem !== false) {
+            /** Test if this item has already been reconciled */
+            if ($orderItem['status'] == \Framework\Commander\OrderItems::reconciled) {
+              /** Count this as a reconciled order */
+              $alreadyProcessed++;
+            }
+          }
+        }
+        /** Test if all the items for this page have been reconciled */
+        if (sizeof($this-&gt;_products) == sizeof($alreadyProcessed)) {
+          /**
+           * _completeAndMove will go ahead and complete the event for us
+           * including keeping track of the fact that this page type has been completed
+           */
+          $this-&gt;_completeAndMove(self::successNext);
+        }
+        $this-&gt;_errors = $outcome['messages'];
+        /** Complete the event and move the user to the next action */
+        $this-&gt;_completeAndMove(self::failureNext);
+      }
+      /** @var array $_errors Move the messages into the errors array */
+      $this-&gt;_errors = $outcome['messages'];
+      /** Complete the event and move the user to the next action */
+      $this-&gt;_completeAndMove(self::failureNext);
+    }
+    /**
+     * _completeAndMove will go ahead and complete the event for us
+     * including keeping track of the fact that this page type has been completed
+     */
+    $this-&gt;_completeAndMove(self::successNext);
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

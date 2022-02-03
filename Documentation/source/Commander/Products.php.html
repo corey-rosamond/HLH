@@ -1,0 +1,283 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+
+namespace Framework\Commander;
+
+class Products extends \Framework\Support\Abstracts\Singleton
+{
+
+  private $_cDocument;
+
+  /** Modals */
+  private $_mProducts; //Plural!
+
+  /** Tab Datatable Variables */
+  private $_dTabPortletType  = 'box';
+  private $_dTabPortletColor = 'blue-chambray';
+  private $_dTabPortletIcon  = &quot;fa fa-shopping-cart&quot;;
+  private $_dTabPortletTitle = &quot;Products&quot;;
+  private $_dTabDatatableID  = &quot;ProductsDatatable&quot;;
+  private $_dTabDatatableCol = [
+    [&quot;label&quot;=&gt;&quot;Key&quot;,        &quot;style&quot;=&gt;&quot;width:5%&quot;,       &quot;order&quot;=&gt;true],
+    [&quot;label&quot;=&gt;&quot;SKU #&quot;,        &quot;style&quot;=&gt;&quot;width:10%&quot;,    &quot;order&quot;=&gt;true],
+    [&quot;label&quot;=&gt;&quot;Product&quot;,      &quot;style&quot;=&gt;&quot;width:15%&quot;,    &quot;order&quot;=&gt;true],
+    [&quot;label&quot;=&gt;&quot;Description&quot;,  &quot;style&quot;=&gt;&quot;width:50%&quot;,    &quot;order&quot;=&gt;true],
+    [&quot;label&quot;=&gt;&quot;Price&quot;,        &quot;style&quot;=&gt;&quot;width:5%&quot;,     &quot;order&quot;=&gt;true],
+    [&quot;label&quot;=&gt;&quot;Cost&quot;,         &quot;style&quot;=&gt;&quot;width:5%&quot;,     &quot;order&quot;=&gt;true],
+    [&quot;label&quot;=&gt;&quot;Weight&quot;,       &quot;style&quot;=&gt;&quot;width:8%&quot;,     &quot;order&quot;=&gt;true],
+    [&quot;label&quot;=&gt;&quot;Digital&quot;,      &quot;style&quot;=&gt;&quot;width:2%&quot;,     &quot;order&quot;=&gt;true]
+  ];
+
+  //Truncation length for product descriptions (in characters)
+  private $_dDescLen = 150;
+
+  public static function construct()
+  {
+    $instance = self::getInstance();
+    $instance-&gt;_cDocument = \Framework\Core\Receptionist::controller( 'Document', true );
+    $instance-&gt;_mProducts = \Framework\Core\Receptionist::modal(&quot;Products&quot;, &quot;Holylandhealth&quot;, true);
+    return $instance;
+  }
+
+  /**
+   * Get the products associated with an order
+   * @method getOrderProducts
+   * @param $orderKey
+   * @return mixed
+   */
+  public function getOrderProducts($orderKey)
+  { return $this-&gt;_mProducts-&gt;getOrderProducts($orderKey); }
+
+
+  public function productsCount()
+  {
+    //return $this-&gt;_mProducts-&gt;countOrderMessages();
+    return $this-&gt;_mProducts-&gt;count();  //I have not yet checked where this is defined.
+  }
+
+  public function addProduct( $sku, $product, $description, $price, $cost, $weight, $digital)
+  {
+    // return $this-&gt;_mOrderMessages-&gt;addOrderMessage( $orderKey, $userKey, $message );
+
+    return $this-&gt;_mAddProduct-&gt;addProduct( $sku, $product, $description, $price, $cost, $weight, $digital );
+    //Like the previous method, I have not, yet, checked where this is defined... OR if it is defined.
+  }
+
+  public function getProduct( $key )
+  { return $this-&gt;_mProducts-&gt;getProduct( $key ); }
+
+
+  public function editProduct($key) {
+    //$sku was successfully passed into here.
+
+    //Receptionist gies us the Framework Commander Products object
+    $products = \Framework\Core\Receptionist::controller('Products', true);
+
+    //Assign the Products modal FROM that Products object to this $products variable,
+    //since it's those functions we want to use...
+    $products = $products-&gt;_mProducts;
+    //Confirmed method_exists($products, 'getProduct') returns TRUE at this point.
+
+    //Product returned by getProduct.
+    $gpProduct = $products-&gt;getProduct($key);
+
+    if (!array_key_exists('key', $gpProduct)) {
+      /* Every product returned by getProduct should have a 'key' key in its result.
+         If it doesn't, then the product with that key does not exist in the products
+         table.  In that case, throw an exception.
+      */
+      throw new Exception(&quot;Unable to get Product.&quot;);
+    }
+    else {
+      /* If we made it this far, that means we got a product back.  Display the
+         FORM input to edit this product... */
+
+      //Do the HTML-friendly formatting, here, so that we can pass the variables into the Heredoc
+      $key =         htmlspecialchars($gpProduct['key']);
+      $sku =         htmlspecialchars($gpProduct['sku']);
+      $name =        htmlspecialchars($gpProduct['name']);
+      $description = htmlspecialchars($gpProduct['description']);
+
+
+      $price =       $gpProduct['price'];
+      //Format the price, even more, using sprintf, so that it is in a familar format to the end-user
+      //First, check and make sure the price is not blank/null.
+      if (strlen($price) &gt; 0) {
+        $price =     sprintf(&quot;%01.2f&quot;, $price);
+      }
+      $price =       htmlspecialchars($price);
+
+      //Format the cost, even more, using sprintf, so that it is in a familar format to the end-user
+      //First, check and make sure the cost is not blank/null.
+      $cost =        $gpProduct['cost'];
+      if (strlen($cost) &gt; 0) {
+        $cost =      sprintf(&quot;%01.2f&quot;, $cost);
+      }
+      $cost =        htmlspecialchars($cost);
+
+      $weight =      $gpProduct['weight'];
+      if (strlen($cost) &gt; 0) {
+        $weight =    sprintf(&quot;%01.2f&quot;, $weight);
+      }
+      $weight =      htmlspecialchars($weight);
+
+      $price =       htmlspecialchars($price);
+
+      $imgURL =      $gpProduct['image'];  //No specialchars here since this is a URL and not innerHTML.
+
+      /* The funnel-products table has a field called is-digital
+         That field is a tinyint(1).  1 is true and 0 is false.
+         We will use this to include the presence of the 'checked' attribute
+         of that checkbox input */
+      $isDigital =   ($gpProduct['is-digital'] == 1) ? &quot;checked&quot; : &quot;&quot;;
+
+      $returnHTML = &lt;&lt;&lt;EOT
+&lt;b&gt;Product ID: {$gpProduct['key']}&lt;/b&gt;
+&lt;form action=&quot;&quot; id=&quot;edit-prod&quot; method=&quot;post&quot;&gt;
+
+&lt;input id=&quot;prod-key&quot; type=&quot;hidden&quot; name=&quot;key&quot; value=&quot;$key&quot;&gt;
+
+&lt;input id=&quot;prod-sku&quot; type=&quot;text&quot; name=&quot;sku&quot; value=&quot;$sku&quot;&gt;
+&lt;label for=&quot;prod-sku&quot;&gt;SKU&lt;/label&gt;&lt;br&gt;
+
+&lt;input id=&quot;prod-name&quot; type=&quot;text&quot; name=&quot;name&quot; value=&quot;$name&quot;&gt;
+&lt;label for=&quot;prod-sku&quot;&gt;Name&lt;/label&gt;&lt;br&gt;
+
+&lt;textarea id=&quot;prod-description&quot; cols=18 rows=5 name=&quot;description&quot;&gt;
+$description
+&lt;/textarea&gt;
+&lt;label for=&quot;prod-sku&quot;&gt;Description&lt;/label&gt;&lt;br&gt;
+
+&lt;input id=&quot;prod-price&quot; type=&quot;text&quot; name=&quot;price&quot; value=&quot;$price&quot;&gt;
+&lt;label for=&quot;prod-price&quot;&gt;Price&lt;sub&gt;($)&lt;/sub&gt;&lt;/label&gt;&lt;br&gt;
+
+&lt;input id=&quot;prod-cost&quot; type=&quot;text&quot; name=&quot;cost&quot; value=&quot;$cost&quot;&gt;
+&lt;label for=&quot;prod-sku&quot;&gt;Cost&lt;sub&gt;($)&lt;/sub&gt;&lt;/label&gt;&lt;br&gt;
+
+&lt;input id=&quot;prod-weight&quot; type=&quot;text&quot; name=&quot;weight&quot; value=&quot;$weight&quot;&gt;
+&lt;label for=&quot;prod-sku&quot;&gt;Weight&lt;sub&gt;(Lbs.)&lt;/sub&gt;&lt;/label&gt;&lt;br&gt;
+EOT;
+      //Check to see if we have an image URL...
+      if (strlen($imgURL) &gt; 1) {
+        //If so then display the image to the end user so they know what URL is currently set...
+        $returnHTML .= '
+&lt;img alt=&quot;Product Image&quot; src=&quot;' . $imgURL . '&quot; style=&quot;max-width: 200px&quot;&gt;&lt;br&gt;';
+        /* Note, we check if the length is greater than 1 (rather than 0) to
+           try and workaround some rogue newline or whitepace character being
+           the only character in the URL string in this table field. */
+      }
+
+
+      $returnHTML .= &lt;&lt;&lt;EOT
+&lt;input id=&quot;prod-image-url&quot; style=&quot;min-width:450px&quot; type=&quot;url&quot; name=&quot;prod-image-url&quot; value=&quot;$imgURL&quot;&gt;&lt;br&gt;
+&lt;label for=&quot;prod-image-url&quot;&gt;Product Image URL&lt;/label&gt;&lt;br&gt;&lt;br&gt;
+
+&lt;input id=&quot;prod-is-digital&quot; type=&quot;checkbox&quot; name=&quot;is-digital&quot; $isDigital value=&quot;true&quot;&gt;
+&lt;label for=&quot;prod-is-digital&quot;&gt;Is Digital?&lt;/label&gt;&lt;br&gt;
+
+&lt;input type=&quot;submit&quot; value=&quot;Save&quot;&gt;
+&lt;/form&gt;
+EOT;
+      return $returnHTML;
+    }
+  }
+
+
+
+  public function productsDatatable( ) //Removed key from arguments
+  {
+    return $this-&gt;_cDocument-&gt;portlet(
+      $this-&gt;_dTabPortletType,
+      $this-&gt;_dTabPortletColor,
+      $this-&gt;_dTabPortletIcon,
+      $this-&gt;_dTabPortletTitle,'',
+      $this-&gt;_cDocument-&gt;datatable(
+        $this-&gt;_dTabDatatableID,
+        $this-&gt;_dTabDatatableCol,
+        /*
+          $instance-&gt;_mProducts = \Framework\Core\Receptionist::modal( &quot;Products&quot;, &quot;Holylandhealth&quot;, true );
+          That gives us \Framework\Modulus\Modal\Products.php, which has a getProdcuts() method
+        */
+        $this-&gt;_formatDatatable($this-&gt;_mProducts-&gt;getProducts( ))
+      ),[],[],true
+    );
+  }
+
+  private function _formatDatatable( $products )
+  {
+    //If there are fields we do not want, edit the modulus\modal\products.php file
+    foreach( $products as &amp;$product ){
+      $product['key'] = &quot;&lt;a href=\&quot;?action=editProduct&amp;key=&quot; . urlencode($product['key']) . &quot;\&quot;&gt;&quot; . $product['key'] . &quot;&lt;/a&gt;&quot;;
+      $product['sku'] = $product['sku'];
+      $product['price']  = sprintf(&quot;$%01.2f&quot;, $product['price']);
+      $product['cost']   = sprintf(&quot;$%01.2f&quot;, $product['cost']);
+      $product['description'] = $this-&gt;truncateDescription(strip_tags($product['description']));
+      //Note the weight UOM is displayed in the User Agent as 'LBS'.
+      //That is because of front-end CSS.  The .uppercase class in components.css.
+      $product['weight'] = sprintf(&quot;%01.1f Lbs&quot;, $product['weight']);
+      $product['is-digital'] = ($product['is-digital'] ? &quot;Yes&quot; : &quot;No&quot;);
+    }
+    return $products;
+  }
+
+  private function truncateDescription($descInput) {
+    if (strlen($descInput) &gt; $this-&gt;_dDescLen) {
+      return substr($descInput, 0, $this-&gt;_dDescLen) . &quot;...&quot;;
+      //Place an elipses so the user knows the product desc has been truncated.
+    }
+    return $descInput;
+  }
+
+  /**
+   * Returns a list of products
+   * @return array
+   */
+  public function getProductList($limit = 100) {
+    //$returnBody = &quot;product list placeholder&quot;; //Work this stuff back in
+    return $this-&gt;productsDatatable();
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

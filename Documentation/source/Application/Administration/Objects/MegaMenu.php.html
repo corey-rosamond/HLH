@@ -1,0 +1,369 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * MegaMenu
+ *
+ * @package App\Objects
+ * @version 1.0.0
+ */
+namespace App\Objects;
+
+/**
+ * MegaMenu
+ *
+ * This is the interface for building mega  menus
+ */
+class MegaMenu{
+
+  /**
+   * the title that goes on the tab for this mega menu
+   * @var string
+   */
+  private $title;
+
+  /**
+   * index / id for this mega menu
+   * @var string|int
+   */
+  private $index;
+
+  /**
+   * indexed array of the sections and their content
+   * @var array
+   */
+  private $sections       = [];
+
+  /**
+   * this is an indexed array of associative arrays that contains
+   * the notes and their titles
+   * @var array
+   */
+  private $notes          = [];
+
+  /**
+   * SectionIndex for the NEXT section we create
+   * @var integer $sectionIndex
+   */
+  private $sectionIndex   = 0;
+
+  /**
+   * noteIndex for the NEXT note we create
+   * @var integer
+   */
+  private $noteIndex      = 0;
+
+  /**
+   * this is the flag used to set this menu item to active
+   * @var boolean
+   */
+  private $active         = false;
+
+  /**
+   * set the title
+   * @method setTitle
+   * @param  string   $title title for the mega menu
+   * @return This
+   * @access public
+   */
+  public function setTitle( $title ){
+    $this-&gt;title = $title;
+    return $this;
+  }
+
+  /**
+   * set the index for this mega menu
+   * @method setIndex
+   * @param  string id for this mega menu
+   * @return this
+   * @access public
+   */
+  public function setIndex( $index ){
+    $this-&gt;index = $index;
+    return $this;
+  }
+
+  /**
+   * Set the active flag to true
+   * @method makeActive
+   * @return this
+   * @access public
+   */
+  public function makeActive(){
+    $this-&gt;active = true;
+    return $this;
+  }
+
+  /**
+   * Add a section to this megaMenu
+   * @method addSection
+   * @param  string     $title  The title for this section
+   * @param  array()    $links['title'] $links['links']
+   * @access public
+   */
+  public function addSection( $title, $links = array() ){
+    /** Get an index for this note */
+    $sectionIndex = $this-&gt;getSectionIndex();
+    /** make the array */
+    $this-&gt;sections[$sectionIndex] = [];
+    /** set the title */
+    $this-&gt;sections[$sectionIndex]['title'] = $title;
+    $this-&gt;sections[$sectionIndex]['links'] = [];
+    /** check the links to seee if we have links to add */
+    if( count( $links ) &gt;= 1 ){
+      /** we have links lets add them */
+      foreach( $links as $link ){
+        $this-&gt;addSectionLink( $link['text'], $link['destination'], $sectionIndex );
+      }
+    }
+    /** we are done return this for method chaining */
+    return $this;
+  }
+
+  /**
+   * Add a link to a specific section
+   * @method addSectionLink
+   * @param  string         $text         Display text
+   * @param  string         $destination  The link destination
+   * @param  int            $sectionIndex The index of the section we are adding to
+   * @return this
+   * @access public
+   */
+  public function addSectionLink( $text, $destination, $sectionIndex ){
+    array_push(
+      $this-&gt;sections[$sectionIndex]['links'],
+      [ 'text'=&gt;$text, 'destination'=&gt;$destination ]
+    );
+    /** return this for method chaining */
+    return $this;
+  }
+
+  /**
+   * add a note
+   * @method addNote
+   * @param  string  $title     Note title
+   * @param  string  $message   The note itself
+   * @param  string  $color     The color scheme for this note
+   * @param  index   $noteIndex The index for this note
+   * @return this
+   * @access public
+   */
+  public function addNote( $title, $message, $color, $noteIndex ){
+    /** Get an index for this note */
+    $noteIndex = $this-&gt;getNoteIndex();
+    /** make the array */
+    $this-&gt;notes[$noteIndex] = [];
+    /** propigate the data **/
+    $this-&gt;notes[$noteIndex]['title']     = $title;
+    $this-&gt;notes[$noteIndex]['message']   = $message;
+    $this-&gt;notes[$noteIndex]['color']     = $color;
+    $this-&gt;notes[$noteIndex]['noteIndex'] = $noteIndex;
+    /** return this for method chaining */
+    return $this;
+  }
+
+  /**
+   * get a note index
+   * @method getNoteIndex
+   * @return int the new index
+   * @access private
+   */
+  private function getNoteIndex(){
+    $index = $this-&gt;noteIndex;
+    $this-&gt;noteIndex++;
+    return $index;
+  }
+
+  /**
+   * get a section index
+   * @method getSectionIndex
+   * @return int  the index
+   * @access public
+   */
+  private function getSectionIndex(){
+    $index = $this-&gt;sectionIndex;
+    $this-&gt;sectionIndex++;
+    return $index;
+  }
+
+  /**
+   * Construct the mega menu and pass a reference back for method chaining
+   * @method __construct
+   * @return this
+   * @access public
+   */
+  public function __construct( )
+  { return $this; }
+
+  /**
+   * Make the described mega menu and return the html
+   * @method make
+   * @return  string  All of the code for the mega menu
+   * @access public
+   */
+  public function make(){
+    /** start the menu */
+    $menu = '&lt;li class=&quot;mega-menu-dropdown mega-menu-full'.(($this-&gt;active)?' active':'').'&quot; data-hover=&quot;megamenu-dropdown&quot; data-close-others=&quot;true&quot;&gt;';
+      /** make the tab */
+      $menu .= $this-&gt;makeTab( $this-&gt;title );
+      /** start the drop down */
+      $menu .= '&lt;ul class=&quot;dropdown-menu&quot;&gt;';
+        /** start the nested menu wrap **/
+        $menu .= '&lt;li&gt;&lt;div class=&quot;mega-menu-content &quot;&gt;&lt;div class=&quot;row&quot;&gt;&lt;div class=&quot;col-md-8&quot;&gt;&lt;div class=&quot;row&quot;&gt;';
+          /** make all the sections */
+          foreach( $this-&gt;sections as $index =&gt; $section ){ $menu .= $this-&gt;makeSection( $section, $index ); }
+          /** make the seperation */
+          $menu .= '&lt;/div&gt;&lt;/div&gt;';
+          $menu .= '&lt;div class=&quot;col-md-4&quot;&gt;&lt;div id=&quot;accordion&quot; class=&quot;panel-group&quot;&gt;';
+          /** make the notes section */
+          $menu .= $this-&gt;makeNotesSection();
+        /** end the nested menu wrap */
+        $menu .= '&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/li&gt;';
+      /** end the drop down */
+      $menu .= '&lt;/ul&gt;';
+    /** end the menu */
+    return $menu.'&lt;/li&gt;';
+  }
+
+  /**
+   * Make the tab portion of the mega menu
+   * @method  makeTab
+   * @param   string  $title The title for this tab
+   * @return  string  The html content
+   * @access private
+   */
+  private function makeTab( $title )
+  {
+    return '
+    &lt;a data-close-others=&quot;true&quot; data-hover=&quot;megamenu-dropdown&quot; class=&quot;dropdown-toggle hover-initialized&quot; href=&quot;javascript:;&quot;&gt;
+      '.$title.' &lt;i style=&quot;margin-left:7px;&quot; class=&quot;fa fa-angle-down&quot;&gt;&lt;/i&gt;&lt;span style=&quot;margin-bottom:-5px;&quot; class=&quot;selected&quot;&gt;&lt;/span&gt;
+    &lt;/a&gt;';
+  }
+
+  /**
+   * Make a complete section
+   * @method makeSection
+   * @param  array        $data  all data need to make the section
+   * @param  int          $index thie index of this section
+   * @return string              The html for this section including the links
+   * @access private
+   */
+  private function makeSection( $data, $index ){
+    /** build the container for this section */
+    $section = '&lt;div class=&quot;col-md-3&quot;&gt;&lt;ul class=&quot;mega-menu-submenu&quot;&gt;';
+      /** make the tab for header for this section */
+      $section .= $this-&gt;makeSectionHeader( $data['title'] );
+      /** add the section links */
+      foreach( $data['links'] as $link ){ $section .= $this-&gt;makeSectionLink( $link['text'], $link['destination'] ); }
+    /** end the section and list */
+    return $section.'&lt;/ul&gt;&lt;/div&gt;';
+  }
+
+  /**
+   * Make a section header
+   * @method makeSectionHeader
+   * @param  string            $title The header text for this section
+   * @return string
+   * @access private
+   */
+  private function makeSectionHeader( $title )
+  { 
+    return '&lt;li&gt;&lt;h3 style=&quot;border-bottom:1px solid white;width:100%;font-size:16px;padding:0px 0px 3px 0px;&quot;&gt;'.$title.'&lt;/h3&gt;'; 
+  }
+
+  /**
+   * Make a section link
+   * @method makeSectionLink
+   * @param  string          $text        Display text
+   * @param  string          $destination Destination on click
+   * @return string                       Html to make the link
+   * @access private
+   */
+  private function makeSectionLink( $text, $destination )
+  { return '&lt;li&gt;&lt;a href=&quot;'.$destination.'&quot;&gt;'.$text.'&lt;/a&gt;&lt;/li&gt;'; }
+
+  /**
+   * Make the notes section of the mega menu
+   * @method makeNotesSection
+   * @return string           html content includeing the notes
+   * @access private
+   */
+  private function makeNotesSection(){
+    $notes = '';
+      foreach( $this-&gt;notes as $key =&gt; $note ){
+        $notes .= $this-&gt;makeNote(
+          $note['title'], $note['message'], $note['color'], $this-&gt;index, $key
+        );
+      }
+    return $notes;
+  }
+
+  /**
+   * Make a single note and return it
+   * @method makeNote
+   * @param  string   $title     The note title
+   * @param  string   $message   The note
+   * @param  string   $color     The color scheme
+   * @param  int      $menuIndex The index for this mega menu
+   * @param  int      $noteIndex The index for this note
+   * @return string              Html for this note
+   * @access private
+   */
+  private function makeNote( $title, $message, $color, $menuIndex, $noteIndex )
+  {
+    return '
+    &lt;div class=&quot;panel panel-'.$color.'&quot;&gt;
+      &lt;div class=&quot;panel-heading&quot;&gt;
+        &lt;h4 class=&quot;panel-title&quot;&gt;
+          &lt;a data-toggle=&quot;collapse&quot; data-parent=&quot;#accordion&quot; href=&quot;#note_'.$menuIndex.'_'.$noteIndex.'&quot; class=&quot;collapsed&quot;&gt; '.$title.' &lt;/a&gt;
+        &lt;/h4&gt;
+      &lt;/div&gt;
+      &lt;div id=&quot;note_'.$menuIndex.'_'.$noteIndex.'&quot; class=&quot;panel-collapse collapse&quot;&gt;
+        &lt;div class=&quot;panel-body&quot;&gt; '.$message.' &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;';
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

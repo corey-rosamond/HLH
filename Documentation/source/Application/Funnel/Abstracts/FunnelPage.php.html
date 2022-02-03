@@ -1,0 +1,569 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * FunnelPage
+ *
+ * @package App\Abstracts
+ * @version 1.2.0
+ */
+namespace App\Abstracts;
+
+/**
+ * FunnelPage
+ *
+ * This is the base funnelPage object all funnel pages extend this page. That gives
+ * them all of the redundant functionality we would normally have to write into each page object
+ * INFORMATION
+ *
+ * FUNNEL MODE
+ * fModeLive            = 0
+ * fModeDevelopment     = 1
+ * fModeMaintenance     = 2
+ * fModeComingSoon      = 3
+ * fModeOutOfStock      = 4
+ *
+ * DATA MEMBERS
+ * dataPrefix           = 0
+ * dataGoogleAnalytics  = 1
+ * dataAssetLocation    = 2
+ * dataConfiguration    = 3
+ * dataTitle            = 4
+ * dataHeader           = 5
+ * dataContent          = 6
+ * dataFooter           = 7
+ * dataSDest            = 8
+ * dataFDest            = 9
+ * dataTokens           = 10
+ * dataProducts         = 11
+ * dataFreshDesk        = 12
+ *
+ * ASSET LOCATIONS
+ * aLocationS3          = 0
+ * aLocationCF          = 1
+ *
+ * EXTRA CONTENT SECTIONS
+ * eSectionOne          = 0
+ * eSectionTwo          = 1
+ * eSectionThree        = 2
+ * eSectionFour         = 3
+ *
+ * EXTRA CONTENT TYPES
+ * cTypeEmpty           = 0
+ * cTypeContentOnly     = 1
+ * cTypeTitleAnContent  = 2
+ */
+\Framework\_IncludeCorrect(APP_ROOT.&quot;Abstracts&quot;.DSEP.&quot;Document.php&quot;);
+class FunnelPage extends Document
+{
+  /****************************************************/
+  /*                    FUNNEL MODE                   */
+  /****************************************************/
+  /** @const integer fModeLive */
+  const fModeLive = 0;
+  /** @const integer fModeDevelopment */
+  const fModeDevelopment = 1;
+  /** @const integer fModeMaintenance */
+  const fModeMaintenance = 2;
+  /** @const integer fModeComingSoon */
+  const fModeComingSoon = 3;
+  /** @const integer fModeOutOfStock */
+  const fModeOutOfStock = 4;
+  /****************************************************/
+  /*                   DATA MEMBERS                   */
+  /****************************************************/
+  /** @const integer dataPrefix */
+  const dataPrefix = 0;
+  /** @const integer dataAnalytics */
+  const dataGoogleAnalytics = 1;
+  /** @const integer dataResourceLocation */
+  const dataAssetLocation = 2;
+  /** @const integer dataConfiguration */
+  const dataConfiguration = 3;
+  /** @const integer dataTitle */
+  const dataTitle = 4;
+  /** @const integer dataHeader */
+  const dataHeader = 5;
+  /** @const integer dataContent */
+  const dataContent = 6;
+  /** @const integer dataFooter */
+  const dataFooter = 7;
+  /** @const integer dataSDest */
+  const dataSDest = 8;
+  /** @const integer dataFDest */
+  const dataFDest = 9;
+  /** @const integer dataTokens */
+  const dataTokens = 10;
+  /** @const integer dataProducts */
+  const dataProducts = 11;
+  /** @const integer dataFreshDesk */
+  const dataFreshDesk = 12;
+  /****************************************************/
+  /*                   ASSET LOCATION                 */
+  /****************************************************/
+  /** @const integer aLocationS3 */
+  const aLocationS3 = 0;
+  /** @const integer aLocationCF */
+  const aLocationCF = 1;
+  /****************************************************/
+  /*              EXTRA CONTENT SECTIONS              */
+  /****************************************************/
+  /** @const integer eSectionOne */
+  const eSectionOne = 0;
+  /** @const integer eSectionTwo */
+  const eSectionTwo = 1;
+  /** @const integer eSectionThree */
+  const eSectionThree = 2;
+  /** @const integer eSectionFour */
+  const eSectionFour = 3;
+  /****************************************************/
+  /*                EXTRA CONTENT TYPES               */
+  /****************************************************/
+  /** @const integer cTypeEmpty */
+  const cTypeEmpty = 0;
+  /** @const integer cTypeContentOnly */
+  const cTypeContentOnly = 1;
+  /** @const integer cTypeContentAndTitle */
+  const cTypeTitleAnContent = 2;
+  /****************************************************/
+  /*                CONTROLLER OBJECTS                */
+  /****************************************************/
+  /** @var \App\System $_system Pointer to the system object */
+  protected $_system;
+  /** @var \Framework\Commander\Funnel $_cFunnel */
+  protected $_cFunnel;
+  /****************************************************/
+  /*                     SETTINGS                     */
+  /****************************************************/
+  /** @var integer $_sFunnelMode */
+  protected $_sFunnelMode = self::fModeDevelopment;
+  /** @var boolean $_sHideErrors */
+  protected $_sHideErrors = false;
+  /** @var boolean $_sPreQualify */
+  protected $_sPreQualify = false;
+  /****************************************************/
+  /*                   DATA STORAGE                   */
+  /****************************************************/
+  /** @var array $_data */
+  protected $_data = [
+    self::dataPrefix =&gt; null,
+    self::dataGoogleAnalytics =&gt; null,
+    self::dataAssetLocation =&gt; null,
+    self::dataConfiguration =&gt; null,
+    self::dataTitle =&gt; null,
+    self::dataHeader =&gt; null,
+    self::dataContent =&gt; null,
+    self::dataFooter =&gt; null,
+    self::dataSDest =&gt; null,
+    self::dataFDest =&gt; null,
+    self::dataTokens =&gt; null,
+    self::dataProducts =&gt; null,
+    self::dataFreshDesk =&gt; null
+  ];
+  /** @var array $_aLocation */
+  protected $_aLocation = [
+    self::aLocationS3 =&gt; &quot;//s3-us-west-1.amazonaws.com/hhhmedia/&quot;,
+    self::aLocationCF =&gt; null
+  ];
+  /** @var array $_errors */
+  protected $_errors = [];
+
+  /**
+   * Construct the base page object and setup the environment for other pages
+   * @method _construct
+   * @param $system
+   * @return \App\Abstracts\FunnelPage
+   */
+  public function __construct($system)
+  {
+    $this-&gt;_system  = $system;
+    $this-&gt;_cFunnel = $system-&gt;_cFunnel;
+    if($this-&gt;_sPreQualify){
+      $this-&gt;_preQualify();
+    }
+    $this-&gt;_data[self::dataPrefix] = $system-&gt;_dFunnelHost;
+    $this-&gt;_data[self::dataTokens] = $system-&gt;_cFunnel-&gt;getTokens();
+    $this-&gt;_data[self::dataTitle] = $system-&gt;_cFunnel-&gt;getTitle();
+    $this-&gt;_data[self::dataHeader] = $system-&gt;_cFunnel-&gt;getHeader();
+    $this-&gt;_data[self::dataFooter] = $system-&gt;_cFunnel-&gt;getFooter();
+    $this-&gt;_data[self::dataContent] = $this-&gt;_parseContent($system-&gt;_cFunnel-&gt;getContent());
+    $this-&gt;_data[self::dataConfiguration] = $system-&gt;_cFunnel-&gt;getConfiguration();
+    $this-&gt;_data[self::dataAssetLocation] = $this-&gt;_assetLocation($system-&gt;_cFunnel-&gt;getAssetDirectory());
+    $this-&gt;_data[self::dataSDest] = $this-&gt;_successNext();
+    $this-&gt;_data[self::dataFDest] = $this-&gt;_failNext();
+    if(isset($this-&gt;_data[self::dataConfiguration]['Products'])){
+      $this-&gt;_data[self::dataProducts] = $this-&gt;_cFunnel-&gt;getProducts($this-&gt;_data[self::dataConfiguration]['Products']);
+    }
+    $this-&gt;_assetPath = $this-&gt;_data[self::dataAssetLocation];
+    $this-&gt;_tokens = $this-&gt;_data[self::dataTokens];
+    return parent::__construct($system);
+  }
+
+  /**
+   * Render the page
+   * @method renderPage
+   */
+  public function renderPage()
+  {
+    $this-&gt;_cFunnel-&gt;registerToken('{destination-success}',$this-&gt;_data[self::dataSDest]);
+    $this-&gt;_cFunnel-&gt;registerToken('{destination-failure}',$this-&gt;_data[self::dataFDest]);
+    $this-&gt;_cFunnel-&gt;registerToken('{image-location}', $this-&gt;_data[self::dataAssetLocation].&quot;images/&quot;);
+    $this-&gt;_tokens = $this-&gt;_cFunnel-&gt;getTokens();
+    /** Render the document */
+    $this-&gt;_render(
+      $this-&gt;_documentStart($this-&gt;_data[self::dataTitle]).
+      &quot;&lt;div id=\&quot;funnel-container\&quot;&gt;&quot;.
+      $this-&gt;_header($this-&gt;_data[self::dataHeader]).
+      $this-&gt;_contentAreas($this-&gt;_data[self::dataContent]).
+      &quot;&lt;/div&gt;&quot;.
+      $this-&gt;_footer($this-&gt;_data[self::dataFooter]).
+      $this-&gt;_javaScriptObject().
+      $this-&gt;_documentEnd()
+    );
+  }
+
+  /**
+   * Generate Content Areas
+   * @method _contentAreas
+   * @param $data
+   * @return string
+   */
+  protected function _contentAreas($data)
+  {
+    return $this-&gt;_errorContainer().
+    $this-&gt;_extraContent(self::eSectionOne, $data['extra-one']).
+    $this-&gt;_extraContent(self::eSectionTwo, $data['extra-two']).
+    $this-&gt;_content($data['content']).
+    $this-&gt;_extraContent(self::eSectionThree, $data['extra-three']).
+    $this-&gt;_extraContent(self::eSectionFour, $data['extra-four']);
+  }
+
+  /**
+   * Default content area this is only used if the page does not have
+   * its own page specific version
+   * @method _content
+   * @param $data
+   * @return string
+   */
+  protected function _content($data)
+  { return $this-&gt;_contentBox($data['content'], &quot;funnel-content&quot;, $data['title']); }
+
+  /**
+   * Generate the page extra content area requested
+   * @method _extraContent
+   * @param $section
+   * @param $data
+   * @return null
+   */
+  protected function _extraContent($section, $data)
+  {
+    /** Check if this is an empty content section */
+    if($data['type']==self::cTypeEmpty){
+      /** Return empty */
+      return null;
+    }
+    /** Build a content area using the type */
+    switch($data['type']){
+      case self::cTypeContentOnly:
+        return $this-&gt;_contentBox($data['content'], &quot;extra-content-{$section}&quot;);
+        break;
+      case self::cTypeTitleAnContent:
+        return $this-&gt;_contentBox($data['content'], &quot;extra-content-{$section}&quot;, $data['title']);
+        break;
+    }
+  }
+
+  /**
+   * Create the content box wrapper
+   * @method _contentBox
+   * @param $id
+   * @param $title
+   * @param $content
+   * @return string
+   */
+  protected function _contentBox($content, $id=&quot;funnel-content&quot;, $title=null)
+  {
+    if(!is_null($title)){
+      $title = &quot;&lt;h1&gt;{$title}&lt;/h1&gt;&quot;;
+    }
+    return &quot;&lt;div id=\&quot;{$id}\&quot; class=\&quot;funnel-content-box\&quot;&gt;{$title}{$content}&lt;/div&gt;&quot;;
+  }
+
+  /**
+   * Generate the error message display
+   * @method _ErrorContainer
+   * @return mixed
+   */
+  protected function _errorContainer()
+  {
+    /** Check if the error data session var is not set */
+    if(!isset($_SESSION[$this-&gt;_data[self::dataPrefix]]['error-data'])){
+      /** The session variable is not set so we have no errors */
+      return null;
+    }
+    /** Check the count of errors in the error data session var is 0 */
+    if(sizeof($_SESSION[$this-&gt;_data[self::dataPrefix]]['error-data'])==0){
+      /** 0 Errors to display */
+      return null;
+    }
+    /** @var string $eMessages This is where we are going to write the error messages */
+    $eMessages = &quot;&quot;;
+    /** @var string $eMessage Loop through the error messages */
+    foreach($_SESSION[$this-&gt;_data[self::dataPrefix]]['error-data'] as $eMessage){
+      /** Append the $eMessage to $eMessages */
+      $eMessages .= &quot;&lt;li&gt;{$eMessage}&lt;/li&gt;&quot;;
+    }
+    /** Write the error messages to the default error display div */
+    return &quot;&lt;div id=\&quot;funnel-default-error-display\&quot;&gt;&lt;ul&gt;{$eMessages}&lt;/ul&gt;&lt;/div&gt;&quot;;
+  }
+
+  /**
+   * Write the funnel header to the document body
+   * @method _header
+   * @param string $content
+   * @return string
+   */
+  protected function _header($content)
+  { return &quot;&lt;div id=\&quot;funnel-header\&quot;&gt;{$content}&lt;/div&gt;&quot;; }
+
+  /**
+   * Write the funnel footer to the document body
+   * @method _footer
+   * @param string $content
+   * @return string
+   */
+  protected function _footer($content)
+  {
+    return &quot;&lt;div id=\&quot;funnel-footer\&quot;&gt;{$content}&lt;/div&gt;&quot;.
+    $this-&gt;_googleAnalytics().
+    $this-&gt;_freshDesk();
+  }
+
+  /**
+   * Return Google Analytics
+   * @method _googleAnalytics
+   * @return null
+   */
+  protected function _googleAnalytics()
+  {
+    /** Check if we are in development */
+    if($this-&gt;_sFunnelMode==self::fModeDevelopment){
+      /** Return null we dont need google analytics in development */
+      return null;
+    }
+    /** Check if google analytics code was provided */
+    if(is_null($this-&gt;_data[self::dataGoogleAnalytics])){
+      /** Return null */
+      return null;
+    }
+    /** Return the google analytics code */
+    return $this-&gt;_data[self::dataGoogleAnalytics];
+  }
+
+  /**
+   * Return Fresh Desk
+   * @method _freshDesk
+   * @return null
+   */
+  protected function _freshDesk()
+  {
+    /** Check if we are in development */
+    if($this-&gt;_sFunnelMode==self::fModeDevelopment){
+      /** Return null we dont need fresh desk in development */
+      return null;
+    }
+    /** Check if fresh desk code was provided */
+    if(is_null($this-&gt;_data[self::dataFreshDesk])){
+      /** Return null */
+      return null;
+    }
+    /** Return the fresh desk code */
+    return $this-&gt;_data[self::dataFreshDesk];
+  }
+
+  /****************************************************/
+  /*                  Support Method                  */
+  /****************************************************/
+
+  /**
+   * Return the asset location
+   * @method _assetLocation
+   * @param $location
+   * @return string
+   */
+  protected function _assetLocation($location)
+  {
+    if(is_null($location)){
+      return $this-&gt;_aLocation[self::aLocationS3].&quot;FunnelResources/&quot;.$this-&gt;_data[self::dataPrefix].&quot;/&quot;;
+    }
+    return $this-&gt;_aLocation[self::aLocationS3].&quot;FunnelResources/{$location}/&quot;;
+  }
+
+  /**
+   * Parse the content for this page and return flat text or the page
+   * content array. If it is not an array put us in text mode
+   * @method _parseContent
+   * @param string $content
+   * @return mixed
+   */
+  protected function _parseContent($content)
+  {
+    $result = json_decode($content, true);
+    if(is_array($result)){
+      return $result;
+    }
+    return $content;
+  }
+
+  /**
+   * Generate the products inputs as by creating it this way on every
+   * we avoid having to worry about it and the products show in post as
+   * as an array
+   * @method _products
+   * @return string
+   */
+  protected function _products()
+  {
+    $product = '';
+    /** Iterate over the products keys and their values */
+    foreach($this-&gt;_data[self::dataProducts] as $key=&gt;$value){
+      /** Append this input to the $product var */
+      $product .= &quot;&lt;input type=\&quot;hidden\&quot; value=\&quot;{$key}\&quot; name=\&quot;products[]\&quot;&gt;&quot;;
+    }
+    /** return the product inputs */
+    return $product;
+  }
+
+  /**
+   * This builds the frameworks javascript instructions container
+   * The simplest way of explaining this is. Any thing we want the javascript
+   * counterpart for the funnel to do. We pass it instructions here. Then when the page
+   * loads the framework grabs this dom object and reads all the attributes out
+   * as instructions
+   * @method _JavaScriptObject()
+   * @return string
+   */
+  protected function _javaScriptObject()
+  {
+    /** Check if the javascript config object is set */
+    if(isset($this-&gt;_data[self::dataConfiguration]['JavaScript'])){
+      /** @var string $JavaScriptInstructions */
+      $javaScriptInstructions = &quot;&quot;;
+      /** Iterate over all of the javascript instructions and add data attributes for each */
+      foreach($this-&gt;_data[self::dataConfiguration]['JavaScript'] as $instruction =&gt; $detail){
+        /** Add this key value pair the the DIV */
+        $javaScriptInstructions .= &quot; {$instruction}=\&quot;{$detail}\&quot;&quot;;
+      }
+      /** Write the DIV to the buffer */
+      return &quot;&lt;div{$javaScriptInstructions} id=\&quot;framework-instruction-object\&quot;&gt;&lt;/div&gt;&quot;;
+    }
+    return null;
+  }
+
+  /****************************************************/
+  /*                Navigation Methods                */
+  /****************************************************/
+
+  /**
+   * The next success destination
+   * @method _successNext
+   * @return string
+   */
+  protected function _successNext()
+  {
+    /** @var array $map */
+    $map = $this-&gt;_map();
+    /** @var integer $type */
+    $type = $this-&gt;_type();
+    if(!isset($map[$type][self::successNext])){
+      return null;
+    }
+    foreach($map[$type][self::successNext] as $dest) {
+      /** Convert the dest into a type, destination pair */
+      list($type, $destination) = $dest;
+      /** @var mixed $dest Try and get the destination */
+      $page = $this-&gt;_getPageByType($destination);
+      /** Test if page is false */
+      if ($page) {
+        /** @var string $base Setup the base for the redirect */
+        $base = (($type == self::typePage) ? &quot;/&quot; : &quot;/Event/&quot;);
+        /** Redirect the user to the given destination */
+        return &quot;{$base}{$page['name']}&quot;;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Find the next fail destination
+   * @method _failNext
+   * @return string
+   */
+  protected function _failNext()
+  {
+    /** @var array $map */
+    $map = $this-&gt;_map();
+    /** @var integer $type */
+    $type = $this-&gt;_type();
+    if(!isset($map[$type][self::failureNext])){
+      return null;
+    }
+    foreach($map[$type][self::failureNext] as $dest) {
+      /** Convert the dest into a type, destination pair */
+      list($type, $destination) = $dest;
+      /** @var mixed $dest Try and get the destination */
+      $page = $this-&gt;_getPageByType ($destination);
+      /** Test if page is false */
+      if ($page !== false) {
+        /** @var string $base Setup the base for the redirect */
+        $base = (($type == self::typePage) ? &quot;/&quot; : &quot;/Event/&quot;);
+        /** Redirect the user to the given destination */
+        return &quot;{$base}{$page['name']}&quot;;
+      }
+    }
+    return null;
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,115 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+
+namespace Framework\Commander;
+
+class OrderNotes extends \Framework\Support\Abstracts\Singleton
+{
+
+  private $_cDocument;
+
+  /** Modals */
+  private $_mOrderMessages;
+
+  /** Tab Datatable Variables */
+  private $_dTabPortletType  = 'box';
+  private $_dTabPortletColor = 'blue-chambray';
+  private $_dTabPortletIcon  = &quot;fa fa-hourglass&quot;;
+  private $_dTabPortletTitle = &quot;Order Messages&quot;;
+  private $_dTabDatatableID  = &quot;MessagesDatatable&quot;;
+  private $_dTabDatatableCol = [
+    [&quot;label&quot;=&gt;&quot;Message #&quot;,        &quot;style&quot;=&gt;&quot;text-align:center;width:7%&quot;,    &quot;order&quot;=&gt;true],
+    [&quot;label&quot;=&gt;&quot;Order #&quot;,          &quot;style&quot;=&gt;&quot;text-align:center;width:7%&quot;,    &quot;order&quot;=&gt;true],
+    [&quot;label&quot;=&gt;&quot;User&quot;,             &quot;style&quot;=&gt;&quot;width:15%&quot;,                     &quot;order&quot;=&gt;true],
+    [&quot;label&quot;=&gt;&quot;Message&quot;,          &quot;style&quot;=&gt;&quot;width:41%&quot;,                     &quot;order&quot;=&gt;true],
+    [&quot;label&quot;=&gt;&quot;Date &amp;amp; Time&quot;,  &quot;style&quot;=&gt;&quot;width:20%&quot;,                     &quot;order&quot;=&gt;true]
+  ];
+
+
+
+
+  public static function construct()
+  {
+    $instance = self::getInstance();
+    $instance-&gt;_cDocument   = \Framework\Core\Receptionist::controller( 'Document', true );
+    $instance-&gt;_mOrderNotes = \Framework\Core\Receptionist::modal( &quot;OrderNotes&quot;, true );
+    return $instance;
+  }
+
+  public function orderNoteCount($orderKey)
+  { return $this-&gt;_mOrderNotes-&gt;countOrderNote($orderKey); }
+
+  public function addOrderNote( $order, $user, $message )
+  { return $this-&gt;_mOrderNotes-&gt;addOrderNote( $order, $user, $message ); }
+
+  public function orderNotesDatatable( $orderKey )
+  {
+    return $this-&gt;_cDocument-&gt;portlet(
+      $this-&gt;_dTabPortletType,
+      $this-&gt;_dTabPortletColor,
+      $this-&gt;_dTabPortletIcon,
+      $this-&gt;_dTabPortletTitle,'',
+      $this-&gt;_cDocument-&gt;datatable(
+        $this-&gt;_dTabDatatableID,
+        $this-&gt;_dTabDatatableCol,
+        $this-&gt;_formatDatatable($this-&gt;_mOrderMessages-&gt;getOrderMessages( $orderKey ))
+      ),[],[],true
+    );
+  }
+
+  private function _formatDatatable( $messages )
+  {
+    foreach( $messages as &amp;$entry ){
+      $entry['key']       = sprintf('#%08d',$entry['key']);
+      $entry['order-key'] = sprintf('#%08d',$entry['order-key']);
+      $entry['message']   = (($entry['message']==&quot;&quot;)?'No Message!':$entry['message']);
+      $entry['timestamp'] = (($entry['timestamp']==&quot;0000-00-00 00:00:00&quot;)?&quot;Bad Entry&quot;:date(&quot;l jS \of F Y h:i:s A&quot;,strtotime($entry['timestamp'])));
+    }
+    return $messages;
+  }
+
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

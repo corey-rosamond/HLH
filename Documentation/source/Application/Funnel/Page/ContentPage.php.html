@@ -1,0 +1,74 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * ContentPage
+ *
+ * @package App\Page
+ * @version 1.2.0
+ */
+namespace App\Page;
+
+/**
+ * ContentPage
+ *
+ * The ContentPage page
+ */
+class ContentPage extends \App\Abstracts\FunnelPage
+{
+  /** @var int Include the pageType */
+  protected $_pageType = self::contentPage;
+
+  /**
+   * Builds the content area and calls all sub functions to build
+   * the ui specific to this page
+   * @method _content
+   * @param $content
+   * @return string
+   */
+  protected function _content($content)
+  { return &quot;&lt;div id=\&quot;funnel-content\&quot;&gt;{$content['content']}&lt;/div&gt;&quot;; }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,102 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+
+namespace Framework\Modulus\Modal;
+
+class TrackingViews extends \Framework\Modulus\Query
+{
+  /**
+   * Add a page view to a session
+   * @method addView
+   * @param $sessionKey
+   * @param $pageKey
+   * @param $loadTime
+   * @throws \Framework\Exceptional\PDOdatabasesException
+   */
+  public function addView($sessionKey, $pageKey, $loadTime)
+  {
+    $query = &quot;INSERT INTO `funnel-session-views` (`funnel-session-key`, `funnel-page-key`, `load-time`) VALUES (:sessionKey, :pageKey, :loadTime)&quot;;
+    $preparedStatement = $this-&gt;Prepare($query);
+    $preparedStatement-&gt;bindValue(':sessionKey',  $sessionKey,  \PDO::PARAM_INT);
+    $preparedStatement-&gt;bindValue(':pageKey',     $pageKey,     \PDO::PARAM_INT);
+    $preparedStatement-&gt;bindValue(':loadTime',    $loadTime,    \PDO::PARAM_STR);
+    $this-&gt;Execute($preparedStatement);
+  }
+
+  /**
+   * Generate page view counts for a funnel and campaign
+   * @method funnelCampaignPageViews
+   * @param $startDate
+   * @param $endDate
+   * @param $funnelKey
+   * @param $emailLinkKey
+   * @return mixed
+   * @throws \Framework\Exceptional\PDOdatabasesException
+   */
+  public function funnelCampaignPageViews($startDate, $endDate, $funnelKey, $emailLinkKey)
+  {
+    $query = &quot;
+      SELECT
+        `fsv`.`funnel-page-key` as `page`,
+        count(`fsv`.`key`) as `views`
+      FROM `funnel-sessions` AS `fs`
+      LEFT JOIN `funnel-session-views` AS `fsv`
+      ON `fs`.`key`=`fsv`.`funnel-session-key`
+      WHERE `fs`.`funnel-key`=:funnelKey
+      AND `fs`.`campaign-key`=:emailLinkKey
+      AND `fs`.`time-stamp` &gt; DATE_SUB(NOW(),INTERVAL 5 DAY)
+      GROUP BY `fsv`.`funnel-page-key`&quot;;
+    $preparedStatement = $this-&gt;Prepare($query);
+    $preparedStatement-&gt;bindValue(':funnelKey', $funnelKey, \PDO::PARAM_INT);
+    $preparedStatement-&gt;bindValue(':emailLinkKey', $emailLinkKey, \PDO::PARAM_INT);
+    $preparedStatement = $this-&gt;Execute($preparedStatement);
+    if( $preparedStatement-&gt;rowCount() &lt;= 0 ){
+      return false;
+    }
+    return $preparedStatement-&gt;fetchAll(\PDO::FETCH_ASSOC);
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

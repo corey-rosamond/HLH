@@ -1,0 +1,12 @@
+RewriteEngine on
+RewriteBase /
+RewriteCond %{HTTPS} off
+RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R,L]
+RewriteCond %{REQUEST_FILENAME} -s [OR]
+RewriteCond %{REQUEST_FILENAME} -l [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^.*$ - [NC,L]
+RewriteRule ^[^/]+/([^.]+\.(?:js|css|jpe?g|png|gif|eot|woff|ttf|svg))$ /$1 [L,R=301,NC]
+RewriteRule ^.*$ index.php [NC,L]
+RewriteCond %{HTTPS} off
+RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R,L]

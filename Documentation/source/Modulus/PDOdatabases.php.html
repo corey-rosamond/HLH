@@ -1,0 +1,136 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * PDOdatabases
+ *
+ * @package Framework\Modulus
+ * @version 1.0.0
+ */
+namespace Framework\Modulus;
+
+/**
+ * PDOdatabases
+ *
+ *This is a singleton instance of our database object
+ *containing database connections
+ *
+ *First instantiation requires a config object passed to connect
+ *After that it only requires the database name, as it stores the config object
+ *Edit as you please, test with PDOdatabasesUT.php
+ *
+ *This will still need its exception class extended so that you can pass the object instance with the exception.
+ */
+
+class PDOdatabases
+{
+    //Instance of this objects
+    /**
+     * @var mixed
+     */
+    private static $instances = array();
+    //Array of database connections
+    /**
+     * @var mixed
+     */
+    private $dbs = null;
+    //Database config instance
+    /**
+     * @var mixed
+     */
+    private $_config = null;
+    //Create an instance of this object
+    public static function create_instance()
+    {
+      $cls = get_called_class();
+      if (!isset(self::$instances[$cls])) {
+          self::$instances[$cls] = new static;
+      }
+      return self::$instances[$cls];
+    } //End create_instance()
+    //This function connects to a database
+    /**
+     * @param $dbname
+     * @param DBConfig $config
+     * @return mixed
+     */
+    public function connect($dbname, DBConfig $config = null)
+    {
+      if(isset($this-&gt;dbs[$dbname])){
+        return $this-&gt;dbs[$dbname];
+      }
+
+      if (!isset($this-&gt;_config[$dbname])) {
+        if (null === $config) {
+          throw new \Framework\Exceptional\PDOdatabasesException('Database configuration object is not set');
+        }
+        $this-&gt;_config[$dbname] = $config;
+      }
+      $config = $this-&gt;_config[$dbname];
+      $this-&gt;dbs[$dbname] = new \PDO(
+        $config::type .
+        ':host=' . $config::$host .
+        ';port=' . $config::$port .
+        ';dbname=' . $config::$database,
+        $config::$user,
+        $config::$password
+      );
+      $this-&gt;dbs[$dbname]-&gt;setAttribute( \PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION );
+      $this-&gt;dbs[$dbname]-&gt;setAttribute( \PDO::ATTR_EMULATE_PREPARES, false );
+      return $this-&gt;dbs[$dbname];
+    }
+  public function resetconnection($dbname)
+  {
+    if ( !isset( $this-&gt;dbs[$dbname]) ){
+      throw new \Framework\Exceptional\PDOdatabasesException('Database connection defined does not exist', 2 );
+    }
+    unset($this-&gt;dbs[ $dbname ]);
+  }
+}
+
+//Exception class for the databases class
+class PDOdatabasesException extends \Framework\Exceptional\BaseException
+{}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

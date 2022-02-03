@@ -1,0 +1,145 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * Dashboard
+ *
+ * @package App\Event\Page\Main
+ * @version 1.0.0
+ */
+namespace App\Event\Main;
+
+/**
+ * Main Dashboard
+ *
+ */
+
+class ReportDashboard extends \App\Event\Page
+{
+    /** @var string document title */
+    public $title = &quot;Report Dashboard&quot;;
+    /** @var string Header */
+    public $header = &quot;Report Breakdown&quot;;
+    /** @var string smaller header */
+    public $subheader = &quot;great stats at a glance&quot;;
+    /** @var string this is the html we want the view to output */
+    public $Return;
+    public function __construct()
+    {}
+    /**
+     * @return mixed
+     */
+    public function build()
+    {
+        /** MODELS */
+        $this-&gt;TrackingModel = \Framework\Core\Modulus::get('Tracking', 'Holylandhealth');
+        $this-&gt;OrderModel = \Framework\Core\Modulus::get('Orders', 'Holylandhealth');
+        /** QUERYS */
+        $Campaigns = $this-&gt;TrackingModel-&gt;getCampaigns();
+        $Impressions = $this-&gt;TrackingModel-&gt;getCampaignImpressions();
+        $Sales = $this-&gt;OrderModel-&gt;ordersPerCampaign();
+        // holder for the data
+        $this-&gt;data = array();
+
+        // Filter the info
+        foreach ($Campaigns as $Campaign) {
+            $this-&gt;data[$Campaign['key']] = [];
+            $this-&gt;data[$Campaign['key']]['name'] = $Campaign['name'];
+            $this-&gt;data[$Campaign['key']]['impressions'] = 0;
+        }
+        foreach ($Impressions as $Impression) {
+            $this-&gt;data[$Impression['campaign-key']]['impressions'] = $Impression['impressions'];
+        }
+        foreach ($Sales as $Sale) {
+            $this-&gt;data[$Sale['campaign-key']]['total-sales'] = $Sale['sales'];
+            $this-&gt;data[$Sale['campaign-key']]['revenue'] = $Sale['sold'];
+        }
+
+        $this-&gt;Return .= &quot;
+        &lt;div class='portlet box green'&gt;
+            &lt;div class='portlet-title'&gt;
+                &lt;div class='caption'&gt;&lt;i class='fa fa-globe'&gt;&lt;/i&gt;Tracking Links &lt;/div&gt;
+                &lt;div class='tools'&gt; &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class='portlet-body'&gt;
+                &lt;table class='table table-striped table-bordered table-hover dt-responsive' width='100%' id='sample_3' cellspacing='0' width='100%'&gt;
+                    &lt;thead&gt;
+                        &lt;tr&gt;
+                            &lt;th &gt;key&lt;/th&gt;
+                            &lt;th &gt;name&lt;/th&gt;
+                            &lt;th &gt;impressions&lt;/th&gt;
+                            &lt;th &gt;total sales&lt;/th&gt;
+                            &lt;th &gt;total revenue&lt;/th&gt;
+                        &lt;/tr&gt;
+                    &lt;/thead&gt;
+                    &lt;tbody&gt;&quot;;
+        foreach ($this-&gt;data as $key =&gt; $row) {
+            if (isset($row['name'])) {
+                if (!isset($row['total-sales'])) {$row['total-sales'] = '0';}
+                if (!isset($row['revenue'])) {$row['revenue'] = '0.00';}
+                $this-&gt;Return .= &quot;
+                &lt;tr&gt;
+                    &lt;td&gt;&quot; . $key . &quot;&lt;/td&gt;
+                    &lt;td&gt;&quot; . $row['name'] . &quot;&lt;/td&gt;
+                    &lt;td&gt;&quot; . $row['impressions'] . &quot;&lt;/td&gt;
+                    &lt;td&gt;&quot; . $row['total-sales'] . &quot;&lt;/td&gt;
+                    &lt;td&gt;&quot; . $row['revenue'] . &quot;&lt;/td&gt;
+                &lt;/tr&gt;&quot;;
+            }
+        }
+
+        return $this-&gt;Return . &quot;&lt;tbody&gt;&lt;/table&gt;&lt;/div&gt;&lt;/div&gt;&quot;;
+    }
+
+    /**
+     * @param $header
+     */
+    private function PortletHeader($header, $data)
+    {
+
+    }
+
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

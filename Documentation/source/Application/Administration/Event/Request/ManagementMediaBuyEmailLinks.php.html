@@ -1,0 +1,209 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * ManagementMediaBuyEmailLinks
+ *
+ * @package App\Event\Request
+ * @version 1.0.0
+ */
+namespace App\Event\Request;
+
+/**
+ * ManagementMediaBuyEmailLinks
+ *
+ * All request functions for the MediaBuy Email Links
+ */
+class ManagementMediaBuyEmailLinks  extends \Framework\Event\Base
+{
+  /** @var does this request object require you to be logged in */
+  public $requiresLogin   = true;
+
+  /** @var the permission this system requires */
+  public $permissionGroup = 'media-buy';
+
+  /** @var the permission this system requires */
+  public $permission      = null;
+
+  /** @var did this event succeed in some way */
+  private $result         = false;
+
+  /** @var response data */
+  private $data           = 'Insufficient data provided!';
+
+  /**
+   * __construct the event object
+   * @method __construct
+   * @return self
+   * @access public
+   */
+  public function __construct()
+  {
+    /** Get the users model so we can set owning user for promoters */
+    $this-&gt;userModel        = \Framework\Core\Modulus::get(&quot;User&quot;,                &quot;Holylandhealth&quot;, false);
+    /** Get the promoters model so we can manipulate promoters */
+    $this-&gt;promotersModel   = \Framework\Core\Modulus::get(&quot;MediaBuyPromoters&quot;,   &quot;Holylandhealth&quot; );
+    /** Get the email link model so we can manipulate the links */
+    $this-&gt;emailLinksModel  = \Framework\Core\Modulus::get(&quot;MediaBuyEmailLinks&quot;,  &quot;Holylandhealth&quot; );
+    /** Get the funnels model so we can select funnels for the links */
+    $this-&gt;funnelsModel     = \Framework\Core\Modulus::get(&quot;Funnels&quot;,             &quot;Holylandhealth&quot; );
+    /** return this for method chaining */
+    return $this;
+  }
+
+  /**
+   * This handles the events and returns the requested data
+   * @method run
+   * @return string json response to the request
+   * @access public
+   */
+  public function run()
+  {
+    /** Wrap this in a try catch to capture all the errors and log them */
+    try {
+      /** if the post data object is empty we are done */
+      if(empty($_POST)){            return $this-&gt;jsonReturn( false, '$_POST not set!' );             }
+      /** if they dident give us an action we are done */
+      if(!isset($_POST['action'])){ return $this-&gt;jsonReturn( false, 'Done no process requested!' );  }
+      /** We are sure we should be doing what they asked so do it */
+      $this-&gt;processEvent( $_POST['action'] );
+      /** return the result as a json string */
+      $this-&gt;jsonReturn( $this-&gt;result, $this-&gt;data );
+    /** Catch all framework based exceptions */
+    } catch (\Framwork\Core\Exceptional\BaseException $e) {
+      /** Something bad happen log it */
+      $e-&gt;log();
+      /** Return an error */
+      return $this-&gt;jsonReturn( false, &quot;An error occured during your request!&quot;);
+    }
+  }
+
+  /**
+   * Process the requested event if possible
+   * @method processEvent
+   * @param  string       $event the event we were asked to run
+   * @return void
+   * @access private
+   */
+  private function processEvent( $event ){
+    /** set result to true since we are here */
+    $this-&gt;result = true;
+    /** find the requested event and do it */
+    switch( $event ){
+
+      /** Search */
+      case 'search-users':        /** USER */
+        $this-&gt;data = $this-&gt;userModel-&gt;userSearch( $_POST['query'] );
+      break;
+      case 'search-promoters':    /** PROMOTER */
+        $this-&gt;data = $this-&gt;promotersModel-&gt;promoterSearch( $_POST['query'] );
+      break;
+      case 'search-funnels':      /** FUNNEL */
+        $this-&gt;data = $this-&gt;funnelsModel-&gt;funnelSearch( $_POST['query'] );
+      break;
+
+      /** GET DATA */
+      case 'get-link-data':       /** LINK */
+        $this-&gt;data = $this-&gt;emailLinksModel-&gt;getLink( $_POST['key'] );
+      break;
+      case 'get-promoter-data':   /** PROMOTER */
+        $this-&gt;data = $this-&gt;promotersModel-&gt;getPromoter( $_POST['key'] );
+      break;
+
+
+      /** GET NAME */
+      case 'get-link-name':       /** LINK */
+        $this-&gt;data = $this-&gt;emailLinksModel-&gt;getLinkName( $_POST['key'] );
+      break;
+      case 'get-promoter-name':   /** PROMOTER */
+        $this-&gt;data = $this-&gt;promotersModel-&gt;getPromoterName( $_POST['key'] );
+      break;
+      case 'get-funnel-name':     /** FUNNEL */
+        $this-&gt;data = $this-&gt;funnelsModel-&gt;getFunnelName( $_POST['key'] );
+      break;
+
+
+      /** ADD */
+      case 'add-promoter':        /** PROMOTER */
+        $this-&gt;data = $this-&gt;promotersModel-&gt;makePromoter( $_POST['owner-key'], $_POST['name'] );
+      break;
+      case 'add-link':            /** LINK */
+        $this-&gt;data = $this-&gt;emailLinksModel-&gt;makeEmailLink(
+          $_POST['name'], $_POST['promoter'], $_POST['funnel'], $_POST['cost'], $_POST['return'],
+          $_POST['start'], $_POST['end']
+        );
+      break;
+
+      /** UPDATE */
+      case 'update-link':         /** LINK */
+        $this-&gt;data = $this-&gt;emailLinksModel-&gt;updateEmailLink(
+          $_POST['name'], $_POST['promoter'], $_POST['funnel'], $_POST['cost'], $_POST['return'],
+          $_POST['start'], $_POST['end'], $_POST['key']
+        );
+      break;
+      case 'update-promoter':     /** PROMOTER */
+        $this-&gt;data = $this-&gt;promotersModel-&gt;updatePromoter( );
+      break;
+
+      /** FAIL */
+      default:
+        $this-&gt;result = false;
+        $this-&gt;data   = &quot;$event Undefined!&quot;;
+      break;
+    }
+  }
+
+  /**
+   * Return the result of this request
+   * @method jsonReturn
+   * @param  boolean     $result  did we suceed in what we wanted to do
+   * @param  str         $data    the data or message returned form this request
+   * @return void
+   */
+  private function jsonReturn( $result, $data ){
+    echo json_encode( array( 'result' =&gt; $result, 'data' =&gt; $data ) );
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

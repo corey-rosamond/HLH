@@ -1,0 +1,131 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * MediaBuyEmail
+ *
+ * @package Framework\Advent
+ * @version 1.2.0
+ */
+namespace Framework\Commander;
+
+class MediaBuyEmail extends Commander
+{
+
+  private $_mMediaBuyEmailLinks;
+  private $_mMediaBuyPromoters;
+
+  public static function construct()
+  {
+    $instance = self::getInstance();
+    $instance-&gt;_mMediaBuyEmailLinks = \Framework\Core\Receptionist::modal(&quot;MediaBuyEmailLinks&quot;, true);
+    //$instance-&gt;_mMediaBuyPromoters  = \Framework\Core\Receptionist::modal(&quot;MediaBuyEmailLinks&quot;, &quot;Holylandhealth&quot;, true);
+    return $instance;
+  }
+
+
+  public function campaignExists($funnelKey, $campaignKey)
+  { return $this-&gt;_mMediaBuyEmailLinks-&gt;campaignExists($funnelKey, $campaignKey); }
+
+
+  /**
+   * Build the email link select form element
+   * @method buildEmailLinkSelect
+   * @param      $selected
+   * @param null $documentId
+   * @return string
+   */
+  public function buildEmailLinkSelect($selected, $funnelKey, $documentId=null)
+  {
+    /** @var string $id */
+    $id = &quot;emailLinkKey&quot;;
+    /** Check if a different id was specified */
+    if(!is_null($documentId)){
+      /** @var string $id set id to the specified id */
+      $id = $documentId;
+    }
+    /** @var array $funnels */
+    $links = $this-&gt;_mMediaBuyEmailLinks-&gt;getFunnelLinksKeyAndName($funnelKey);
+    /** @var string $select Build the select box into the select variable */
+    $select = &quot;&lt;select id=\&quot;{$id}\&quot; name=\&quot;{$id}\&quot;&gt;&quot;;
+    /** @var array $funnel */
+    foreach($links as $link){
+      $isSelected = (($selected==$link['key'])?' selected=selected':'');
+      /** add the option to the select */
+      $select .= &quot;&lt;option value=\&quot;{$link['key']}\&quot;{$isSelected}&gt;{$link['name']}&lt;/option&gt;&quot;;
+    }
+    /** return the select box */
+    return &quot;$select&lt;/select&gt;&quot;;
+  }
+
+
+  /**
+   * This is the event interface for this command object
+   * This allows javascript to make calls to this object
+   * to preform pre-defined tasks
+   * @method event
+   */
+  public function event()
+  {
+    /** Configure the event */
+    $this-&gt;_eConfigure();
+    /** Find the requested task */
+    switch($this-&gt;_dEventAction){
+      /** Return an array of funnel links */
+      case 'funnel-links':
+        /** @var array|false $links */
+        $links = $this-&gt;_mMediaBuyEmailLinks-&gt;getFunnelLinksKeyAndName($this-&gt;_dEventData['funnelKey']);
+        /** Check if false was returned this means there were no records */
+        if(!$links){
+          /** Return an empty array */
+          $this-&gt;_eResponse(true, []);
+        }
+        /** Return the data */
+        $this-&gt;_eResponse(true, $links);
+        break;
+    }
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

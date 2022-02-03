@@ -1,0 +1,80 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+
+namespace Framework\Commander;
+
+\Framework\_IncludeCorrect(FRAMEWORK_ROOT.&quot;Objectify&quot;.DSEP.&quot;Email&quot;.DSEP.&quot;EmailMessage.php&quot;);
+class Email extends \Framework\Support\Abstracts\Singleton
+{
+
+  public static function construct()
+  {
+    $instance = self::getInstance();
+    return $instance;
+  }
+
+  public function _transport($token)
+  {
+    $transport = \Swift_SmtpTransport::newInstance( $token-&gt;address(), $token-&gt;port(), &quot;ssl&quot; );
+    $transport-&gt;setUsername( $token-&gt;username() );
+    $transport-&gt;setPassword( $token-&gt;password() );
+    return $transport;
+  }
+
+  public function _mailer( $transport )
+  { return \Swift_Mailer::newInstance( $transport ); }
+
+  public function _message()
+  { return \Swift_Message::newInstance(); }
+
+  public function emailHandle($token)
+  {
+    $transport = $this-&gt;_transport($token);
+    return new \Framework\Objectify\EmailMessage( $transport, $this-&gt;_mailer( $transport ), $this-&gt;_message() );
+  }
+  
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,102 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * QuickSidebar
+ *
+ * @package App\Objects
+ * @version 1.0.0
+ */
+namespace App\Objects;
+
+/**
+ * QuickSidebar
+ *
+ * Handles the quick sidebar
+ */
+class QuickSidebar
+{
+
+
+  public function __construct()
+  {
+    return $this;
+  }
+
+
+  /**
+   * Return the html for the toggle
+   * @method headerToggle
+   */
+  public function headerToggle()
+  {
+    return &quot;
+    &lt;li class=\&quot;dropdown dropdown-quick-sidebar-toggler\&quot;&gt;
+      &lt;a class=\&quot;dropdown-toggle\&quot; href=\&quot;javascript:;\&quot; id=\&quot;QuickSidebar-Toggle-Open\&quot;&gt;&lt;i class=\&quot;icon-logout\&quot;&gt;&lt;/i&gt;&lt;/a&gt;
+    &lt;/li&gt;&quot;;
+  }
+
+  /**
+   * Return the html for the sidebar
+   * @method sidebar
+   * @return string
+   */
+  public function build()
+  {
+    return &quot;
+    &lt;a href='javascript:;' class='page-quick-sidebar-toggler' id=\&quot;QuickSidebar-Toggle-Close\&quot;&gt;
+      &lt;i class='icon-login'&gt;&lt;/i&gt;
+    &lt;/a&gt;
+    &lt;div class='page-quick-sidebar-wrapper' id=\&quot;QuickSidebar-Wrapper\&quot;&gt;
+      &lt;div class='page-quick-sidebar'&gt;
+        &lt;ul class='nav nav-tabs'&gt;
+          &lt;li class='active'&gt;
+            &lt;a href='javascript:;' data-target='#quick_sidebar_tab_1' data-toggle='tab'&gt;&lt;/a&gt;
+          &lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;&quot;;
+  }
+}</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

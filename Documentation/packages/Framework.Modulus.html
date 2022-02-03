@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta charset="utf-8"/>
+    <title>     &raquo; \Framework\Modulus
+</title>
+    <meta name="author" content=""/>
+    <meta name="description" content=""/>
+
+            <link href="../css/template.css" rel="stylesheet" media="all"/>
+    
+            <!--[if lt IE 9]>
+        <script src="https://html5shim.googlecode.com/svn/trunk/html5.js" type="text/javascript"></script>
+        <![endif]-->
+        <script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script>
+        <script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script>
+        <script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script>
+        <script src="../js/bootstrap.js" type="text/javascript"></script>
+        <script src="../js/template.js" type="text/javascript"></script>
+        <script src="../js/prettify/prettify.min.js" type="text/javascript"></script>
+    
+            <link rel="shortcut icon" href="../img/favicon.ico"/>
+        <link rel="apple-touch-icon" href="../img/apple-touch-icon.png"/>
+        <link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png"/>
+        <link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png"/>
+    </head>
+<body>
+
+        <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                    <span class="icon-bar"></span> <span class="icon-bar"></span>
+                    <span class="icon-bar"></span> </a>
+                <a class="brand" href="../index.html">HLH Framework</a>
+
+                <div class="nav-collapse">
+                    <ul class="nav">
+                        <li class="dropdown">
+                            <a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                API Documentation <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                                                    <li><a>Namespaces</a></li>
+                                                                        <li><a href="../namespaces/Framework.html">Framework</a></li>
+                                                                        <li><a href="../namespaces/App.html">App</a></li>
+                                                                        <li><a href="../namespaces/Handler.html">Handler</a></li>
+                                                                                                                                </ul>
+                        </li>
+                        <li class="dropdown" id="charts-menu">
+                            <a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                Charts <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="../graph_class.html">
+                                        <i class="icon-list-alt"></i>&#160;Class hierarchy diagram
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown" id="reports-menu">
+                            <a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                Reports <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="../errors.html">
+                                        <i class="icon-list-alt"></i>&#160;Errors
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="../markers.html">
+                                        <i class="icon-list-alt"></i>&#160;Markers
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="../deprecated.html">
+                                        <i class="icon-list-alt"></i>&#160;Deprecated
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="go_to_top">
+            <a href="#___" style="color: inherit">Back to top&#160;&#160;<i class="icon-upload icon-white"></i></a>
+        </div>
+    </div>
+    
+    <div id="___" class="container">
+        <noscript>
+            <div class="alert alert-warning">
+                Javascript is disabled; several features are only available if Javascript is enabled.
+            </div>
+        </noscript>
+
+        
+            
+    <div class="row">
+
+        <div class="span4">
+            <div class="btn-group view pull-right" data-toggle="buttons-radio">
+                <button class="btn details" title="Show descriptions and method names">
+                    <i class="icon-list"></i></button><button class="btn simple" title="Show only method names">
+                    <i class="icon-align-justify"></i>
+                </button>
+            </div>
+            <ul class="side-nav nav nav-list">
+                <li class="nav-header">
+                    <i class="icon-map-marker"></i> Packages
+                </li>
+                <a href="../packages/Framework.Modulus.html" title="Modulus">
+                    <i class="icon-th"></i> Modulus
+                </a>
+                <ul class="nav nav-list nav-packages">
+                        
+        <li>
+        <a href="../packages/Framework.Modulus.Datatable.html" title="Datatable">
+            <i class="icon-th"></i> Datatable
+        </a>
+        <ul class="nav nav-list nav-packages">
+                
+    
+        </ul>
+    </li>
+        <li>
+        <a href="../packages/Framework.Modulus.Modal.html" title="Modal">
+            <i class="icon-th"></i> Modal
+        </a>
+        <ul class="nav nav-list nav-packages">
+                
+    
+        </ul>
+    </li>
+        <li>
+        <a href="../packages/Framework.Modulus.Model.html" title="Model">
+            <i class="icon-th"></i> Model
+        </a>
+        <ul class="nav nav-list nav-packages">
+                
+    
+        </ul>
+    </li>
+        <li>
+        <a href="../packages/Framework.Modulus.Orders.html" title="Orders">
+            <i class="icon-th"></i> Orders
+        </a>
+        <ul class="nav nav-list nav-packages">
+                
+    
+        </ul>
+    </li>
+    
+                </ul>
+            </ul>
+        </div>
+
+        <div class="span8 package-contents">
+                
+    <ul class="breadcrumb">
+        <li><a href="../index.html"><i class="icon-th"></i></a></li>
+            
+                
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/Framework.html">Framework</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/Framework.Modulus.html">Modulus</a>
+    </li>
+
+    </ul>
+
+    
+        
+        
+                    <div class="package-indent">
+                <h3><i class="icon-custom icon-class"></i> Classes, interfaces and traits</h3>
+                
+                                        <div id="DBConfig" class="element ajax clickable interface">
+        <h1>DBConfig<a href="../classes/Framework.Modulus.DBConfig.html">¶</a></h1>
+        <p class="short_description">DBConfig</p>
+        <div class="details collapse">the main database config interface</div>
+        <a href="../classes/Framework.Modulus.DBConfig.html" class="more">« More »</a>
+    </div>
+
+                
+                                        <div id="Datatable" class="element ajax clickable class">
+        <h1>Datatable<a href="../classes/Framework.Modulus.Datatable.html">¶</a></h1>
+        <p class="short_description">Datatable</p>
+        <div class="details collapse">The main query object. Every model must extend this</div>
+        <a href="../classes/Framework.Modulus.Datatable.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="HolylandhealthConfig" class="element ajax clickable class">
+        <h1>HolylandhealthConfig<a href="../classes/Framework.Modulus.HolylandhealthConfig.html">¶</a></h1>
+        <p class="short_description">Holylandhealth</p>
+        <div class="details collapse">This is the holylandhealth main database connection</div>
+        <a href="../classes/Framework.Modulus.HolylandhealthConfig.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="HolylandhealthConfig" class="element ajax clickable class">
+        <h1>HolylandhealthConfig<a href="../classes/Framework.Modulus.HolylandhealthConfig.html">¶</a></h1>
+        <p class="short_description">Holylandhealth</p>
+        <div class="details collapse">This is the holylandhealth main database connection</div>
+        <a href="../classes/Framework.Modulus.HolylandhealthConfig.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="PDOdatabases" class="element ajax clickable class">
+        <h1>PDOdatabases<a href="../classes/Framework.Modulus.PDOdatabases.html">¶</a></h1>
+        <p class="short_description">PDOdatabases</p>
+        <div class="details collapse">This is a singleton instance of our database object
+containing database connections
+
+First instantiation requires a config object passed to connect
+After that it only requires the database name, as it stores the config object
+Edit as you please, test with PDOdatabasesUT.php
+
+This will still need its exception class extended so that you can pass the object instance with the exception.</div>
+        <a href="../classes/Framework.Modulus.PDOdatabases.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="PDOdatabasesException" class="element ajax clickable class">
+        <h1>PDOdatabasesException<a href="../classes/Framework.Modulus.PDOdatabasesException.html">¶</a></h1>
+        <p class="short_description">BaseException</p>
+        <div class="details collapse">This is the base for the whole system. It converts exceptions from being bad things to being
+amazingly useful</div>
+        <a href="../classes/Framework.Modulus.PDOdatabasesException.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="Query" class="element ajax clickable class">
+        <h1>Query<a href="../classes/Framework.Modulus.Query.html">¶</a></h1>
+        <p class="short_description">Query</p>
+        <div class="details collapse">The main query object. Every model must extend this</div>
+        <a href="../classes/Framework.Modulus.Query.html" class="more">« More »</a>
+    </div>
+
+                            </div>
+            
+                
+    <ul class="breadcrumb">
+        <li><a href="../index.html"><i class="icon-th"></i></a></li>
+            
+                
+                
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/Framework.html">Framework</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/Framework.Modulus.html">Modulus</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/Framework.Modulus.Model.html">Model</a>
+    </li>
+
+    </ul>
+
+    
+        
+        
+                    <div class="package-indent">
+                <h3><i class="icon-custom icon-class"></i> Classes, interfaces and traits</h3>
+                
+                
+                                        <div id="Address" class="element ajax clickable class">
+        <h1>Address<a href="../classes/Framework.Modulus.Modal.Address.html">¶</a></h1>
+        <p class="short_description">User</p>
+        <div class="details collapse">This is your main interface to the user table</div>
+        <a href="../classes/Framework.Modulus.Modal.Address.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="CampaignKeyFixer" class="element ajax clickable class">
+        <h1>CampaignKeyFixer<a href="../classes/Framework.Modulus.Model.CampaignKeyFixer.html">¶</a></h1>
+        <p class="short_description">CampaignKeyFixer</p>
+        <div class="details collapse">All the querys needed for the campaignKeyFixer</div>
+        <a href="../classes/Framework.Modulus.Model.CampaignKeyFixer.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="Cron" class="element ajax clickable class">
+        <h1>Cron<a href="../classes/Framework.Modulus.Modal.Cron.html">¶</a></h1>
+        <p class="short_description">Cron</p>
+        <div class="details collapse">This model is used for the framework cron system. It help
+keep track of previous cron job runs and their stats as well
+as what cron jobs need to be run in the future</div>
+        <a href="../classes/Framework.Modulus.Modal.Cron.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="CronLog" class="element ajax clickable class">
+        <h1>CronLog<a href="../classes/Framework.Modulus.Modal.CronLog.html">¶</a></h1>
+        <p class="short_description">CronLog</p>
+        <div class="details collapse">This model is used for the framework cron system. It help
+keep track of previous cron job runs and their stats as well
+as what cron jobs need to be run in the future</div>
+        <a href="../classes/Framework.Modulus.Modal.CronLog.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="CronTab" class="element ajax clickable class">
+        <h1>CronTab<a href="../classes/Framework.Modulus.Modal.CronTab.html">¶</a></h1>
+        <p class="short_description">Cron</p>
+        <div class="details collapse">This model is used for the framework cron system. It help
+keep track of previous cron job runs and their stats as well
+as what cron jobs need to be run in the future</div>
+        <a href="../classes/Framework.Modulus.Modal.CronTab.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="OrderItem" class="element ajax clickable class">
+        <h1>OrderItem<a href="../classes/Framework.Modulus.Model.OrderItem.html">¶</a></h1>
+        <p class="short_description">User</p>
+        <div class="details collapse">This is your main interface to the user table</div>
+        <a href="../classes/Framework.Modulus.Model.OrderItem.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="OrderToApproved" class="element ajax clickable class">
+        <h1>OrderToApproved<a href="../classes/Framework.Modulus.Model.OrderToApproved.html">¶</a></h1>
+        <p class="short_description">OrderToApproved</p>
+        <div class="details collapse">All the querys needed for the campaignKeyFixer</div>
+        <a href="../classes/Framework.Modulus.Model.OrderToApproved.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="Tracking" class="element ajax clickable class">
+        <h1>Tracking<a href="../classes/Framework.Modulus.Modal.Tracking.html">¶</a></h1>
+        <p class="short_description">Tracking</p>
+        <div class="details collapse">This is the main interface for tracking records</div>
+        <a href="../classes/Framework.Modulus.Modal.Tracking.html" class="more">« More »</a>
+    </div>
+
+                            </div>
+            
+    
+                
+    <ul class="breadcrumb">
+        <li><a href="../index.html"><i class="icon-th"></i></a></li>
+            
+                
+                
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/Framework.html">Framework</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/Framework.Modulus.html">Modulus</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/Framework.Modulus.Modal.html">Modal</a>
+    </li>
+
+    </ul>
+
+    
+        
+        
+                    <div class="package-indent">
+                <h3><i class="icon-custom icon-class"></i> Classes, interfaces and traits</h3>
+                
+                
+                                        <div id="Customer" class="element ajax clickable class">
+        <h1>Customer<a href="../classes/Framework.Modulus.Modal.Customer.html">¶</a></h1>
+        <p class="short_description">Customer</p>
+        <div class="details collapse">This is your main interface to the user table</div>
+        <a href="../classes/Framework.Modulus.Modal.Customer.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="Error" class="element ajax clickable class">
+        <h1>Error<a href="../classes/Framework.Modulus.Modal.Error.html">¶</a></h1>
+        <p class="short_description">User</p>
+        <div class="details collapse">This is your main interface to the user table</div>
+        <a href="../classes/Framework.Modulus.Modal.Error.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="Funnel" class="element ajax clickable class">
+        <h1>Funnel<a href="../classes/Framework.Modulus.Modal.Funnel.html">¶</a></h1>
+        <p class="short_description">Funnel</p>
+        <div class="details collapse">This is your main interface to the user table</div>
+        <a href="../classes/Framework.Modulus.Modal.Funnel.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="FunnelPage" class="element ajax clickable class">
+        <h1>FunnelPage<a href="../classes/Framework.Modulus.Modal.FunnelPage.html">¶</a></h1>
+        <p class="short_description">FunnelPage</p>
+        <div class="details collapse">The main query object. Every model must extend this</div>
+        <a href="../classes/Framework.Modulus.Modal.FunnelPage.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="MediaBuyEmailLinks" class="element ajax clickable class">
+        <h1>MediaBuyEmailLinks<a href="../classes/Framework.Modulus.Modal.MediaBuyEmailLinks.html">¶</a></h1>
+        <p class="short_description">MediaBuyEmailLinks</p>
+        <div class="details collapse">ALl of the media buy email link queries</div>
+        <a href="../classes/Framework.Modulus.Modal.MediaBuyEmailLinks.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="OrderNotes" class="element ajax clickable class">
+        <h1>OrderNotes<a href="../classes/Framework.Modulus.Modal.OrderNotes.html">¶</a></h1>
+        <p class="short_description">OrderMessages</p>
+        <div class="details collapse">The main query object. Every model must extend this</div>
+        <a href="../classes/Framework.Modulus.Modal.OrderNotes.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="Orders" class="element ajax clickable class">
+        <h1>Orders<a href="../classes/Framework.Modulus.Modal.Orders.html">¶</a></h1>
+        <p class="short_description">Orders</p>
+        <div class="details collapse">This is your main interface to the user table</div>
+        <a href="../classes/Framework.Modulus.Modal.Orders.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="User" class="element ajax clickable class">
+        <h1>User<a href="../classes/Framework.Modulus.Modal.User.html">¶</a></h1>
+        <p class="short_description">User</p>
+        <div class="details collapse">This is your main interface to the user table</div>
+        <a href="../classes/Framework.Modulus.Modal.User.html" class="more">« More »</a>
+    </div>
+
+                            </div>
+            
+    
+                
+    <ul class="breadcrumb">
+        <li><a href="../index.html"><i class="icon-th"></i></a></li>
+            
+                
+                
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/Framework.html">Framework</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/Framework.Modulus.html">Modulus</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/Framework.Modulus.Datatable.html">Datatable</a>
+    </li>
+
+    </ul>
+
+    
+        
+        
+                    <div class="package-indent">
+                <h3><i class="icon-custom icon-class"></i> Classes, interfaces and traits</h3>
+                
+                
+                                        <div id="ClickThroughRate" class="element ajax clickable class">
+        <h1>ClickThroughRate<a href="../classes/Framework.Modulus.Datatable.ClickThroughRate.html">¶</a></h1>
+        <p class="short_description">ClickThroughRate</p>
+        <div class="details collapse">This is the datatable that generates the report for click through rate</div>
+        <a href="../classes/Framework.Modulus.Datatable.ClickThroughRate.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="LinkBreakdown" class="element ajax clickable class">
+        <h1>LinkBreakdown<a href="../classes/Framework.Modulus.Datatable.LinkBreakdown.html">¶</a></h1>
+        <p class="short_description">LinkBreakdown</p>
+        <div class="details collapse">This is the datatable that generates the report for click through rate</div>
+        <a href="../classes/Framework.Modulus.Datatable.LinkBreakdown.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="MediaBuyEmailLink" class="element ajax clickable class">
+        <h1>MediaBuyEmailLink<a href="../classes/Framework.Modulus.Datatable.MediaBuyEmailLink.html">¶</a></h1>
+        <p class="short_description">MediaBuyEmailLink</p>
+        <div class="details collapse">This is the prototype datatable master object for the tracking system
+It will help me learn the cause of my tracking anomaly</div>
+        <a href="../classes/Framework.Modulus.Datatable.MediaBuyEmailLink.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="PaymentProcessor" class="element ajax clickable class">
+        <h1>PaymentProcessor<a href="../classes/Framework.Modulus.Modal.PaymentProcessor.html">¶</a></h1>
+        <p class="short_description">Query</p>
+        <div class="details collapse">The main query object. Every model must extend this</div>
+        <a href="../classes/Framework.Modulus.Modal.PaymentProcessor.html" class="more">« More »</a>
+    </div>
+
+                                        <div id="TrackingMaster" class="element ajax clickable class">
+        <h1>TrackingMaster<a href="../classes/Framework.Modulus.Datatable.TrackingMaster.html">¶</a></h1>
+        <p class="short_description">TrackingMaster</p>
+        <div class="details collapse">This is the prototype datatable master object for the tracking system
+It will help me learn the cause of my tracking anomaly</div>
+        <a href="../classes/Framework.Modulus.Datatable.TrackingMaster.html" class="more">« More »</a>
+    </div>
+
+                            </div>
+            
+    
+                
+    <ul class="breadcrumb">
+        <li><a href="../index.html"><i class="icon-th"></i></a></li>
+            
+                
+                
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/Framework.html">Framework</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/Framework.Modulus.html">Modulus</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../packages/Framework.Modulus.Orders.html">Orders</a>
+    </li>
+
+    </ul>
+
+    
+        
+        
+                    <div class="package-indent">
+                <h3><i class="icon-custom icon-class"></i> Classes, interfaces and traits</h3>
+                
+                
+                                        <div id="Orders" class="element ajax clickable class">
+        <h1>Orders<a href="../classes/Framework.Modulus.Modal.Orders.html">¶</a></h1>
+        <p class="short_description">Orders</p>
+        <div class="details collapse">This should contain all queries against the order table</div>
+        <a href="../classes/Framework.Modulus.Modal.Orders.html" class="more">« More »</a>
+    </div>
+
+                            </div>
+            
+    
+    
+        </div>
+    </div>
+    </div>
+
+        <footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by
+            <a href="http://glyphicons.com/">Glyphicons</a>.<br/>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and<br/>
+            generated on Mon, 01 Feb 2016 18:11:14 +0000.<br/>
+    </footer>
+    </body>
+</html>

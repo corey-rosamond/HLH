@@ -1,0 +1,148 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * ContactUsPage
+ *
+ * @package App\Page
+ * @version 1.2.0
+ */
+namespace App\Page;
+
+/**
+ * ContactUsPage
+ *
+ * The ContactUsPage page
+ */
+class ContactUsPage extends \App\Abstracts\FunnelPage
+{
+  /** @var int Include the pageType */
+  protected $_pageType = self::contactUs;
+  /** @var boolean $_emailSent */
+  protected $_emailSent;
+  /** @var integer $_emailLogKey */
+  protected $_emailLogKey;
+
+  /**
+   * Builds the content area and calls all sub functions to build
+   * the ui specific to this page
+   * @method _content
+   * @param $data
+   * @return string
+   */
+  protected function _content($data)
+  {
+    /** @var email sent status _emailSent */
+    $this-&gt;_emailSent = $this-&gt;_cFunnel-&gt;customerSupportSent();
+    /** Check if the email was sent */
+    if($this-&gt;_emailSent){
+      /** @var integer _emailLogKey add the email to the mailer log and return the key */
+      $this-&gt;_emailLogKey = $this-&gt;_cFunnel-&gt;customerSupportLogKey();
+      /** @var string _emailLogKey Format the string for human readability */
+      $this-&gt;_emailLogKey = sprintf('#%08d',$this-&gt;_emailLogKey);
+    }
+    /** Now just let it run */
+    if($this-&gt;_emailSent){
+      /** they have sent a request already show them the thank you */
+      return &quot;
+        &lt;div id=\&quot;funnel-content\&quot; style=\&quot;text-align:center;\&quot;&gt;
+          &lt;h1&gt;Thank you for contacting us!&lt;/h1&gt;
+          &lt;p&gt;Your contact reference number is {$this-&gt;_emailLogKey} please keep this for your records!&lt;/p&gt;\n
+        &lt;/div&gt;\n
+      &quot;;
+    }
+    /** Write the form into the buffer */
+    return &quot;&lt;div id=\&quot;funnel-content\&quot; style=\&quot;text-align:center;\&quot;&gt;
+      &lt;h3&gt;{$data['support-phone-text']}{support-phone}&lt;/h3&gt;
+      &lt;p&gt;{$data['content']}&lt;/p&gt;
+      &lt;form name=\&quot;funnel-contact-us-form\&quot; method=\&quot;post\&quot; action=\&quot;\&quot; id=\&quot;funnel-contact-us-form\&quot;&gt;
+        &lt;label for=\&quot;name\&quot; class=\&quot;contactus-label\&quot;&gt;
+          &lt;span class=\&quot;contactus-step\&quot;&gt;STEP 1:&lt;/span&gt; Tell us your Full Name &lt;span class=\&quot;contactus-asterisk\&quot;&gt;*&lt;/span&gt;
+        &lt;/label&gt;
+        &lt;br /&gt;&lt;br /&gt;
+        &lt;span class=\&quot;contactus-position\&quot;&gt;
+          &lt;span id=\&quot;contactus-name-error\&quot; class=\&quot;contactus-error\&quot;&gt;&lt;/span&gt;
+          &lt;input name=\&quot;name\&quot; maxlength=\&quot;80\&quot; size=\&quot;55\&quot; class=\&quot;contactus-input\&quot; type=\&quot;text\&quot; id=\&quot;name\&quot;&gt;
+        &lt;/span&gt;
+        &lt;br /&gt;&lt;br /&gt;
+        &lt;label for=\&quot;email\&quot; class=\&quot;contactus-label\&quot;&gt;
+          &lt;span class=\&quot;contactus-step\&quot;&gt;STEP 2:&lt;/span&gt; Enter your Email Address &lt;span class=\&quot;contactus-asterisk\&quot;&gt;*&lt;/span&gt;
+        &lt;/label&gt;
+        &lt;br /&gt;&lt;br /&gt;
+        &lt;span class=\&quot;contactus-position\&quot;&gt;
+          &lt;span id=\&quot;contactus-email-error\&quot; class=\&quot;contactus-error\&quot;&gt;&lt;/span&gt;
+          &lt;input name=\&quot;email\&quot; maxlength=\&quot;80\&quot; size=\&quot;55\&quot; class=\&quot;contactus-input\&quot; type=\&quot;email\&quot; id=\&quot;email\&quot;&gt;
+        &lt;/span&gt;
+        &lt;br /&gt;&lt;br /&gt;
+        &lt;label for=\&quot;Subject\&quot; class=\&quot;contactus-label\&quot;&gt;
+          &lt;span class=\&quot;contactus-step\&quot;&gt;STEP 3:&lt;/span&gt; Pick the Nature of your issue &lt;span class=\&quot;contactus-asterisk\&quot;&gt;*&lt;/span&gt;
+        &lt;/label&gt;
+        &lt;br /&gt;&lt;br /&gt;
+        &lt;select name=\&quot;subject\&quot; id=\&quot;subject\&quot; class=\&quot;contactus-select\&quot;&gt;
+          &lt;option value=\&quot;General Informations\&quot;&gt;General Informations - I have a question about your product&lt;/option&gt;
+          &lt;option value=\&quot;Technical Issue\&quot;&gt;Technical Issue - I have encountered a technical problem&lt;/option&gt;
+          &lt;option value=\&quot;Sales Support\&quot;&gt;Sales Support - I want more details about your offer&lt;/option&gt;
+          &lt;option value=\&quot;Refund Question\&quot;&gt;Refund Question - I have a question regarding a refund&lt;/option&gt;
+        &lt;/select&gt;
+        &lt;br /&gt;&lt;br /&gt;
+        &lt;label for=\&quot;message\&quot; class=\&quot;contactus-label\&quot;&gt;
+          &lt;span class=\&quot;contactus-step\&quot;&gt;STEP 4:&lt;/span&gt; Write us a Message &lt;span class=\&quot;contactus-asterisk\&quot;&gt;*&lt;/span&gt;
+        &lt;/label&gt;
+        &lt;br /&gt;&lt;br /&gt;
+        &lt;span class=\&quot;contactus-position\&quot;&gt;
+          &lt;span id=\&quot;contactus-message-error\&quot; style=\&quot;top:-95px;\&quot; class=\&quot;contactus-error\&quot;&gt;&lt;/span&gt;
+          &lt;textarea name=\&quot;message\&quot; maxlength=\&quot;1000\&quot; cols=\&quot;57\&quot; rows=\&quot;8\&quot; class=\&quot;contactus-textarea\&quot; id=\&quot;message\&quot;&gt;&lt;/textarea&gt;
+        &lt;/span&gt;
+        &lt;br /&gt;&lt;br /&gt;
+        &lt;label for=\&quot;submit\&quot; class=\&quot;contactus-label\&quot;&gt;
+          &lt;span class=\&quot;contactus-step\&quot;&gt;STEP 5:&lt;/span&gt; Click the \&quot;Submit Ticket\&quot; &lt;span class=\&quot;contactus-asterisk\&quot;&gt;*&lt;/span&gt;
+        &lt;/label&gt;
+        &lt;br /&gt;&lt;br /&gt;
+        &lt;input value=\&quot;Submit Ticket\&quot; id=\&quot;funnel-contact-us-submit\&quot; class=\&quot;button\&quot; type=\&quot;submit\&quot;&gt;
+      &lt;/form&gt;
+    &lt;/div&gt;&quot;;
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

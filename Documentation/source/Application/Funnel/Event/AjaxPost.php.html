@@ -1,0 +1,133 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+
+namespace App\Event;
+
+class AjaxPost
+{
+  private $_system;
+  private $_cSearch;
+
+
+  public function __construct( $system )
+  {
+    $this-&gt;_system = $system;
+    $this-&gt;_cFunnel = \Framework\Core\Receptionist::controller(&quot;Funnel&quot;, true);
+    $this-&gt;_cSearch = \Framework\Core\Receptionist::controller(&quot;Search&quot;, true);
+
+    return $this;
+  }
+
+  public function run()
+  {
+    if(!isset($_POST['action'])){
+      echo json_encode([&quot;result&quot;=&gt;false,&quot;message&quot;=&gt;&quot;Event action not specified!&quot;]);
+      exit();
+    }
+    switch($_POST['action']){
+      case 'ContactUsSend':           return $this-&gt;_sendContactUs($_POST);     break;
+      case 'ContactUsCustomerSearch': return $this-&gt;_findCustomer($_POST);      break;
+      case 'ValidateAddress':         return $this-&gt;_validateAddress($_POST);   break;
+    }
+  }
+
+
+  private function _sendContactUs($data)
+  {
+    $logKey = $this-&gt;_cFunnel-&gt;sendSupportEmail(
+      $data['email'],
+      [&quot;{full-name}&quot;=&gt;$data['name'],&quot;{email-address}&quot;=&gt;$data['email'],&quot;{contact-reason}&quot;=&gt;$data['subject'],&quot;{message}&quot;=&gt;$data['message']],
+      ((isset($data['customer']))?$data['customer']:0),
+      ((isset($data['order']))?$data['order']:0)
+    );
+    unset($data['action']);
+    $logKey = sprintf('#%08d',$logKey);
+    echo json_encode([
+      &quot;result&quot;=&gt;true,
+      &quot;title&quot;=&gt;&quot;Thank you for contacting us!&quot;,
+      &quot;content&quot;=&gt;&quot;Your contact reference number is {$logKey} please keep this for your records!&quot;
+    ]);
+    return true;
+  }
+
+  private function _emailLookup($email)
+  { return $this-&gt;_cSearch-&gt;emailLookup($email); }
+
+  private function _customerOrders($customerKey)
+  { return $this-&gt;_cSearch-&gt;customerOrders($customerKey); }
+
+  private function _findCustomer($data)
+  {
+    $customer = $this-&gt;_emailLookup($data['email']);
+    if($customer){
+      echo json_encode([&quot;result&quot;=&gt;true,&quot;message&quot;=&gt;&quot;Found the customer&quot;,&quot;customer-key&quot;=&gt;$customer['key']]);
+      return true;
+      //return $this-&gt;_returnOrders($customer);
+    }
+    echo json_encode([&quot;result&quot;=&gt;true,&quot;message&quot;=&gt;&quot;No customer found&quot;,&quot;customer-key&quot;=&gt;0]);
+    return true;
+  }
+
+  private function _returnOrders($customer)
+  {
+    /** We are finding orders easly but this is taking so long so it will need to be completed once the rest is done */
+    /** For now we will just relate the order to the customer */
+    $orders = $this-&gt;_customerOrders($customer['key']);
+  }
+
+  private function _validateAddress($data)
+  {
+    $result = $this-&gt;_cFunnel-&gt;validateAddress(
+      $data['streetOne'],
+      $data['streetTwo'],
+      $data['city'],
+      $data['state'],
+      $data['zip']
+    );
+    echo json_encode($result);
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

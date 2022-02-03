@@ -1,0 +1,141 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * LinkBreakdown
+ *
+ * @package App\Event\Page\Main
+ * @version 1.2.0
+ */
+namespace App\Event\Page\Reports\LinkSystem;
+
+/**
+ * LinkBreakdown
+ *
+ * Breakdown of the performance of a given link
+ */
+class LinkBreakdown extends \App\Abstracts\Page
+{
+  /****************************************************/
+  /*                  PAGE SETTINGS                   */
+  /****************************************************/
+  /** @var string $documentTitle */
+  protected $documentTitle = &quot;Funnel: Click Through Rate&quot;;
+  /** @var array $pageHeader The header for this page */
+  protected $pageHeader = &quot;Click Through Rate: &quot;;
+  /** @var array $scripts Array of script files we need framework to include */
+  protected $_pageScripts = [[&quot;Reports.LinkSystem.LinkBreakdown.js&quot;, self::application]];
+  /****************************************************/
+  /*               REQUIRED CONTROLLERS               */
+  /****************************************************/
+  /** @var \Framework\Commander\Funnel $_cFunnel */
+  private $_cFunnel;
+
+  /**
+   * Build the body of the document
+   * @method Body
+   * @param array $parameters
+   * @return string
+   */
+  public function Body(array $parameters = array()){
+    $datatable = $this-&gt;receptionist(self::oTypeDatatable,&quot;LinkBreakdown&quot;);
+    /** Set Our portlet title */
+    $this-&gt;_dPortletConfiguration['title'] = &quot;Link Breakdown&quot;;
+    /** Set the portlet tools */
+    $this-&gt;_dPortletConfiguration['tools'] = ['config'=&gt;['data-onclick'=&gt;'popup:Reports.LinkSystem.LinkBreakdown.Configuration']];
+    /** Create the datatable */
+    $this-&gt;_dPortletConfiguration['content'] = $datatable-&gt;render();
+    /** @var \Framework\Commander\Funnel $_cFunnel */
+    $this-&gt;_cFunnel = $this-&gt;receptionist(self::oTypeController,'Funnel');
+    /** Return the page content */
+    return $this-&gt;portlet().$this-&gt;_configuration();
+  }
+
+  /**
+   * Configuration popup
+   * @method _configuration
+   * @return string
+   */
+  private function _configuration()
+  {
+    return '
+    &lt;div id=&quot;Reports.LinkSystem.LinkBreakdown.Configuration&quot; class=&quot;modal fade&quot;&gt;
+      &lt;div class=&quot;modal-header bg-grey-steel&quot;&gt;
+        &lt;button type=&quot;button&quot; class=&quot;close&quot; data-dismiss=&quot;modal&quot; aria-hidden=&quot;true&quot;&gt;
+          &lt;span class=&quot;fa-stack fa-lg&quot;&gt;
+            &lt;i class=&quot;fa fa-square-o fa-stack-2x font-blue-ebonyclay&quot;&gt;&lt;/i&gt;
+            &lt;i class=&quot;fa fa-times fa-stack-1x font-blue-ebonyclay&quot; style=&quot;margin-top:-2px;margin-left:0px;&quot;&gt;&lt;/i&gt;
+          &lt;/span&gt;
+        &lt;/button&gt;
+        &lt;h4 class=&quot;modal-title font-blue-ebonyclay&quot;&gt; &lt;i class=&quot;fa fa-link&quot;&gt;&lt;/i&gt;&amp;nbsp;&amp;nbsp;Options &lt;/h4&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;modal-body&quot;&gt;
+        &lt;form class=&quot;form-inline editableform&quot; id=&quot;select-link-form&quot;&gt;
+          &lt;table class=&quot;table table-bordered table-striped&quot;&gt;
+            &lt;tbody&gt;
+              &lt;tr&gt;
+                &lt;td style=&quot;width:30%&quot;&gt; Select a Funnel: &lt;/td&gt;
+                &lt;td style=&quot;width:70%&quot;&gt;'.$this-&gt;_cFunnel-&gt;buildFunnelSelect(null).'&lt;/a&gt;&lt;/td&gt;
+              &lt;/tr&gt;
+              &lt;tr&gt;
+                &lt;td style=&quot;width:30%&quot;&gt; Select a Link: &lt;/td&gt;
+                &lt;td style=&quot;width:70%&quot;&gt;&lt;select id=&quot;emailLink&quot;&gt;&lt;/select&gt;&lt;/td&gt;
+              &lt;/tr&gt;
+            &lt;/tbody&gt;
+          &lt;/table&gt;
+        &lt;/form&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;modal-footer bg-grey-steel&quot;&gt;
+        &lt;button type=&quot;button&quot; data-dismiss=&quot;modal&quot; class=&quot;btn btn-default btn-outline dark border-blue-dark&quot;&gt;
+          &lt;i class=&quot;fa fa-times fa-lg&quot; style=&quot;margin-top:-1px;&quot;&gt;&lt;/i&gt; Close
+        &lt;/button&gt;
+        &lt;button type=&quot;button&quot; class=&quot;btn btn-default green bold border-blue-dark save-model&quot; id=&quot;save-options&quot;&gt;
+          &lt;i class=&quot;fa fa-check fa-lg&quot; style=&quot;margin-top:-1px;&quot;&gt;&lt;/i&gt; Save changes
+        &lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;';
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

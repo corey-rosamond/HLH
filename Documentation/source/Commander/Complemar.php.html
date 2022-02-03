@@ -1,0 +1,347 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * Complemar
+ *
+ * @package Framework\Commander
+ * @version 1.0.0
+ */
+namespace Framework\Commander;
+
+/**
+ * 	Complemar
+ *
+ *	The Complemar object is in charge of handling all communications
+ *	Between the framework admin the funnel system and complemar. To that effect
+ *	The only methods you will find here are aimed at that goal
+ * @todo rewrite this to include logging and use the service system to store its information
+ */
+\Framework\_IncludeCorrect(FRAMEWORK_ROOT.'vendor'.DSEP.'nusoap'.DSEP.'nusoap.php');
+\Framework\_IncludeCorrect(CONFIGURATION.'Services'.DSEP.'Complemar.config.php');
+class Complemar extends \Framework\Commander\Commander
+{
+  /** @var string $username */
+  private $username = COMPLEMAR_USERNAME;
+  /** @var string $password */
+  private $password = COMPLEMAR_PASSWORD;
+  /** @var string $wsdl Location of wsdl */
+  private $wsdl = COMPLEMAR_WSDL;
+  /** @var int $jobNumber Provided by nmi */
+  private $jobNumber = COMPLEMAR_JOB_NUMBER;
+
+  /**
+   * Setup the Complemar object
+   * @method __construct
+   * @access public
+   */
+   public static function construct()
+   {
+     $instance = self::getInstance();
+     $instance-&gt;SOAPInit();
+     return $instance;
+   }
+
+  /**
+   * Get the satus of an order we already submitted
+   * @method getOrderStatus
+   * @return array         The XML response
+   * @access public
+   */
+  public function getOrderStatus( $orderNumber, $sequenceNumber )
+  {
+    $GetOrderStatus = $this-&gt;SOAPMakeEnvelope( &quot;GetOrderStatus&quot; );
+      $GetOrderStatus-&gt;addChild( 'orderNumber', $orderNumber );
+      $GetOrderStatus-&gt;addChild( 'sequenceNumber', &quot;0&quot; );
+      $GetOrderStatus-&gt;addChild( 'userName', $this-&gt;username );
+			$GetOrderStatus-&gt;addChild( 'password', $this-&gt;password );
+      $Envelope = $this-&gt;SOAPFinalizeEnvelope( $GetOrderStatus );
+      $result = $this-&gt;SOAPRequest( 'GetOrderStatus', $Envelope );
+      if( $result ){
+        print_r( $result );
+      }
+  }
+
+  /**
+   * Take one of our orders and submit it to complemar for shipping
+   * @method  createOrderInComplemar
+   * @param   array                 $order    The order record from the database
+   * @param   array                 $items    The order item records from the database
+   * @param   array                 $billing  The billing address
+   * @param   array                 $shipping The shipping address
+   * @return  boolean
+   * @access  public
+   */
+  public function createOrderInComplemar( $orderData ){
+    $order    = $orderData['Order'];
+    $shipping = $orderData['ShippingAddress'];
+    $billing  = $orderData['BillingAddress'];
+    $items    = $orderData['OrderItems'];
+    /** Do it ,,,,,,, */
+    $CreateOrder = $this-&gt;SOAPMakeEnvelope( 'CreateOrder' );
+      $request = $CreateOrder-&gt;addChild( 'request' );
+        $Items = $request-&gt;addChild( 'Items' );
+          foreach( $items as $item ){
+            if($item['is-digital']==0) {
+              $OrderRequestItem = $Items-&gt;AddChild ('OrderRequestItem');
+              $OrderRequestItem-&gt;addChild ('Quantity', 1);
+              $OrderRequestItem-&gt;addChild ('StockNumber', htmlspecialchars ($item['sku']));
+              $OrderRequestItem-&gt;addChild ('Description1', htmlspecialchars ($item['name']));
+            }
+          }
+        $request-&gt;addChild('JobNumber', $this-&gt;jobNumber );
+        $OrderedBy = $request-&gt;addChild('OrderedBy');
+          $OrderedBy-&gt;addChild('FirstName', htmlspecialchars( $order['first-name'] ));
+			    $OrderedBy-&gt;addChild('LastName', htmlspecialchars( $order['last-name'] ));
+            $Addresses = $OrderedBy-&gt;addChild('Addresses');
+              $Addresses-&gt;addChild('Name', 'Billing');
+              $Addresses-&gt;addChild('StreetAddress1', htmlspecialchars( $billing['address-line-one'] ));
+              $Addresses-&gt;addChild('StreetAddress2', htmlspecialchars( $billing['address-line-two'] ));
+              $Addresses-&gt;addChild('City', htmlspecialchars( $billing['city'] ));
+              $Addresses-&gt;addChild('State', htmlspecialchars( $billing['state'] ));
+              $Addresses-&gt;addChild('ZipCode', htmlspecialchars( $billing['zip'] ));
+            $Phones = $OrderedBy-&gt;addChild('Phones');
+				      $PhonesRequest = $Phones-&gt;addChild('PhoneNumberRequest');
+			          $PhonesRequest-&gt;addChild('Name', 'Main');
+					      $PhonesRequest-&gt;addChild('Number', htmlspecialchars( $order['last-name'] ));
+        $ShipTo = $request-&gt;addChild('ShipTo');
+          $ShipTo-&gt;addChild('FirstName', htmlspecialchars( $order['first-name'] ));
+          $ShipTo-&gt;addChild('LastName', htmlspecialchars( $order['last-name'] ));
+  				$AddressesTwo = $ShipTo-&gt;addChild('Addresses');
+  					$AddressesTwo-&gt;addChild('Name', 'Shipping');
+  					$AddressesTwo-&gt;addChild('StreetAddress1', htmlspecialchars( $shipping['address-line-one'] ));
+  					$AddressesTwo-&gt;addChild('StreetAddress2', htmlspecialchars( $shipping['address-line-two'] ));
+  					$AddressesTwo-&gt;addChild('City', htmlspecialchars( $shipping['city'] ));
+  					$AddressesTwo-&gt;addChild('State', htmlspecialchars( $shipping['state'] ));
+  					$AddressesTwo-&gt;addChild('ZipCode',  htmlspecialchars( $shipping['zip'] ));
+			    $PhoneTwo = $ShipTo-&gt;addChild('Phones');
+  				  $PhonesRequestTwo = $PhoneTwo-&gt;addChild('PhoneNumberRequest');
+  					  $PhonesRequestTwo-&gt;addChild('Name','Main');
+  					  $PhonesRequestTwo-&gt;addChild('Number', htmlspecialchars( $order['phone-number']) );
+        $request-&gt;addChild('TType', 'StandardOrder');
+        $request-&gt;addChild('OrderOrigination', 'Web');
+        $request-&gt;addChild('OrderApprovalStatus', 'Approved');
+        $request-&gt;addChild('OrderName', htmlspecialchars( $order['key'] ));
+  		  $request-&gt;addChild('CustReference', htmlspecialchars( $order['key'] ));
+      $CreateOrder-&gt;addChild('userName', $this-&gt;username);
+      $CreateOrder-&gt;addChild('password', $this-&gt;password);
+    $Envelope = $this-&gt;SOAPFinalizeEnvelope( $CreateOrder );
+    $result = $this-&gt;SOAPRequest( 'CreateOrder', $Envelope );
+    if($result){
+      $TransactionKey = $result['CreateOrderResult']['Transaction'].PHP_EOL;
+      return $TransactionKey;
+    }
+    return print_r($result,true);
+  }
+
+  /**
+   * Reference to the soap client
+   * @var     reference   $SOAPClient
+   * @access  private
+   */
+  private $SOAPClient = null;
+
+  /**
+   * We store the soap errors here till they are cleard
+   * @var     null|string   $SOAPErrors
+   * @access  private
+   */
+  private $SOAPErrors = null;
+
+  /**
+   * This is just a flag for quickly checking if soap is in a ready state
+   * @var     boolean       $SOAPReady
+   * @access  private
+   */
+  private $SOAPReady = null;
+
+  /**
+   * This is just a flag for quickly checking if soap is in a ready state
+   * @var     boolean       $SOAPReady
+   * @access  private
+   */
+  private $SOAPLastResult = null;
+
+  /**
+   * This is just a flag for quickly checking if soap is in a ready state
+   * @var     boolean       $SOAPReady
+   * @access  private
+   */
+  private $SOAPLastFault = null;
+
+  /**
+   * Destruct the current soap objects and recreate them
+   * @method  SOAPReset
+   * @access  private
+   */
+  private function SOAPReset(){
+    unset( $this-&gt;SOAPClient );
+    unset( $this-&gt;SOAPErrors );
+    unset( $this-&gt;SOAPReady );
+    unset( $this-&gt;SOAPLastFault );
+    unset( $this-&gt;SOAPLastresult );
+    $this-&gt;SOAPClient     = null;
+    $this-&gt;SOAPErrors     = null;
+    $this-&gt;SOAPReady      = null;
+    $this-&gt;SOAPLastFault  = null;
+    $this-&gt;SOAPLastresult = null;
+    $this-&gt;SOAPInit();
+  }
+
+  /**
+   * Initalize the SOAPClient
+   * @method  SOAPInit
+   * @access  private
+   */
+  private function SOAPInit(){
+    $this-&gt;SOAPClient     = new \nusoap_client( $this-&gt;wsdl, true );
+    if($this-&gt;SOAPHasErrors()){ return true; }
+    echo '&lt;h2&gt;SOAPError: &lt;/h2&gt;&lt;pre&gt;' . $this-&gt;SOAPErrors . '&lt;/pre&gt;';
+    return false;
+  }
+  /**
+   * Check if the SOAPClient is there
+   * @method  SOAPClientExists
+   * @return  boolean
+   * @access  private
+   */
+  private function SOAPClientExists(){
+    return (($this-&gt;SOAPClient)?true:false);
+  }
+
+  /**
+   * Change the SOAPStatus to ready
+   * @method SOAPStatusToReady
+   * @access private
+   */
+  private function SOAPStatusToReady(){
+    $this-&gt;SOAPReady = true;
+  }
+
+  /**
+   * Change the SOAPStatus to not ready
+   * @method SOAPStatusToNotReady
+   * @access private
+   */
+  private function SOAPStatusToNotReady(){
+    $this-&gt;SOAPReady = false;
+  }
+
+  /**
+   * Check if the soap ready status is true
+   * @method  SOAPStatusReady
+   * @return  boolean
+   * @access  private
+   */
+  private function SOAPStatusReady(){
+    return (($this-&gt;SOAPReady)?true:false);
+  }
+
+  /**
+   * Check if SOAP has errors
+   * @method SOAPHasErrors
+   * @return boolean
+   * @access private
+   */
+  private function SOAPHasErrors(){
+    $this-&gt;SOAPErrors = $this-&gt;SOAPClient-&gt;getError();
+    if(!$this-&gt;SOAPErrors){
+      $this-&gt;SOAPStatusToReady();
+      return true;
+    }
+    $this-&gt;SOAPStatusToNotReady();
+    return false;
+  }
+
+  /**
+   * Make an envenlope that will work for complear
+   * @method makeEnvelope
+   * @param  string             $action The action we are requesting of complear
+   * @return SimpleXMLElement           This is the start of your soap envelope
+   * @access private
+   */
+  private function SOAPMakeEnvelope( $action ){
+    return new \SimpleXMLElement(&quot;&lt;$action xmlns=\&quot;http://complemar.com/\&quot;&gt;&lt;/$action&gt;&quot;);
+  }
+
+  /**
+   * Fix the envelope to prevent soap errors
+   * @method finalizeEnvelope
+   * @param  SimpleXMLElement     $xmlr
+   * @return DOMDocument
+   * @access private
+   */
+  private function SOAPFinalizeEnvelope( $xmlr ){
+    $dom = new \DOMDocument('1.0', 'utf-8');
+		$dom-&gt;xmlStandalone = false;
+		$dom-&gt;formatOutput  = true;
+		$dom-&gt;loadXML( $xmlr-&gt;asXML());
+		return $dom-&gt;saveXML($dom-&gt;documentElement);
+  }
+
+  /**
+   * Send the soap request to complemar
+   * @method  SendSoapRequest
+   * @param   string          $method       The requst action
+   * @param   string          $requestData  The xml
+   * @access  private
+   */
+  private function SOAPRequest( $method, $requestData ){
+		$result = $this-&gt;SOAPClient-&gt;call( $method, $requestData, 'xsi' );
+		if( $this-&gt;SOAPClient-&gt;fault ){
+      $this-&gt;SOAPLastFault = print_r( $result, true );
+      echo '&lt;h2&gt;Fault&lt;/h2&gt;&lt;pre&gt;'.$this-&gt;SOAPLastFault.'&lt;/pre&gt;';
+			return false;
+		} else {
+      $this-&gt;SOAPErrors = $this-&gt;SOAPClient-&gt;getError();
+			if( $this-&gt;SOAPErrors ){
+				echo '&lt;h2&gt;Error&lt;/h2&gt;&lt;pre&gt;' . $this-&gt;SOAPErrors . '&lt;/pre&gt;';
+				return false;
+			}
+		}
+		return $result;
+	}
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

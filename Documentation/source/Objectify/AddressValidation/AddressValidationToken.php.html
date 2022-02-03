@@ -1,0 +1,106 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+
+namespace Framework\Objectify;
+
+\Framework\_IncludeCorrect(FRAMEWORK_ROOT.&quot;Objectify&quot;.DSEP.&quot;Service&quot;.DSEP.&quot;ServiceToken.php&quot;);
+class AddressValidationToken extends ServiceToken
+{
+  protected $_address;
+  protected $_authenticationID;
+  protected $_authenticationToken;
+  protected $_paramaters = [
+    'address'             =&gt; 'Server Address',
+    'authentication-id'   =&gt; 'Service Username',
+    'authentication-token'=&gt; 'Service Password'
+  ];
+  public function __construct( $key, $name, $typeKey, $typeName, array $arguments = array() )
+  {
+    if( isset($arguments['address']) ){
+      $this-&gt;_address = $arguments['address'];
+    }
+    if( isset($arguments['authentication-id']) ){
+      $this-&gt;_authenticationID = $arguments['authentication-id'];
+    }
+    if( isset($arguments['authentication-token']) ){
+      $this-&gt;_authenticationToken = $arguments['authentication-token'];
+    }
+    return parent::__construct( $key, $name, $typeKey, $typeName, $arguments );
+  }
+
+  public function address( $address = null )
+  {
+    if( !is_null( $address ) ){
+      $this-&gt;_address = $address;
+    }
+    return $this-&gt;_address;
+  }
+
+  public function authenticationID( $authenticationID = null )
+  {
+    if( !is_null( $authenticationID ) ){
+      $this-&gt;_authenticationID = $authenticationID;
+    }
+    return $this-&gt;_authenticationID;
+  }
+
+  public function authenticationToken( $authenticationToken = null )
+  {
+    if( !is_null( $authenticationToken ) ){
+      $this-&gt;_authenticationToken = $authenticationToken;
+    }
+    return $this-&gt;_authenticationToken;
+  }
+
+  public function __destruct()
+  {
+    unset( $this-&gt;_address );
+    unset( $this-&gt;_authenticationID );
+    unset( $this-&gt;_authenticationToken );
+    return parent::__destruct();
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

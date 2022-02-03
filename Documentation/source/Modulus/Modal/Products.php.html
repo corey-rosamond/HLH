@@ -1,0 +1,103 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+
+namespace Framework\Modulus\Modal;
+
+class Products extends \Framework\Modulus\Query
+{
+  public function getProduct( $key )
+  {
+    $query = &quot;SELECT `key`,`sku`,`name`,`description`,`price`,`cost`,`weight`,`is-digital`,`image` FROM `funnel-products` WHERE `key`=:key&quot;;
+    $preparedStatement = $this-&gt;Prepare( $query );
+    $preparedStatement-&gt;bindValue(':key', $key, \PDO::PARAM_INT);
+    $preparedStatement = $this-&gt;Execute($preparedStatement);
+    if($preparedStatement-&gt;rowCount() &lt;= 0){
+      return false;
+    }
+    return $preparedStatement-&gt;fetch(\PDO::FETCH_ASSOC);
+  }
+
+
+  /**
+   * Get a list of products associated with an order
+   * @method getOrderProducts
+   * @param $orderKey
+   * @return boolean
+   * @throws \Framework\Exceptional\PDOdatabasesException
+   */
+  public function getOrderProducts($orderKey)
+  {
+    $query = &quot;SELECT `fp`.* FROM
+      `funnel-products` as `fp`
+      RIGHT JOIN `funnel-order-items` as `oi`
+      ON `fp`.`key` = `oi`.`product-key`
+      WHERE `oi`.`order-key`=:key
+      AND `oi`.`status`=1&quot;;
+    $preparedStatement = $this-&gt;Prepare( $query );
+    $preparedStatement-&gt;bindValue(':key', $orderKey, \PDO::PARAM_INT);
+    $preparedStatement = $this-&gt;Execute($preparedStatement);
+    if($preparedStatement-&gt;rowCount() &lt;= 0){
+      return false;
+    }
+    return $preparedStatement-&gt;fetchAll(\PDO::FETCH_ASSOC);
+  }
+
+  public function getProducts($limit = 50)
+  {
+    //$query = &quot;SELECT `sku`, `name`, `description`, `price`, `cost`, `weight`, `is-digital` FROM `funnel-products` LIMIT 0, 50&quot;;
+    $query = &quot;SELECT `key`, `sku`, `name`, `description`, `price`, `cost`, `weight`, `is-digital` FROM `funnel-products` LIMIT 0, $limit&quot;;
+    $preparedStatement = $this-&gt;Prepare( $query );
+    //$preparedStatement = $this-&gt;bindValue(':limit', $limit, \PDO::PARAM_INT);
+    $preparedStatement =$this-&gt;Execute($preparedStatement);
+    if($preparedStatement-&gt;rowCount()  == 0){
+      return false;
+    }
+    $resultArray = $preparedStatement-&gt;fetchAll(\PDO::FETCH_ASSOC);
+
+    return $resultArray;
+  }
+}
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>
